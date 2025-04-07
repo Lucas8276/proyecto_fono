@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semántica - Juegos Fonoaudiológicos</title>
+    <!-- Incluir SweetAlert2 para mostrar alertas bonitas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Incluir Animate.css para animaciones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #FF9A9E, #FAD0C4);
+            padding: 20px;
+            background-image: url('images/semantica/background/cartoon-stars.png');
+            background-repeat: repeat;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 5px solid #FFD700;
+        }
+
+        h1 {
+            color: #FF6B6B;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .clue-card {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: move;
+            color: white;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+        }
+
+        .clue-card:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .image-container {
+            border: 4px solid #FFD700;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            min-height: 200px;
+            background: white;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .image-container img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+
+        .image-container p {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #FF6B6B;
+            font-weight: bold;
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .home-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .clue-card.dragging {
+            opacity: 0.5;
+        }
+
+        .image-container.dragover {
+            border-color: #71b7e6;
+            background: #f0f7ff;
+        }
+
+        .feedback {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #dff0d8;
+            color: #3c763d;
+        }
+
+        .feedback.incorrect {
+            background: #f2dede;
+            color: #a94442;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+            color: white;
+        }
+
+        .home-btn {
+            background: #f44336;
+        }
+
+        .next-btn {
+            background: #4CAF50;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Semántica</h1>
+        
+        <div class="game-area">
+            <div class="clue-section">
+                <div class="clue-card" draggable="true" id="clueCard">
+                    <!-- Las pistas se cargarán dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="images-section" id="imagesSection">
+                <!-- Las imágenes se cargarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="controls">
+            <button class="home-btn" onclick="window.location.href='index.html'">Inicio</button>
+            <button class="next-btn" onclick="nextRound()">Siguiente</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables para el seguimiento del progreso del juego
+        let correctAnswersCount = 0;
+        let totalAnswered = 0;
+        
+        const items = [
+            {
+                "image": "images/semantica/perro.jpg",
+                name: 'Perro',
+                clues: [
+                    'Soy un animal de cuatro patas',
+                    'Ladro cuando veo extraños',
+                    'Soy el mejor amigo del hombre',
+                    'Me gusta jugar con pelotas'
+                ]
+            },
+            {
+                image: 'images/semantica/manzanaa.png',
+                name: 'Manzana',
+                clues: [
+                    'Soy una fruta roja',
+                    'Crezco en árboles',
+                    'Me usan en pasteles',
+                    'Me como fresca'
+                ]
+            },
+            {
+                image: 'images/semantica/pelota.png',
+                name: 'Pelota',
+                clues: [
+                    'Soy redonda',
+                    'Me usan para jugar',
+                    'Puedo rebotar',
+                    'Me patean en el fútbol'
+                ]
+            },
+            {
+                image: 'images/semantica/libro.png',
+                name: 'Libro',
+                clues: [
+                    'Tengo muchas páginas',
+                    'Contengo historias',
+                    'Me encuentras en bibliotecas',
+                    'Ayudo a aprender'
+                ]
+            }
+        ];
+
+        let currentRound = 0;
+        let correctAnswer = null;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function loadRound() {
+            const imagesSection = document.getElementById('imagesSection');
+            const clueCard = document.getElementById('clueCard');
+            const feedback = document.getElementById('feedback');
+            
+            // Ocultar el feedback
+            feedback.style.display = 'none';
+
+            // Seleccionar el ítem correcto y tres aleatorios
+            correctAnswer = items[currentRound];
+            let roundItems = [correctAnswer];
+            let remainingItems = items.filter(item => item !== correctAnswer);
+            remainingItems = shuffleArray(remainingItems);
+            roundItems = roundItems.concat(remainingItems.slice(0, 3));
+            roundItems = shuffleArray(roundItems);
+
+            // Cargar las imágenes
+            imagesSection.innerHTML = roundItems.map(item => `
+                <div class="image-container" data-name="${item.name}">
+                    <img src="${item.image}" alt="${item.name}">
+                    <p>${item.name}</p>
+                </div>
+            `).join('');
+
+            // Cargar las pistas
+            clueCard.innerHTML = correctAnswer.clues.map(clue => `<p>• ${clue}</p>`).join('');
+
+            // Configurar el drag and drop
+            setupDragAndDrop();
+        }
+
+        function setupDragAndDrop() {
+            const clueCard = document.getElementById('clueCard');
+            const imageContainers = document.querySelectorAll('.image-container');
+
+            clueCard.addEventListener('dragstart', (e) => {
+                clueCard.classList.add('dragging');
+            });
+
+            clueCard.addEventListener('dragend', (e) => {
+                clueCard.classList.remove('dragging');
+            });
+
+            imageContainers.forEach(container => {
+                container.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    container.classList.add('dragover');
+                });
+
+                container.addEventListener('dragleave', () => {
+                    container.classList.remove('dragover');
+                });
+
+                container.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    container.classList.remove('dragover');
+                    checkAnswer(container.dataset.name);
+                });
+            });
+        }
+
+        function checkAnswer(selectedName) {
+            if (selectedName === correctAnswer.name) {
+                Swal.fire({
+                    title: '¡Increíble! 🎉',
+                    text: '¡Eres un detective muy inteligente!',
+                    icon: 'success',
+                    confirmButtonText: '¡Seguir jugando!',
+                    background: '#fff',
+                    backdrop: `
+                        rgba(255,215,0,0.4)
+                        url("images/semantica/confetti.gif")
+                    `,
+                    showClass: {
+                        popup: 'animate__animated animate__bounceIn'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        nextRound(); // Llamar a nextRound cuando se presione "Seguir jugando"
+                    }
+                });
+                
+                correctAnswersCount++;
+                
+                if (correctAnswersCount === items.length) {
+                    setTimeout(() => {
+                        Swal.fire({
+                            title: '¡CAMPEÓN! 🏆',
+                            text: '¡Has completado todos los desafíos!',
+                            imageUrl: 'images/semantica/download.gif',
+                            imageWidth: 200,
+                            imageHeight: 200,
+                            confirmButtonText: '¡Hurra!',
+                            showConfetti: true,
+                            background: '#fff url("images/semantica/stars.gif")',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                nextRound(); // También reiniciar después de completar todos los desafíos
+                            }
+                        });
+                    }, 1000);
+                }
+            } else {
+                // Mostrar mensaje de ánimo
+                Swal.fire({
+                    title: '¡Casi! 😊',
+                    text: '¡Sigue intentando, tú puedes!',
+                    icon: 'warning',
+                    confirmButtonText: 'Intentar otra vez',
+                    showClass: {
+                        popup: 'animate__animated animate__rubberBand'
+                    }
+                });
+            }
+        }
+
+        function nextRound() {
+            currentRound = (currentRound + 1) % items.length;
+            loadRound();
+            
+            // Reiniciar contadores si se completa un ciclo completo
+            if (currentRound === 0) {
+                correctAnswersCount = 0;
+                totalAnswered = 0;
+            }
+        }
+
+        // Iniciar el juego
+        loadRound();
+    </script>
+</body>
+</html>
+
+<head>
+    <style>
+        .game-area {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .clue-section {
+            flex: 0 0 50%;
+        }
+
+        .images-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .image-container img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .image-container p {
+            font-size: 0.9em;
+            margin: 0;
+            text-align: center;
+        }
+    </style>
+</head>

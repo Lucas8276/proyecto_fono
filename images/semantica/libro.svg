@@ -1,0 +1,19 @@
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Portada del libro -->
+  <path d="M40 40 L110 40 L110 110 L40 110 Z" fill="#4CAF50"/>
+  
+  <!-- Páginas -->
+  <path d="M110 40 L115 45 L115 115 L110 110 Z" fill="#81C784"/>
+  <path d="M40 110 L45 115 L115 115 L110 110 Z" fill="#81C784"/>
+  
+  <!-- Líneas decorativas (simulando texto) -->
+  <line x1="50" y1="60" x2="100" y2="60" stroke="white" stroke-width="3"/>
+  <line x1="50" y1="75" x2="90" y2="75" stroke="white" stroke-width="3"/>
+  <line x1="50" y1="90" x2="95" y2="90" stroke="white" stroke-width="3"/>
+  
+  <!-- Marcador -->
+  <path d="M95 35 L105 35 L100 45 Z" fill="#FF5252"/>
+  
+  <!-- Brillo -->
+  <path d="M45 45 L55 45 L45 55 Z" fill="white" opacity="0.3"/>
+</svg>

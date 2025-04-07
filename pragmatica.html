@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pragmática - Juegos Fonoaudiológicos</title>
+    <!-- Incluir SweetAlert2 para mostrar alertas bonitas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Incluir Animate.css para animaciones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-area {
+            text-align: center;
+        }
+
+        .object-image {
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question-section {
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 10px;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: #e0e0e0;
+        }
+
+        .option.selected {
+            background: #71b7e6;
+            color: white;
+            border-color: #71b7e6;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .next-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .validate-btn {
+            background: #2196F3;
+            color: white;
+        }
+
+        .home-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #dff0d8;
+            color: #3c763d;
+        }
+
+        .feedback.incorrect {
+            background: #f2dede;
+            color: #a94442;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pragmática</h1>
+        <div class="game-area">
+            <img src="" alt="Objeto" class="object-image" id="objectImage">
+            <div class="question-section">
+                <p class="question">¿Qué es?</p>
+                <div class="options" id="whatOptions">
+                    <!-- Las opciones se cargarán dinámicamente -->
+                </div>
+                <p class="question">¿Para qué sirve?</p>
+                <div class="options" id="useOptions">
+                    <!-- Las opciones se cargarán dinámicamente -->
+                </div>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <div class="controls">
+                <button class="home-btn" onclick="window.location.href='index.html'">Inicio</button>
+                <button class="validate-btn" onclick="validateAnswers()">Validar</button>
+                <button class="next-btn" onclick="nextObject()">Siguiente</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variable para contar los ejercicios completados
+        let completedExercises = 0;
+        // Total de objetos/ejercicios disponibles
+        const totalExercises = 2; // Actualizar este número si se agregan más objetos
+        
+        const objects = [
+            {
+                image: 'images/lapiz.png',
+                name: 'Lápiz',
+                whatOptions: ['Lápiz', 'Bolígrafo', 'Marcador', 'Crayón'],
+                useOptions: ['Para escribir y dibujar', 'Para pintar las uñas', 'Para cortar papel', 'Para pegar cosas']
+            },
+            {
+                image: 'images/cuchara.jpg',
+                name: 'Cuchara',
+                whatOptions: ['Cuchara', 'Tenedor', 'Cuchillo', 'Pala'],
+                useOptions: ['Para comer alimentos', 'Para cortar', 'Para clavar', 'Para barrer']
+            },
+            // Agregar más objetos según sea necesario
+        ];
+
+        let currentObjectIndex = 0;
+        let selectedWhat = null;
+        let selectedUse = null;
+
+        function loadObject(index) {
+            const object = objects[index];
+            document.getElementById('objectImage').src = object.image;
+            
+            const whatOptionsContainer = document.getElementById('whatOptions');
+            const useOptionsContainer = document.getElementById('useOptions');
+            
+            whatOptionsContainer.innerHTML = '';
+            useOptionsContainer.innerHTML = '';
+            
+            object.whatOptions.forEach((option, i) => {
+                whatOptionsContainer.innerHTML += `
+                    <div class="option" onclick="selectOption('what', ${i})">${option}</div>
+                `;
+            });
+            
+            object.useOptions.forEach((option, i) => {
+                useOptionsContainer.innerHTML += `
+                    <div class="option" onclick="selectOption('use', ${i})">${option}</div>
+                `;
+            });
+
+            selectedWhat = null;
+            selectedUse = null;
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function selectOption(type, index) {
+            const options = document.querySelectorAll(`#${type}Options .option`);
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            
+            if (type === 'what') {
+                selectedWhat = index;
+            } else {
+                selectedUse = index;
+            }
+        }
+
+        function validateAnswers() {
+            if (selectedWhat === null || selectedUse === null) {
+                alert('Por favor, selecciona una opción para cada pregunta');
+                return;
+            }
+
+            const feedback = document.getElementById('feedback');
+            const currentObject = objects[currentObjectIndex];
+            
+            const isCorrectWhat = currentObject.whatOptions[selectedWhat] === currentObject.name;
+            const isCorrectUse = selectedUse === 0; // Asumiendo que la primera opción siempre es la correcta
+
+            feedback.style.display = 'block';
+            if (isCorrectWhat && isCorrectUse) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '¡Correcto! Las respuestas son acertadas.';
+                
+                // Incrementar contador de ejercicios completados solo si no se había completado este ejercicio antes
+                if (!objects[currentObjectIndex].completed) {
+                    objects[currentObjectIndex].completed = true;
+                    completedExercises++;
+                    
+                    // Verificar si se han completado todos los ejercicios
+                    if (completedExercises >= totalExercises) {
+                        // Mostrar mensaje de felicitación con SweetAlert2
+                        setTimeout(() => {
+                            Swal.fire({
+                                title: '¡Felicitaciones!',
+                                text: 'Has completado todos los ejercicios de pragmática',
+                                icon: 'success',
+                                confirmButtonText: 'Genial',
+                                background: '#fff',
+                                backdrop: `
+                                    rgba(0,123,255,0.4)
+                                    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M26 50A24 24 0 0 0 74 50A24 24 0 0 0 26 50' fill='none' stroke='%23E87FB9' stroke-width='4'%3E%3CanimateTransform attributeName='transform' attributeType='XML' type='rotate' from='0 50 50' to='360 50 50' dur='2s' repeatCount='indefinite'/%3E%3C/path%3E%3C/svg%3E")
+                                    center center
+                                    no-repeat
+                                `,
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                },
+                                willClose: () => {
+                                    window.location.href = 'index.html';
+                                }
+                            });
+                        }, 1000);
+                    }
+                }
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = 'Algunas respuestas no son correctas. ¡Inténtalo de nuevo!';
+            }
+        }
+
+        function nextObject() {
+            currentObjectIndex = (currentObjectIndex + 1) % objects.length;
+            loadObject(currentObjectIndex);
+        }
+
+        // Cargar el primer objeto al iniciar
+        loadObject(0);
+    </script>
+</body>
+</html>

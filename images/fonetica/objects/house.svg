@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Techo -->
+    <path d="M20 100 L100 30 L180 100" fill="#8B4513"/>
+    
+    <!-- Estructura principal -->
+    <rect x="40" y="100" width="120" height="80" fill="#DEB887"/>
+    
+    <!-- Puerta -->
+    <rect x="85" y="130" width="30" height="50" fill="#8B4513"/>
+    <circle cx="105" cy="160" r="3" fill="#FFD700"/>
+    
+    <!-- Ventanas -->
+    <rect x="55" y="120" width="20" height="20" fill="#87CEEB"/>
+    <path d="M55 130 H75 M65 120 V140" stroke="#FFFFFF" stroke-width="2"/>
+    
+    <rect x="125" y="120" width="20" height="20" fill="#87CEEB"/>
+    <path d="M125 130 H145 M135 120 V140" stroke="#FFFFFF" stroke-width="2"/>
+    
+    <!-- Chimenea -->
+    <rect x="140" y="60" width="15" height="25" fill="#8B4513"/>
+</svg>
