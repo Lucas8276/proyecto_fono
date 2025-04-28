@@ -85,24 +85,90 @@
         .game-button:hover {
             opacity: 0.9;
         }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
+    <!-- Botón para registrar paciente -->
+    <button id="registerButton" style="margin-bottom: 20px;">Registrar Paciente</button>
+
+    <!-- Modal para el formulario -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <h2>Información del Niño paciente</h2>
+            <form action="http://localhost:3000/submit" method="post">
+                <input type="text" name="nombre" placeholder="Nombre" required>
+                <input type="text" name="dni" placeholder="DNI" required>
+                <input type="number" name="edad" placeholder="Edad" required>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </div>
+
     <div class="container">
         <h1>Juegos Fonoaudiológicos</h1>
         <div class="games-grid">
             <div class="game-card">
                 <h2>Pragmática</h2>
+                <img src="images\fondo\chat.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
                 <p>Identifica objetos y responde preguntas sobre su uso y función.</p>
                 <a href="pragmatica.html" class="game-button">Jugar</a>
             </div>
             <div class="game-card">
                 <h2>Fonética</h2>
+                <img src="images\fondo\fonetica.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
                 <p>Juega con el tablero, lanza el dado y construye oraciones.</p>
                 <a href="fonetica.html" class="game-button">Jugar</a>
             </div>
             <div class="game-card">
                 <h2>Semántica</h2>
+                <img src="images\fondo\semantica.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
                 <p>Relaciona pistas con imágenes y arrastra a la opción correcta.</p>
                 <a href="semantica.html" class="game-button">Jugar</a>
             </div>
@@ -113,5 +179,72 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Mostrar el modal al presionar el botón "Registrar Paciente"
+        document.getElementById('registerButton').addEventListener('click', function() {
+            document.getElementById('infoModal').style.display = 'flex';
+        });
+
+        // Función para enviar el formulario y mostrar alerta
+        function submitForm(event) {
+            event.preventDefault(); // Evita el envío por defecto del formulario
+
+            const nombre = document.querySelector('input[name="nombre"]').value;
+            const dni = document.querySelector('input[name="dni"]').value;
+            const edad = document.querySelector('input[name="edad"]').value;
+
+            if (nombre && dni && edad) {
+                // Almacenar los datos en localStorage
+                localStorage.setItem('nombre', nombre);
+                localStorage.setItem('dni', dni);
+                localStorage.setItem('edad', edad);
+
+                fetch('http://localhost:3000/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `nombre=${nombre}&dni=${dni}&edad=${edad}`,
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                })
+                .then(data => {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: 'Datos guardados de manera exitosa!',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    document.getElementById('infoModal').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Hubo un problema al guardar los datos.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                });
+            } else {
+                Swal.fire({
+                    title: 'Advertencia',
+                    text: 'Por favor, completa todos los campos.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        }
+
+        // Asigna la función al evento de envío del formulario
+        document.querySelector('form').addEventListener('submit', submitForm);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
