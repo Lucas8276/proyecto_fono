@@ -9,6 +9,7 @@
     <!-- Incluir Animate.css para animaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
+        
         * {
             margin: 0;
             padding: 0;
@@ -17,10 +18,11 @@
         }
 
         body {
+            background-image: url('ruta/a/tu/imagen.jpg');
             min-height: 100vh;
             background: linear-gradient(135deg, #FF9A9E, #FAD0C4);
             padding: 20px;
-            background-image: url('images/semantica/background/cartoon-stars.png');
+            background-image: url('images/semantica/semantica_fondo.jpg');
             background-repeat: repeat;
         }
 
@@ -167,9 +169,11 @@
         button:hover {
             opacity: 0.9;
         }
+        
     </style>
 </head>
 <body>
+    
     <div class="container">
         <h1>Semántica</h1>
         
@@ -178,8 +182,11 @@
                 <div class="clue-card" draggable="true" id="clueCard">
                     <!-- Las pistas se cargarán dinámicamente -->
                 </div>
+                <div class="instructions-section" style="margin: 30px 0 0 0; padding: 18px; background: #fffbe7; border-radius: 18px; box-shadow: 0 2px 8px rgba(255,193,7,0.08); border: 2px solid #FFD700; max-width: 500px; color: #b8860b; font-size: 1.15em;">
+                    <b>Instrucciones:</b><br>
+                    Lee atentamente las pistas y arrastra la tarjeta amarilla sobre la imagen que creas correcta. Haz clic en "Siguiente" para avanzar al próximo desafío. ¡Diviértete aprendiendo!
+                </div>
             </div>
-            
             <div class="images-section" id="imagesSection">
                 <!-- Las imágenes se cargarán dinámicamente -->
             </div>
@@ -349,7 +356,7 @@
                             background: '#fff url("images/semantica/stars.gif")',
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                nextRound(); // También reiniciar después de completar todos los desafíos
+                                window.location.href = 'index.html';
                             }
                         });
                     }, 1000);

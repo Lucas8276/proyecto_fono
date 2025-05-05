@@ -156,8 +156,7 @@
             <div class="feedback" id="feedback"></div>
             <div class="controls">
                 <button class="home-btn" onclick="window.location.href='index.html'">Inicio</button>
-                <button class="validate-btn" onclick="validateAnswers()">Validar</button>
-                <button class="next-btn" onclick="nextObject()">Siguiente</button>
+                <button class="next-btn" onclick="nextObjectWithValidation()">Siguiente</button>
             </div>
         </div>
     </div>
@@ -230,12 +229,11 @@
         function validateAnswers() {
             if (selectedWhat === null || selectedUse === null) {
                 alert('Por favor, selecciona una opción para cada pregunta');
-                return;
+                return false;
             }
 
             const feedback = document.getElementById('feedback');
             const currentObject = objects[currentObjectIndex];
-            
             const isCorrectWhat = currentObject.whatOptions[selectedWhat] === currentObject.name;
             const isCorrectUse = selectedUse === 0; // Asumiendo que la primera opción siempre es la correcta
 
@@ -243,19 +241,18 @@
             if (isCorrectWhat && isCorrectUse) {
                 feedback.className = 'feedback correct';
                 feedback.textContent = '¡Correcto! Las respuestas son acertadas.';
-                
                 if (!objects[currentObjectIndex].completed) {
                     objects[currentObjectIndex].completed = true;
                     completedExercises++;
-                    
                     if (completedExercises >= totalExercises) {
-                        // Enviar datos al servidor
                         enviarDatosAlServidor();
                     }
                 }
+                return true;
             } else {
                 feedback.className = 'feedback incorrect';
                 feedback.textContent = 'Algunas respuestas no son correctas. ¡Inténtalo de nuevo!';
+                return false;
             }
         }
 
@@ -303,9 +300,13 @@
             });
         }
 
-        function nextObject() {
-            currentObjectIndex = (currentObjectIndex + 1) % objects.length;
-            loadObject(currentObjectIndex);
+        function nextObjectWithValidation() {
+            if (validateAnswers()) {
+                setTimeout(() => {
+                    currentObjectIndex = (currentObjectIndex + 1) % objects.length;
+                    loadObject(currentObjectIndex);
+                }, 800);
+            }
         }
 
         // Cargar el primer objeto al iniciar

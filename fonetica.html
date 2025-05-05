@@ -101,10 +101,10 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 700px;
             margin: 0 auto;
             background: white;
-            padding: 20px;
+            padding: 10px;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
@@ -150,27 +150,32 @@
 
         .game-board {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
             background: linear-gradient(45deg, #FFD700, #FFA500);
-            padding: 20px;
+            padding: 10px;
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .cell {
             aspect-ratio: 1;
-            border: 4px solid #fff;
-            border-radius: 15px;
+            border: 3px solid #fff;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             background: #fff;
-            min-height: 150px;
+            min-height: 70px;
+            max-width: 70px;
             transform-style: preserve-3d;
             transition: transform 0.5s;
+            padding: 2px;
         }
 
         .cell.spinning {
@@ -184,8 +189,8 @@
         }
 
         .cell img {
-            width: 80%;
-            height: 80%;
+            width: 60%;
+            height: 60%;
             object-fit: contain;
             backface-visibility: visible;
         }
@@ -257,7 +262,7 @@
         <div class="dice-section">
             <span class="dice" id="dice">🎲</span>
             <div class="dice-section">
-                <button class="roll-btn" onclick="rollDice()">¡Girar!</button>
+                <button class="roll-btn" onclick="rollDice()">¡Lanzar dado!</button>
             </div>
         </div>
 
@@ -303,10 +308,12 @@
 
         let selectedCharacter = null;
         let currentPosition = 0;
-        let boardSize = 20;
+        const boardSize = 20;
+        let boardCells = [];
 
         function initializeCharacterSelection() {
             const container = document.getElementById('characterSelection');
+            container.innerHTML = '';
             characters.forEach(character => {
                 const div = document.createElement('div');
                 div.className = 'character';
@@ -314,78 +321,35 @@
                     <img src="${character.image}" alt="${character.name}">
                     <p>${character.name}</p>
                 `;
-                div.onclick = () => selectCharacter(character);
+                div.onclick = () => selectCharacter(character, div);
                 container.appendChild(div);
             });
         }
 
-        function selectCharacter(character) {
+        function selectCharacter(character, element) {
             selectedCharacter = character;
             document.querySelectorAll('.character').forEach(el => {
                 el.classList.remove('selected');
             });
-            event.currentTarget.classList.add('selected');
+            element.classList.add('selected');
             resetGame();
         }
 
         function initializeBoard() {
             const board = document.getElementById('gameBoard');
             board.innerHTML = '';
-            
-            // Crear solo 3 celdas para el tragaperras
-            for (let i = 0; i < 3; i++) {
+            boardCells = [];
+            for (let i = 0; i < boardSize; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
+                const obj = objects[i % objects.length];
+                cell.innerHTML = `<img src="${obj.image}" alt="${obj.name}" title="${obj.name}">`;
                 board.appendChild(cell);
+                boardCells.push(cell);
             }
-            spinSlots();
+            updatePlayerPosition();
         }
 
-        // Añadir después de las variables existentes
-        let throwCount = 0;
-        const MAX_THROWS = 5;
-
-        function spinSlots() {
-            if (throwCount >= MAX_THROWS) {
-                Swal.fire({
-                    title: '¡Juego terminado!',
-                    text: 'Has alcanzado el límite de 5 tiradas',
-                    icon: 'info',
-                    confirmButtonText: 'Volver a empezar',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        throwCount = 0;
-                        resetGame();
-                    }
-                });
-                return;
-            }
-
-            throwCount++;
-            const cells = document.querySelectorAll('.cell');
-            cells.forEach(cell => cell.classList.add('spinning'));
-
-            // Crear animación de giro con imágenes aleatorias
-            const spinInterval = setInterval(() => {
-                cells.forEach(cell => {
-                    const randomObject = objects[Math.floor(Math.random() * objects.length)];
-                    cell.innerHTML = `<img src="${randomObject.image}" alt="${randomObject.name}" title="${randomObject.name}">`;
-                });
-            }, 600); // Aumentado a 600ms para un cambio más suave
-
-            // Detener la animación después de 3 segundos
-            setTimeout(() => {
-                clearInterval(spinInterval);
-                cells.forEach(cell => {
-                    cell.classList.remove('spinning');
-                    const randomObject = objects[Math.floor(Math.random() * objects.length)];
-                    cell.innerHTML = `<img src="${randomObject.image}" alt="${randomObject.name}" title="${randomObject.name}">`;
-                });
-                updateSentence();
-            }, 3000); // Aumentado a 3000ms para una animación más larga
-        }
-
-        // Modificar la función rollDice para que ahora sea spinSlots
         function rollDice() {
             if (!selectedCharacter) {
                 Swal.fire({
@@ -396,28 +360,51 @@
                 });
                 return;
             }
-            spinSlots();
+            const diceValue = Math.floor(Math.random() * 6) + 1;
+            document.getElementById('dice').textContent = `🎲 ${diceValue}`;
+            movePlayer(diceValue);
+        }
+
+        function movePlayer(steps) {
+            currentPosition += steps;
+            if (currentPosition >= boardSize) {
+                currentPosition = boardSize - 1;
+                Swal.fire({
+                    title: '¡Felicidades!',
+                    text: '¡Has llegado al final del tablero!',
+                    icon: 'success',
+                    confirmButtonText: 'Volver a jugar'
+                }).then(() => {
+                    resetGame();
+                });
+            }
+            updatePlayerPosition();
+            updateSentence();
+        }
+
+        function updatePlayerPosition() {
+            boardCells.forEach(cell => cell.classList.remove('player'));
+            if (boardCells[currentPosition]) {
+                boardCells[currentPosition].classList.add('player');
+            }
         }
 
         function updateSentence() {
-            const cells = document.querySelectorAll('.cell');
-            const objects = Array.from(cells).map(cell => cell.querySelector('img').title.toLowerCase());
-            document.getElementById('sentence').textContent = 
-                `${selectedCharacter.name} ... ${objects.join(' ... ')}. ¡Construye una oración!`;
+            if (selectedCharacter && boardCells[currentPosition]) {
+                const img = boardCells[currentPosition].querySelector('img');
+                document.getElementById('sentence').textContent = `${selectedCharacter.name} llegó a la casilla de "${img.title}". ¡Construye una oración!`;
+            } else {
+                document.getElementById('sentence').textContent = '';
+            }
         }
-
-        // Modificar el HTML del botón
-        // Cambiar el texto del botón de "Lanzar Dado" a "¡Girar!"
 
         function resetGame() {
             currentPosition = 0;
-            throwCount = 0;
             initializeBoard();
             document.getElementById('sentence').textContent = '';
             document.getElementById('dice').textContent = '🎲';
         }
 
-        // Inicializar el juego
         initializeCharacterSelection();
         initializeBoard();
     </script>
