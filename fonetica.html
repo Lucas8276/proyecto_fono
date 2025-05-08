@@ -365,6 +365,30 @@
             movePlayer(diceValue);
         }
 
+        function enviarDatosAlServidor() {
+            const nombre = localStorage.getItem('nombre');
+            const edad = localStorage.getItem('edad');
+            const paciente_juego = 'fonetica';
+            const paciente_resultado = currentPosition === boardSize - 1 ? 'completado' : 'incompleto';
+            fetch('http://localhost:3000/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `nombre=${encodeURIComponent(nombre)}&edad=${encodeURIComponent(edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
+                } else {
+                    Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+            });
+        }
+
         function movePlayer(steps) {
             currentPosition += steps;
             if (currentPosition >= boardSize) {
@@ -375,6 +399,7 @@
                     icon: 'success',
                     confirmButtonText: 'Volver a jugar'
                 }).then(() => {
+                    enviarDatosAlServidor();
                     resetGame();
                 });
             }

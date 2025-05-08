@@ -189,10 +189,36 @@
                     customClass: { popup: 'animate__animated animate__bounceIn' }
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        enviarDatosAlServidor();
                         window.location.href = 'index.html';
                     }
                 });
             }, 400);
+        }
+
+        function enviarDatosAlServidor() {
+            const paciente_nombre = localStorage.getItem('nombre');
+            const paciente_edad = localStorage.getItem('edad');
+            const paciente_juego = 'fonologia';
+            // Consideramos "completado" porque el juego termina al acertar
+            const paciente_resultado = 'completado';
+            fetch('http://localhost:3000/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `nombre=${encodeURIComponent(paciente_nombre)}&edad=${encodeURIComponent(paciente_edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
+                } else {
+                    Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+            });
         }
     </script>
 </body>

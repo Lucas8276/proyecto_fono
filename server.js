@@ -22,10 +22,10 @@ client.connect()
 
 // Ruta para manejar el envío del formulario
 app.post('/submit', (req, res) => {
-    const { nombre, dni, edad } = req.body;
+    const { nombre, dni, edad, paciente_juego, paciente_resultado } = req.body;
 
     const query = 'INSERT INTO paciente (paciente_nombre, paciente_edad, paciente_juego, paciente_resultado) VALUES ($1, $2, $3, $4)';
-    const values = [nombre, edad, 'Juego de ejemplo', 'Resultado de ejemplo'];
+    const values = [nombre, edad, paciente_juego, paciente_resultado];
 
     client.query(query, values, (err) => {
         if (err) {

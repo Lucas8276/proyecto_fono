@@ -261,6 +261,7 @@
             const dni = localStorage.getItem('dni');
             const edad = localStorage.getItem('edad');
             const paciente_juego = 'pragmatica';
+            const paciente_resultado = completedExercises === totalExercises ? 'completado' : 'incompleto';
             const respuestas_correctas = completedExercises;
             const respuestas_incorrectas = totalExercises - completedExercises;
 
@@ -269,7 +270,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `nombre=${nombre}&dni=${dni}&edad=${edad}&paciente_juego=${paciente_juego}&respuestas_correctas=${respuestas_correctas}&respuestas_incorrectas=${respuestas_incorrectas}`,
+                body: `nombre=${nombre}&dni=${dni}&edad=${edad}&paciente_juego=${paciente_juego}&paciente_resultado=${paciente_resultado}&respuestas_correctas=${respuestas_correctas}&respuestas_incorrectas=${respuestas_incorrectas}`,
             })
             .then(response => {
                 if (response.ok) {
