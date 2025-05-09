@@ -24,8 +24,8 @@ client.connect()
 app.post('/submit', (req, res) => {
     const { nombre, dni, edad, paciente_juego, paciente_resultado } = req.body;
 
-    const query = 'INSERT INTO paciente (paciente_nombre, paciente_edad, paciente_juego, paciente_resultado) VALUES ($1, $2, $3, $4)';
-    const values = [nombre, edad, paciente_juego, paciente_resultado];
+    const query = 'INSERT INTO paciente (paciente_nombre, paciente_dni, paciente_edad, paciente_juego, paciente_resultado) VALUES ($1, $2, $3, $4, $5)';
+    const values = [nombre, dni, edad, paciente_juego, paciente_resultado];
 
     client.query(query, values, (err) => {
         if (err) {
@@ -33,6 +33,18 @@ app.post('/submit', (req, res) => {
             res.status(500).send('Error al guardar los datos');
         } else {
             res.status(200).send('Datos guardados exitosamente');
+        }
+    });
+});
+
+// Ruta para obtener todos los pacientes
+app.get('/pacientes', (req, res) => {
+    client.query('SELECT paciente_nombre, paciente_dni, paciente_edad, paciente_juego, paciente_resultado FROM paciente', (err, result) => {
+        if (err) {
+            console.error('Error ejecutando la consulta para obtener pacientes', err.stack);
+            res.status(500).json({ error: 'Error al obtener los pacientes' });
+        } else {
+            res.status(200).json(result.rows);
         }
     });
 });

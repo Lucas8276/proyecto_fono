@@ -8,6 +8,7 @@ CREATE TABLE fonoaudiologo (
 CREATE TABLE paciente (
     id_paciente SERIAL PRIMARY KEY,
     paciente_nombre VARCHAR(100),
+    paciente_dni VARCHAR(100),
     paciente_edad INTEGER,
     paciente_juego VARCHAR(100),
     paciente_resultado VARCHAR(100)
