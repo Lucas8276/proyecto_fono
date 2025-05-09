@@ -132,11 +132,34 @@
         .modal-content button:hover {
             opacity: 0.9;
         }
+
+        #registerButton {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            color: white;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: block; /* Para centrarlo si es necesario o darle un ancho */
+            margin: 20px auto; /* Centrar el botón y añadir margen superior/inferior */
+        }
+
+        #registerButton:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            transform: translateY(-2px);
+        }
+
+        #registerButton:active {
+            transform: translateY(1px);
+        }
     </style>
 </head>
 <body>
     <!-- Botón para registrar paciente -->
-    <button id="registerButton" style="margin-bottom: 20px;">Registrar Paciente</button>
+    <button id="registerButton">Registrar Paciente</button>
 
     <!-- Modal para el formulario -->
     <div class="modal" id="infoModal">
@@ -207,38 +230,17 @@
                 localStorage.setItem('dni', dni);
                 localStorage.setItem('edad', edad);
 
-                fetch('http://localhost:3000/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `nombre=${nombre}&dni=${dni}&edad=${edad}`,
-                })
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else {
-                        throw new Error('Error en la respuesta del servidor');
-                    }
-                })
-                .then(data => {
-                    Swal.fire({
-                        title: '¡Éxito!',
-                        text: 'Datos guardados de manera exitosa!',
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                    });
-                    document.getElementById('infoModal').style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Hubo un problema al guardar los datos.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
+                // Se elimina el bloque fetch para no enviar a la base de datos
+                // fetch('http://localhost:3000/submit', { ... })
+
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: 'Datos guardados localmente de manera exitosa!', // Mensaje actualizado
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
                 });
+                document.getElementById('infoModal').style.display = 'none';
+                
             } else {
                 Swal.fire({
                     title: 'Advertencia',

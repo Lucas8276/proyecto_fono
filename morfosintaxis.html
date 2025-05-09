@@ -359,6 +359,7 @@ iconosVerde.forEach((icono, i) => {
 function enviarDatosAlServidor() {
   const paciente_nombre = localStorage.getItem('nombre');
   const paciente_edad = localStorage.getItem('edad');
+  const dni = localStorage.getItem('dni');
     const paciente_juego = 'Morfosintaxis';
     const paciente_resultado = 'Completado';
     fetch('http://localhost:3000/submit', {
@@ -366,7 +367,7 @@ function enviarDatosAlServidor() {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `nombre=${encodeURIComponent(paciente_nombre)}&edad=${encodeURIComponent(paciente_edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
+                body: `nombre=${encodeURIComponent(paciente_nombre)}&dni=${encodeURIComponent(dni)}&edad=${encodeURIComponent(paciente_edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
             })
             .then(response => {
                 if (response.ok) {

@@ -368,14 +368,15 @@
         function enviarDatosAlServidor() {
             const nombre = localStorage.getItem('nombre');
             const edad = localStorage.getItem('edad');
-            const paciente_juego = 'fonetica';
+            const dni = localStorage.getItem('dni');
+            const paciente_juego = 'Fonética';
             const paciente_resultado = currentPosition === boardSize - 1 ? 'completado' : 'incompleto';
             fetch('http://localhost:3000/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `nombre=${encodeURIComponent(nombre)}&edad=${encodeURIComponent(edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
+                body: `nombre=${encodeURIComponent(nombre)}&dni=${dni}&edad=${encodeURIComponent(edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
             })
             .then(response => {
                 if (response.ok) {
