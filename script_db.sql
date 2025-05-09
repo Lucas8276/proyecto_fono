@@ -1,3 +1,5 @@
+CREATE DATABASE fono;
+
 CREATE TABLE fonoaudiologo (
     id_fono SERIAL PRIMARY KEY,
     nombre_fono VARCHAR(100),
