@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paralingüístico - Emociones</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eaf4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 60px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .display-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .emoji {
+      font-size: 160px;
+      margin: 20px 0;
+    }
+
+    video {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .feedback {
+      margin-top: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #0074ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="display-section">
+      <h1>Imitá esta emoción</h1>
+      <div class="emoji" id="emoji">😀</div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <div class="display-section">
+      <video id="video" autoplay playsinline muted></video>
+    </div>
+  </div>
+
+  <script>
+    const emociones = ['😀', '😡', '😢', '😲'];
+    const nombres = ['Alegre', 'Enojado', 'Triste', 'Sorprendido'];
+    let actual = 0;
+    let esperando = false;
+    let videoElement = document.getElementById('video');
+    let feedback = document.getElementById('feedback');
+
+    document.getElementById('emoji').textContent = emociones[actual];
+
+    const faceMesh = new FaceMesh({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+    });
+
+    faceMesh.setOptions({
+      maxNumFaces: 1,
+      refineLandmarks: true,
+      minDetectionConfidence: 0.4,
+      minTrackingConfidence: 0.4
+    });
+
+    faceMesh.onResults(onResults);
+
+    async function iniciarCamara() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoElement.srcObject = stream;
+        const camera = new Camera(videoElement, {
+          onFrame: async () => {
+            await faceMesh.send({ image: videoElement });
+          },
+          width: 640,
+          height: 480
+        });
+        camera.start();
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Permiso denegado',
+          text: 'Por favor, permití el acceso a la cámara para jugar.',
+        });
+        console.error('Error al acceder a la cámara:', error);
+      }
+    }
+
+    iniciarCamara();
+
+    function onResults(results) {
+      if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0 || esperando) return;
+      const landmarks = results.multiFaceLandmarks[0];
+
+      const emocionEsperada = nombres[actual];
+      const emocionDetectada = detectarEmocionMejorada(landmarks);
+
+      if (emocionDetectada === emocionEsperada) {
+        esperando = true;
+        feedback.textContent = '¡Correcto!';
+        setTimeout(() => {
+          actual++;
+          if (actual >= emociones.length) {
+            Swal.fire({
+              title: '¡Bien hecho!',
+              text: 'Completaste todas las emociones.',
+              icon: 'success',
+              confirmButtonText: 'Volver al inicio',
+            }).then(() => window.location.href = 'pragmatica.html');
+          } else {
+            document.getElementById('emoji').textContent = emociones[actual];
+            feedback.textContent = '';
+            esperando = false;
+          }
+        }, 2000);
+      } else {
+        feedback.textContent = 'Intentá otra vez';
+      }
+    }
+
+    function detectarEmocionMejorada(landmarks) {
+      const boca = distancia(landmarks[13], landmarks[14]);
+      const sonrisa = distancia(landmarks[61], landmarks[291]);
+      const cejasJuntas = distancia(landmarks[70], landmarks[300]);
+      const cejasAltas = landmarks[65].y < landmarks[10].y;
+
+      if (sonrisa > 0.065) return 'Alegre';
+      if (cejasJuntas < 0.045 && !cejasAltas) return 'Enojado';
+      if (boca < 0.035 && sonrisa < 0.05) return 'Triste';
+      if (boca > 0.06 && cejasAltas) return 'Sorprendido';
+      return 'Desconocido';
+    }
+
+    function distancia(a, b) {
+      return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+    }
+  </script>
+</body>
+</html>

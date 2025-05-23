@@ -1,259 +1,265 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juegos Fonoaudiológicos</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif; /* Cambiar la fuente */
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Juegos Fonoaudiológicos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #FF9A9E, #FAD0C4); /* Cambiar el fondo */
-            padding: 20px;
-        }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #FF9A9E, #FAD0C4);
+      padding: 20px;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9); /* Añadir fondo blanco semitransparente */
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Aumentar el sombreado */
-            transition: transform 0.3s ease; /* Añadir transición */
-        }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
 
-        .container:hover {
-            transform: scale(1.02); /* Efecto de zoom al pasar el ratón */
-        }
+    .container:hover {
+      transform: scale(1.02);
+    }
 
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2); /* Añadir sombra al texto */
-        }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
 
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
 
-        .game-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
+    .game-card {
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
 
-        .game-card:hover {
-            transform: translateY(-5px);
-        }
+    .game-card:hover {
+      transform: translateY(-5px);
+    }
 
-        .game-card h2 {
-            color: #333;
-            margin-bottom: 15px;
-        }
+    .game-card h2 {
+      margin-bottom: 15px;
+      color: white;
+    }
 
-        .game-card p {
-            color: #666;
-            margin-bottom: 20px;
-        }
+    .game-card p {
+      color: white;
+      margin-bottom: 20px;
+    }
 
-        .game-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
+    /* Colores personalizados */
+    .game-card.pragmatica     { background-color: #0074ff; }
+    .game-card.fonetica       { background-color: #ff6632; }
+    .game-card.fonologia      { background-color: #ff86bb; }
+    .game-card.semantica      { background-color: #ffc800; }
+    .game-card.morfosintaxis  { background-color: #00b453; }
 
-        .game-button:hover {
-            opacity: 0.9;
-        }
+    /* Botón animado */
+    .game-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: rgba(255, 255, 255, 0.3);
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
 
-        /* Estilos para el modal */
-        .modal {
-            display: none; /* Oculto por defecto */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
+    .game-button:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+      transform: scale(1.05);
+    }
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 300px;
-            text-align: center;
-        }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
 
-        .modal-content h2 {
-            margin-bottom: 20px;
-        }
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 300px;
+      text-align: center;
+    }
 
-        .modal-content input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
+    .modal-content h2 {
+      margin-bottom: 20px;
+    }
 
-        .modal-content button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
 
-        .modal-content button:hover {
-            opacity: 0.9;
-        }
+    .modal-content button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-        #registerButton {
-            padding: 12px 25px;
-            font-size: 1.1em;
-            color: white;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            display: block; /* Para centrarlo si es necesario o darle un ancho */
-            margin: 20px auto; /* Centrar el botón y añadir margen superior/inferior */
-        }
+    .modal-content button:hover {
+      opacity: 0.9;
+    }
 
-        #registerButton:hover {
-            background: linear-gradient(135deg, #2575fc, #6a11cb);
-            transform: translateY(-2px);
-        }
+    #registerButton {
+      padding: 12px 25px;
+      font-size: 1.1em;
+      color: white;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: block;
+      margin: 20px auto;
+    }
 
-        #registerButton:active {
-            transform: translateY(1px);
-        }
-    </style>
+    #registerButton:hover {
+      background: linear-gradient(135deg, #2575fc, #6a11cb);
+      transform: translateY(-2px);
+    }
+
+    #registerButton:active {
+      transform: translateY(1px);
+    }
+  </style>
 </head>
 <body>
-    <!-- Botón para registrar paciente -->
-    <button id="registerButton">Registrar Paciente</button>
 
-    <!-- Modal para el formulario -->
-    <div class="modal" id="infoModal">
-        <div class="modal-content">
-            <h2>Información del Niño paciente</h2>
-            <form action="http://localhost:3000/submit" method="post">
-                <input type="text" name="nombre" placeholder="Nombre" required>
-                <input type="text" name="dni" placeholder="DNI" required>
-                <input type="number" name="edad" placeholder="Edad" required>
-                <button type="submit">Enviar</button>
-            </form>
-        </div>
+  <button id="registerButton">Registrar Paciente</button>
+
+  <div class="modal" id="infoModal">
+    <div class="modal-content">
+      <h2>Información del Niño paciente</h2>
+      <form action="http://localhost:3000/submit" method="post">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="dni" placeholder="DNI" required>
+        <input type="number" name="edad" placeholder="Edad" required>
+        <button type="submit">Enviar</button>
+      </form>
     </div>
+  </div>
 
-    <div class="container">
-        <h1>Juegos Fonoaudiológicos</h1>
-        <div class="games-grid">
-            <div class="game-card">
-                <h2>Pragmática</h2>
-                <img src="images\fondo\chat.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-                <p>Identifica objetos y responde preguntas sobre su uso y función.</p>
-                <a href="pragmatica.html" class="game-button">Jugar</a>
-            </div>
-            <div class="game-card">
-                <h2>Fonética</h2>
-                <img src="images\fondo\fonetica.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-                <p>Juega con el tablero, lanza el dado y construye oraciones.</p>
-                <a href="fonetica.html" class="game-button">Jugar</a>
-            </div>
-            <div class="game-card">
-                <h2>Fonología</h2>
-                <img src="images\fondo\fonologia.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-                <p>Selecciona los dibujos tienen la cantidad de silabas que el objeto principal</p>
-                <a href="fonologia.html" class="game-button">Jugar</a>
-            </div>
-            <div class="game-card">
-                <h2>Semántica</h2>
-                <img src="images\fondo\semantica.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-                <p>Relaciona pistas con imágenes y arrastra a la opción correcta.</p>
-                <a href="semantica.html" class="game-button">Jugar</a>
-            </div>
-            <div class="game-card">
-                <h2>Morfosintaxis</h2>
-                <img src="images\fondo\morfosintaxis.png" alt="Descripción de la imagen" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-                <p>Gira la ruleta y construye oraciones con las diferentes palabras.</p>
-                <a href="morfosintaxis.html" class="game-button">Jugar</a>
-            </div>
-        </div>
+  <div class="container">
+    <h1>Juegos Fonoaudiológicos</h1>
+    <div class="games-grid">
+
+      <div class="game-card pragmatica">
+        <h2>Pragmática</h2>
+        <img src="images/fondo/chat.png" alt="Pragmática" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
+        <p>Identifica objetos y responde preguntas sobre su uso y función.</p>
+        <a href="pragmatica/pragmatica.html" class="game-button">Jugar</a>
+      </div>
+
+      <div class="game-card fonetica">
+        <h2>Fonética</h2>
+        <img src="images/fondo/fonetica.png" alt="Fonética" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
+        <p>Juega con el tablero, lanza el dado y construye oraciones.</p>
+        <a href="fonetica/fonetica.html" class="game-button">Jugar</a>
+      </div>
+
+      <div class="game-card fonologia">
+        <h2>Fonología</h2>
+        <img src="images/fondo/fonologia.png" alt="Fonología" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
+        <p>Selecciona los dibujos que tienen la misma cantidad de sílabas que el objeto principal.</p>
+        <a href="fonologia/fonologia.html" class="game-button">Jugar</a>
+      </div>
+
+      <div class="game-card semantica">
+        <h2>Semántica</h2>
+        <img src="images/fondo/semantica.png" alt="Semántica" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
+        <p>Relaciona pistas con imágenes y arrastra a la opción correcta.</p>
+        <a href="semantica/semantica.html" class="game-button">Jugar</a>
+      </div>
+
+      <div class="game-card morfosintaxis">
+        <h2>Morfosintaxis</h2>
+        <img src="images/fondo/morfosintaxis.png" alt="Morfosintaxis" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
+        <p>Gira la ruleta y construye oraciones con diferentes palabras.</p>
+        <a href="morfosintaxis/morfosintaxis.html" class="game-button">Jugar</a>
+      </div>
+
     </div>
+  </div>
 
-    <script>
-        // Mostrar el modal al presionar el botón "Registrar Paciente"
-        document.getElementById('registerButton').addEventListener('click', function() {
-            document.getElementById('infoModal').style.display = 'flex';
+  <script>
+    document.getElementById('registerButton').addEventListener('click', function () {
+      document.getElementById('infoModal').style.display = 'flex';
+    });
+
+    function submitForm(event) {
+      event.preventDefault();
+      const nombre = document.querySelector('input[name="nombre"]').value;
+      const dni = document.querySelector('input[name="dni"]').value;
+      const edad = document.querySelector('input[name="edad"]').value;
+
+      if (nombre && dni && edad) {
+        localStorage.setItem('nombre', nombre);
+        localStorage.setItem('dni', dni);
+        localStorage.setItem('edad', edad);
+
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Datos guardados localmente de manera exitosa!',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
         });
+        document.getElementById('infoModal').style.display = 'none';
+      } else {
+        Swal.fire({
+          title: 'Advertencia',
+          text: 'Por favor, completa todos los campos.',
+          icon: 'warning',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    }
 
-        // Función para enviar el formulario y mostrar alerta
-        function submitForm(event) {
-            event.preventDefault(); // Evita el envío por defecto del formulario
+    document.querySelector('form').addEventListener('submit', submitForm);
+  </script>
 
-            const nombre = document.querySelector('input[name="nombre"]').value;
-            const dni = document.querySelector('input[name="dni"]').value;
-            const edad = document.querySelector('input[name="edad"]').value;
-
-            if (nombre && dni && edad) {
-                // Almacenar los datos en localStorage
-                localStorage.setItem('nombre', nombre);
-                localStorage.setItem('dni', dni);
-                localStorage.setItem('edad', edad);
-
-                // Se elimina el bloque fetch para no enviar a la base de datos
-                // fetch('http://localhost:3000/submit', { ... })
-
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: 'Datos guardados localmente de manera exitosa!', // Mensaje actualizado
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
-                document.getElementById('infoModal').style.display = 'none';
-                
-            } else {
-                Swal.fire({
-                    title: 'Advertencia',
-                    text: 'Por favor, completa todos los campos.',
-                    icon: 'warning',
-                    confirmButtonText: 'Aceptar'
-                });
-            }
-        }
-
-        // Asigna la función al evento de envío del formulario
-        document.querySelector('form').addEventListener('submit', submitForm);
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
