@@ -272,7 +272,7 @@
         </div>
 
         <div class="controls">
-            <button class="home-btn" onclick="window.location.href='index.html'">Inicio</button>
+            <button class="home-btn" onclick="window.location.href='/index.html'">Inicio</button>
         </div>
     </div>
 
@@ -366,17 +366,15 @@
         }
 
         function enviarDatosAlServidor() {
-            const nombre = localStorage.getItem('nombre');
-            const edad = localStorage.getItem('edad');
-            const dni = localStorage.getItem('dni');
-            const paciente_juego = 'Fonética';
-            const paciente_resultado = currentPosition === boardSize - 1 ? 'completado' : 'incompleto';
-            fetch('http://localhost:3000/submit', {
+            const id_paciente = localStorage.getItem('id_paciente');
+            const paciente_juego = 'Fonetica';
+            const paciente_resultado = 'completado';
+            fetch('http://localhost:3000/juegos', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/json'
                 },
-                body: `nombre=${encodeURIComponent(nombre)}&dni=${dni}&edad=${encodeURIComponent(edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
+                body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
             })
             .then(response => {
                 if (response.ok) {

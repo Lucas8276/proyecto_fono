@@ -174,7 +174,7 @@
   <div class="modal" id="infoModal">
     <div class="modal-content">
       <h2>Información del Niño paciente</h2>
-      <form action="http://localhost:3000/submit" method="post">
+      <form id="pacienteForm">
         <input type="text" name="nombre" placeholder="Nombre" required>
         <input type="text" name="dni" placeholder="DNI" required>
         <input type="number" name="edad" placeholder="Edad" required>
@@ -230,24 +230,47 @@
       document.getElementById('infoModal').style.display = 'flex';
     });
 
-    function submitForm(event) {
+    document.getElementById('pacienteForm').addEventListener('submit', async function(event) {
       event.preventDefault();
       const nombre = document.querySelector('input[name="nombre"]').value;
       const dni = document.querySelector('input[name="dni"]').value;
       const edad = document.querySelector('input[name="edad"]').value;
-
+  
       if (nombre && dni && edad) {
-        localStorage.setItem('nombre', nombre);
-        localStorage.setItem('dni', dni);
-        localStorage.setItem('edad', edad);
-
-        Swal.fire({
-          title: '¡Éxito!',
-          text: 'Datos guardados localmente de manera exitosa!',
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
-        });
-        document.getElementById('infoModal').style.display = 'none';
+        try {
+          const response = await fetch('http://localhost:3000/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nombre, dni, edad })
+          });
+          if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('id_paciente', data.id_paciente);
+            Swal.fire({
+              title: '¡Éxito!',
+              text: 'Datos guardados de manera exitosa!',
+              icon: 'success',
+              confirmButtonText: 'Aceptar'
+            });
+            document.getElementById('infoModal').style.display = 'none';
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudieron guardar los datos.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Ocurrió un error al enviar los datos.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+        }
       } else {
         Swal.fire({
           title: 'Advertencia',
@@ -256,9 +279,7 @@
           confirmButtonText: 'Aceptar'
         });
       }
-    }
-
-    document.querySelector('form').addEventListener('submit', submitForm);
+    });
   </script>
 
 </body>

@@ -190,25 +190,22 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         enviarDatosAlServidor();
-                        window.location.href = 'index.html';
+                        window.location.href = '/index.html';
                     }
                 });
             }, 400);
         }
 
         function enviarDatosAlServidor() {
-            const paciente_nombre = localStorage.getItem('nombre');
-            const paciente_edad = localStorage.getItem('edad');
-            const dni = localStorage.getItem('dni');
-            const paciente_juego = 'Fonología';
-            // Consideramos "completado" porque el juego termina al acertar
-            const paciente_resultado = 'completado';
-            fetch('http://localhost:3000/submit', {
+            const id_paciente = localStorage.getItem('id_paciente');
+            const paciente_juego = 'Fonologia';
+            const paciente_resultado = 'Completado';
+            fetch('http://localhost:3000/juegos', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/json'
                 },
-                body: `nombre=${encodeURIComponent(paciente_nombre)}&dni=${dni}&edad=${encodeURIComponent(paciente_edad)}&paciente_juego=${encodeURIComponent(paciente_juego)}&paciente_resultado=${encodeURIComponent(paciente_resultado)}`
+                body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
             })
             .then(response => {
                 if (response.ok) {
