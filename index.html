@@ -1,286 +1,112 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Juegos Fonoaudiológicos</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú Principal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Fredoka', sans-serif;
     }
 
     body {
+      background-image: url('images/fondo/fondo isla.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       min-height: 100vh;
-      background: linear-gradient(135deg, #FF9A9E, #FAD0C4);
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
-    }
-
-    .container:hover {
-      transform: scale(1.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 30px 20px;
     }
 
     h1 {
-      color: #333;
-      text-align: center;
+      font-size: 3rem;
+      color: #ffffff;
       margin-bottom: 40px;
-      font-size: 2.5em;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-
-    .game-card {
-      border-radius: 15px;
-      padding: 20px;
       text-align: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
-      cursor: pointer;
     }
 
-    .game-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .game-card h2 {
-      margin-bottom: 15px;
-      color: white;
-    }
-
-    .game-card p {
-      color: white;
-      margin-bottom: 20px;
-    }
-
-    /* Colores personalizados */
-    .game-card.pragmatica     { background-color: #0074ff; }
-    .game-card.fonetica       { background-color: #ff6632; }
-    .game-card.fonologia      { background-color: #ff86bb; }
-    .game-card.semantica      { background-color: #ffc800; }
-    .game-card.morfosintaxis  { background-color: #00b453; }
-
-    /* Botón animado */
-    .game-button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: rgba(255, 255, 255, 0.3);
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    .game-button:hover {
-      background-color: rgba(255, 255, 255, 0.5);
-      transform: scale(1.05);
-    }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+    .menu-container {
+      display: flex;
+      flex-wrap: wrap;
       justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      width: 300px;
-      text-align: center;
-    }
-
-    .modal-content h2 {
-      margin-bottom: 20px;
-    }
-
-    .modal-content input {
+      gap: 30px;
       width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
+      max-width: 1200px;
     }
 
-    .modal-content button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
+    .menu-button {
+      width: 280px;
+      height: 280px;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .modal-content button:hover {
-      opacity: 0.9;
-    }
-
-    #registerButton {
-      padding: 12px 25px;
-      font-size: 1.1em;
+      border-radius: 30px;
+      font-size: 1.8rem;
+      font-weight: bold;
       color: white;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      border: none;
-      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      display: block;
-      margin: 20px auto;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
 
-    #registerButton:hover {
-      background: linear-gradient(135deg, #2575fc, #6a11cb);
-      transform: translateY(-2px);
+    .menu-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     }
 
-    #registerButton:active {
-      transform: translateY(1px);
+    .semantica {
+      background-color: #ffd817;
+      color: white;
+    }
+    .pragmatica {
+      background-color: #0074ff;
+    }
+    .morfosintaxis {
+      background-color: #00b453;
+    }
+    .fonetica {
+      background-color: #ff6632;
+    }
+    .fonologia {
+      background-color: #ff86bb;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .menu-button {
+        font-size: 1.3rem;
+        border-radius: 20px;
+        width: 160px;
+        height: 160px;
+      }
     }
   </style>
 </head>
 <body>
-
-  <button id="registerButton">Registrar Paciente</button>
-
-  <div class="modal" id="infoModal">
-    <div class="modal-content">
-      <h2>Información del Niño paciente</h2>
-      <form id="pacienteForm">
-        <input type="text" name="nombre" placeholder="Nombre" required>
-        <input type="text" name="dni" placeholder="DNI" required>
-        <input type="number" name="edad" placeholder="Edad" required>
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
+  <h1>Selecciona una sección</h1>
+  <div class="menu-container">
+    <button class="menu-button semantica" onclick="location.href='semantica juego/semantica1.html'">Semántica</button>
+    <button class="menu-button pragmatica" onclick="location.href='pragmatica juego/pragamatica.html'">Pragmática</button>
+    <button class="menu-button morfosintaxis" onclick="location.href='morfosintaxis juego/morfosintaxis1.html'">Morfosintaxis</button>
+    <button class="menu-button fonetica" onclick="location.href='fonetica juego/fonetica1.html'">Fonética</button>
+    <button class="menu-button fonologia" onclick="location.href='fonologia juego/fonologia1.html'">Fonología</button>
   </div>
-
-  <div class="container">
-    <h1>Juegos Fonoaudiológicos</h1>
-    <div class="games-grid">
-
-      <div class="game-card pragmatica">
-        <h2>Pragmática</h2>
-        <img src="images/fondo/chat.png" alt="Pragmática" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-        <p>Identifica objetos y responde preguntas sobre su uso y función.</p>
-        <a href="pragmatica/pragmatica.html" class="game-button">Jugar</a>
-      </div>
-
-      <div class="game-card fonetica">
-        <h2>Fonética</h2>
-        <img src="images/fondo/fonetica.png" alt="Fonética" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-        <p>Juega con el tablero, lanza el dado y construye oraciones.</p>
-        <a href="fonetica/fonetica.html" class="game-button">Jugar</a>
-      </div>
-
-      <div class="game-card fonologia">
-        <h2>Fonología</h2>
-        <img src="images/fondo/fonologia.png" alt="Fonología" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-        <p>Selecciona los dibujos que tienen la misma cantidad de sílabas que el objeto principal.</p>
-        <a href="fonologia/fonologia.html" class="game-button">Jugar</a>
-      </div>
-
-      <div class="game-card semantica">
-        <h2>Semántica</h2>
-        <img src="images/fondo/semantica.png" alt="Semántica" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-        <p>Relaciona pistas con imágenes y arrastra a la opción correcta.</p>
-        <a href="semantica/semantica.html" class="game-button">Jugar</a>
-      </div>
-
-      <div class="game-card morfosintaxis">
-        <h2>Morfosintaxis</h2>
-        <img src="images/fondo/morfosintaxis.png" alt="Morfosintaxis" style="width: 30%; border-radius: 10px; margin-bottom: 15px;">
-        <p>Gira la ruleta y construye oraciones con diferentes palabras.</p>
-        <a href="morfosintaxis/morfosintaxis.html" class="game-button">Jugar</a>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-    document.getElementById('registerButton').addEventListener('click', function () {
-      document.getElementById('infoModal').style.display = 'flex';
-    });
-
-    document.getElementById('pacienteForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const nombre = document.querySelector('input[name="nombre"]').value;
-      const dni = document.querySelector('input[name="dni"]').value;
-      const edad = document.querySelector('input[name="edad"]').value;
-  
-      if (nombre && dni && edad) {
-        try {
-          const response = await fetch('http://localhost:3000/submit', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ nombre, dni, edad })
-          });
-          if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('id_paciente', data.id_paciente);
-            Swal.fire({
-              title: '¡Éxito!',
-              text: 'Datos guardados de manera exitosa!',
-              icon: 'success',
-              confirmButtonText: 'Aceptar'
-            });
-            document.getElementById('infoModal').style.display = 'none';
-          } else {
-            Swal.fire({
-              title: 'Error',
-              text: 'No se pudieron guardar los datos.',
-              icon: 'error',
-              confirmButtonText: 'Aceptar'
-            });
-          }
-        } catch (error) {
-          Swal.fire({
-            title: 'Error',
-            text: 'Ocurrió un error al enviar los datos.',
-            icon: 'error',
-            confirmButtonText: 'Aceptar'
-          });
-        }
-      } else {
-        Swal.fire({
-          title: 'Advertencia',
-          text: 'Por favor, completa todos los campos.',
-          icon: 'warning',
-          confirmButtonText: 'Aceptar'
-        });
-      }
-    });
-  </script>
-
 </body>
 </html>

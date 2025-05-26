@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fonología - Nivel 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
+    body {
+      background-color: #fff0f6;
+      background-image: url('imagenes/fonologia/fondo_isla_faro.png'); /* Ruta a definir imagen */
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 5px solid #ff86bb;
+      border-radius: 25px;
+      padding: 30px;
+      max-width: 800px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .instructions {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #b84b74;
+    }
+    .faro-img {
+      width: 160px;
+      margin-bottom: 20px;
+    }
+    .word-pair {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ff4f9c;
+      margin-bottom: 30px;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    .btn {
+      padding: 15px 25px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-weight: bold;
+    }
+    .igual {
+      background-color: #b8f2e6;
+      color: #00776c;
+    }
+    .distinto {
+      background-color: #ffd6e6;
+      color: #a90040;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="instructions">¿Estas palabras suenan igual o diferente?</div>
+    <img src="imagenes/fonologia/faro.png" alt="Faro" class="faro-img">
+    <div class="word-pair" id="wordPair">taza - casa</div>
+    <div class="buttons">
+      <button class="btn igual" onclick="checkAnswer(true)">Suenan igual</button>
+      <button class="btn distinto" onclick="checkAnswer(false)">Suenan diferente</button>
+    </div>
+  </div>
+
+  <script>
+    const pairs = [
+    { words: "silla - semilla", same: false },
+      { words: "cama - cama", same: true },
+      { words: "tapa - papa", same: false },
+      { words: "nube - cubre", same: false },
+      { words: "gato - gato", same: true }
+    ];
+
+    let current = 0;
+
+    function showPair() {
+      document.getElementById("wordPair").textContent = pairs[current].words;
+    }
+
+    function checkAnswer(userSaysSame) {
+      const isCorrect = userSaysSame === pairs[current].same;
+      if (isCorrect) {
+        Swal.fire('¡Correcto!', '', 'success').then(() => {
+          current++;
+          if (current >= pairs.length) {
+            Swal.fire('¡Nivel completado!', 'Pasando al siguiente nivel...', 'success').then(() => {
+              window.location.href = 'fonologia2.html';
+            });
+          } else {
+            showPair();
+          }
+        });
+      } else {
+        Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
+      }
+    }
+    showPair();
+
+
+      function nextRound() {
+  currentRound = currentRound + 1;
+  if (currentRound >= items.length) {
+    Swal.fire('¡Nivel completado!', 'Prepárate para el ultimo desafío ', 'success').then(() => {
+      window.location.href = 'fonologia3.html'; // Redirige al siguiente nivel
+    });
+  } else {
+    loadRound();
+  }
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fonética - Nivel 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Fredoka', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #fff6e6;
+      background-image: url('imagenes/fonetica/fondo_naranja.png');
+      background-repeat: repeat;
+      min-height: 100vh;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #ff6632;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .instructions {
+      background: #fff1e0;
+      border: 2px solid #ff6632;
+      border-radius: 15px;
+      padding: 20px;
+      font-size: 1.3rem;
+      color: #d35400;
+      margin-bottom: 30px;
+      text-align: center;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .game-area {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      gap: 40px;
+      max-width: 1200px;
+      margin: auto;
+      flex-wrap: wrap;
+    }
+    .images-col, .letters-col {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .image-box {
+      width: 160px;
+      height: 160px;
+      background: white;
+      border: 3px solid #ff6632;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-box img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+    .letter-tile {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border: 3px solid #ff6632;
+      border-radius: 20px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #ff6632;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+    }
+    .image-box.dragover {
+      background: #ffe6cc;
+      border-color: #e65c00;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fonética - Nivel 3</h1>
+  <div class="instructions">
+    Arrastrá la letra o fonema correcto al dibujo correspondiente. ¡Cuidado con los sonidos parecidos!
+  </div>
+
+  <div class="game-area">
+    <div class="letters-col">
+      <div class="letter-tile" draggable="true" data-letter="k">k</div>
+      <div class="letter-tile" draggable="true" data-letter="t">t</div>
+      <div class="letter-tile" draggable="true" data-letter="rr">rr</div>
+      <div class="letter-tile" draggable="true" data-letter="ll">ll</div>
+      <div class="letter-tile" draggable="true" data-letter="ch">ch</div>
+    </div>
+
+    <div class="images-col">
+      <div class="image-box" data-answer="k"><img src="imagenes/fonetica/kilo.png" alt="Kilo" /></div>
+      <div class="image-box" data-answer="t"><img src="imagenes/fonetica/tigre.png" alt="Tigre" /></div>
+      <div class="image-box" data-answer="rr"><img src="imagenes/fonetica/perro.png" alt="Perro" /></div>
+      <div class="image-box" data-answer="ll"><img src="imagenes/fonetica/llama.png" alt="Llama" /></div>
+      <div class="image-box" data-answer="ch"><img src="imagenes/fonetica/chico.png" alt="Chico" /></div>
+    </div>
+  </div>
+
+  <script>
+    let draggedLetter = null;
+
+    document.querySelectorAll('.letter-tile').forEach(letter => {
+      letter.addEventListener('dragstart', () => {
+        draggedLetter = letter.getAttribute('data-letter');
+      });
+    });
+
+    document.querySelectorAll('.image-box').forEach(box => {
+      box.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        box.classList.add('dragover');
+      });
+
+      box.addEventListener('dragleave', () => {
+        box.classList.remove('dragover');
+      });
+
+      box.addEventListener('drop', () => {
+        box.classList.remove('dragover');
+        const correct = box.getAttribute('data-answer');
+        if (draggedLetter === correct) {
+          Swal.fire('¡Correcto!', '', 'success');
+          setTimeout(() => {
+            box.remove();
+            const usedLetter = document.querySelector(`.letter-tile[data-letter="${draggedLetter}"]`);
+            if (usedLetter) usedLetter.remove();
+            if (document.querySelectorAll('.image-box').length === 0) {
+              Swal.fire('¡Muy bien!', '¡Completaste el nivel 3 de Fonética!', 'success').then(() => {
+                window.location.href = '../index.html';
+              });
+            }
+          }, 300);
+        } else {
+          Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
+        }
+        draggedLetter = null;
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morfosintaxis - Nivel 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * { box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
+    body {
+      background: #eafcf4 url('imagenes/morfosintaxis/fondo_nivel1.png') repeat;
+      margin: 0;
+      padding: 30px;
+    }
+    .instructions {
+      background: #ffffffcc;
+      border: 3px solid #00b453;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 0 auto 40px;
+      max-width: 900px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #1d663b;
+      box-shadow: 0 8px 24px rgba(0, 180, 83, 0.1);
+    }
+    .contenedor-principal {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 30px;
+      background: #f0fff8;
+      border-radius: 22px;
+      box-shadow: 0 6px 24px rgba(0, 180, 83, 0.15);
+      padding: 32px 24px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .imagen-box {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+      border: 3px solid #00b453;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: white;
+    }
+    .imagen-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .recuadro-texto {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .recuadro-texto textarea {
+      resize: none;
+      border-radius: 12px;
+      border: 2px solid #00b453;
+      padding: 10px;
+      font-size: 1.1em;
+      background: #f8fcff;
+      width: 250px;
+      height: 140px;
+    }
+    .boton-verde {
+      margin-top: 18px;
+      background: #00b453;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 28px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+    }
+      #nombrePersonaje {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #00b453;
+      margin-top: 10px;
+    }
+
+</style>
+</head>
+<body>
+  <div class="instructions">Haz clic en "Mezclar" para obtener un personaje y escribir una oración.</div>
+  <div class="contenedor-principal">
+    <div class="imagen-box">
+      <img id="imagenSeleccionada" src="imagenes/morfosintaxis/nena.png" alt="Personaje">
+    </div>
+    <p id="nombrePersonaje">Niña</p>
+    <button class="boton-verde" onclick="mezclarImagen()">Mezclar</button>
+    <div class="recuadro-texto">
+      <textarea id="oracionUsuario" placeholder="Escribe aquí tu oración..."></textarea>
+      <button class="boton-verde" onclick="siguienteNivel()">Siguiente</button>
+    </div>
+  </div>
+
+  <script>
+    const personajes = [
+      { src: 'imagenes/nena.png', nombre: 'Niña' },
+      { src: 'imagenes/perro.jpg', nombre: 'Perro' },
+      { src: 'imagenes/pulpo.jpg', nombre: 'Pulpo' },
+      { src: 'imagenes/monstruo.jpg', nombre: 'Monstruo' },
+      { src: 'imagenes/astronauta.jpg', nombre: 'Astronauta' },
+      { src: 'imagenes/hada.jpg', nombre: 'Hada' }
+    ];
+
+    function mezclarImagen() {
+      let contador = 0;
+      const imagen = document.getElementById('imagenSeleccionada');
+      const nombre = document.getElementById('nombrePersonaje');
+      const intervalo = setInterval(() => {
+        const index = Math.floor(Math.random() * personajes.length);
+        imagen.src = personajes[index].src;
+        nombre.textContent = personajes[index].nombre;
+        contador++;
+        if (contador > 15) clearInterval(intervalo);
+      }, 100);
+    }
+
+    function siguienteNivel() {
+      const texto = document.getElementById("oracionUsuario").value.trim();
+      if (texto.length < 5) {
+        Swal.fire('Ups...', 'Escribe una oración más completa.', 'warning');
+        return;
+      }
+      Swal.fire('¡Bien hecho!', 'Vamos al siguiente nivel...', 'success').then(() => {
+        window.location.href = 'morfosintaxis2.html';
+      });
+    }
+    
+function enviarDatosAlServidor() {
+            const id_paciente = localStorage.getItem('id_paciente');
+            const paciente_juego = 'Morfosintaxis';
+            const paciente_resultado = 'Completado';
+            fetch('http://localhost:3000/juegos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
+                } else {
+                    Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+            });
+        }
+
+</script>
+</body>
+</html>

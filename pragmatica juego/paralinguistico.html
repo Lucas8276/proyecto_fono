@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paralingüístico - Emociones</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    body {
+      background-color: #E6F0FF;
+      background-image: url('images/pragmatica/patron_burbujas_azul.png');
+      background-repeat: repeat;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      border: 5px solid #0074ff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      padding: 40px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .instructions {
+      background: #fff;
+      border: 3px solid #0074ff;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 40px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0074ff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .game-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .emoji-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .emoji {
+      font-size: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feedback {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0074ff;
+    }
+
+    video {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="instructions">
+      Arrastrá tu mejor expresión facial e imitá la emoción que ves a la izquierda. ¡Tu cámara te está observando!
+    </div>
+    <div class="game-area">
+      <div class="emoji-section">
+        <div class="emoji" id="emoji">😀</div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+      <div class="video-section">
+        <video id="video" autoplay playsinline muted></video>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const emociones = ['😀', '😐', '😢', '😮'];
+    const nombres = ['Alegre', 'Serio', 'Triste', 'Sorprendido'];
+    let actual = 0;
+    let esperando = false;
+    let videoElement = document.getElementById('video');
+    let feedback = document.getElementById('feedback');
+
+    document.getElementById('emoji').textContent = emociones[actual];
+
+    const faceMesh = new FaceMesh({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+    });
+
+    faceMesh.setOptions({
+      maxNumFaces: 1,
+      refineLandmarks: true,
+      minDetectionConfidence: 0.8,
+      minTrackingConfidence: 0.8
+    });
+
+    faceMesh.onResults(onResults);
+
+    async function iniciarCamara() {
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error("Tu navegador no admite acceso a la cámara.");
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoElement.srcObject = stream;
+
+        if (typeof Camera === 'undefined') {
+          throw new Error("El objeto Camera no está disponible en este entorno.");
+        }
+
+        const camera = new Camera(videoElement, {
+          onFrame: async () => {
+            await faceMesh.send({ image: videoElement });
+          },
+          width: 640,
+          height: 480
+        });
+        camera.start();
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al acceder a la cámara',
+          text: 'Verificá que tu navegador tenga permisos para acceder a la cámara. Este juego requiere acceso a la cámara para funcionar.',
+        });
+        console.error('Error al acceder a la cámara:', error);
+      }
+    }
+
+    iniciarCamara();
+
+    function onResults(results) {
+      if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0 || esperando) return;
+      const landmarks = results.multiFaceLandmarks[0];
+
+      const emocionEsperada = nombres[actual];
+      const emocionDetectada = detectarEmocionMejorada(landmarks);
+
+      if (emocionDetectada === emocionEsperada) {
+        esperando = true;
+        feedback.textContent = '¡Correcto!';
+        setTimeout(() => {
+          actual++;
+          if (actual >= emociones.length) {
+            Swal.fire({
+              title: '¡Bien hecho!',
+              text: 'Completaste todas las emociones.',
+              icon: 'success',
+              confirmButtonText: 'Volver al inicio',
+            }).then(() => window.location.href = 'pragmatica.html');
+          } else {
+            document.getElementById('emoji').textContent = emociones[actual];
+            feedback.textContent = '';
+            esperando = false;
+          }
+        }, 1500);
+      } else {
+        feedback.textContent = 'Intentá otra vez';
+      }
+    }
+
+    function detectarEmocionMejorada(landmarks) {
+      const boca = distancia(landmarks[13], landmarks[14]);
+      const sonrisa = distancia(landmarks[61], landmarks[291]);
+      const cejasJuntas = distancia(landmarks[70], landmarks[300]);
+      const cejasAltas = landmarks[65].y < landmarks[10].y;
+      const entrecejo = distancia(landmarks[66], landmarks[296]);
+
+      if (sonrisa > 0.06 && boca > 0.04) return 'Alegre';
+      if (sonrisa < 0.015 && boca < 0.025 && cejasJuntas > 0.05) return 'Serio';
+      if (boca < 0.035 && sonrisa < 0.025 && cejasAltas) return 'Triste';
+      if (boca > 0.07 && cejasAltas && sonrisa < 0.015) return 'Sorprendido';
+      return 'Desconocido';
+    }
+
+    function distancia(a, b) {
+      return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+    }
+  </script>
+</body>
+</html>
