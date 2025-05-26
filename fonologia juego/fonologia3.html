@@ -11,7 +11,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
     body {
       background-color: #fff0f6;
-      background-image: url('imagenes/fonologia/fondo_isla_faro.png'); /* Ruta a definir imagen */
+      background-image: url('imagenes/fonfo rosa.svg'); /* Ruta a definir imagen */
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -86,12 +86,28 @@
 
   <script>
     const pairs = [
-     { words: "pollo - bollo", same: false },
-      { words: "vaca - baca", same: true },
-      { words: "sapo - sapo", same: true },
-      { words: "bote - vote", same: true },
-      { words: "casa - caza", same: true }
-    ];
+  {
+    word1: "vaso",
+    word2: "palo",
+    img1: "imagenes/fonologia/vaso.jpg",
+    img2: "imagenes/fonologia/paso.jpg",
+    same: false
+  },
+  {
+    word1: "nube",
+    word2: "nube",
+    img1: "imagenes/fonologia/nube.jpg",
+    img2: "imagenes/fonologia/nube.jpg",
+    same: true
+  },
+ {
+    word1: "lupa",
+    word2: "ropa",
+    img1: "imagenes/fonologia/lupa.jpg",
+    img2: "imagenes/fonologia/ropa.jpg",
+    same: false
+  }
+];
 
     let current = 0;
 

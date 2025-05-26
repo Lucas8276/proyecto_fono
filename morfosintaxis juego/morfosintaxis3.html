@@ -1,7 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="es">
-<head>  <meta charset="UTF-8" />
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Morfosintaxis - Nivel 1</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
@@ -9,10 +9,15 @@
   <style>
     * { box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
     body {
-      background: #eafcf4 url('imagenes/morfosintaxis/fondo_nivel1.png') repeat;
-      margin: 0;
-      padding: 30px;
-    }
+  background: #eafcf4;
+  background-image: url('imagenes/fondo verde.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  padding: 30px;
+}
+
     .instructions {
       background: #ffffffcc;
       border: 3px solid #00b453;
@@ -26,19 +31,36 @@
       color: #1d663b;
       box-shadow: 0 8px 24px rgba(0, 180, 83, 0.1);
     }
-    .contenedor-principal {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      gap: 30px;
-      background: #f0fff8;
-      border-radius: 22px;
-      box-shadow: 0 6px 24px rgba(0, 180, 83, 0.15);
-      padding: 32px 24px;
-      max-width: 600px;
-      margin: auto;
-    }
+
+  .contenedor-principal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0fff8;
+  border-radius: 22px;
+  box-shadow: 0 6px 24px rgba(0, 180, 83, 0.15);
+  padding: 40px;
+  max-width: 900px;
+  margin: 40px auto;
+  gap: 40px;
+}
+.columna-izquierda,
+.columna-derecha {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+.recuadro-texto {
+  width: 100%;
+  max-width: 300px;
+}
+.recuadro-texto textarea {
+  width: 100%;
+}
+
     .imagen-box {
       width: 200px;
       height: 200px;
@@ -88,28 +110,35 @@
       margin-top: 10px;
     }
 
-</style> </head>
+</style>
+</head>
 <body>
   <div class="instructions">Haz clic en "Mezclar" para obtener un lugar y escribir una oración.</div>
   <div class="contenedor-principal">
+  <div class="columna-izquierda">
     <div class="imagen-box">
-      <img id="imagenSeleccionada" src="imagenes/morfosintaxis/granja.jpg" alt="Lugar">
+      <img id="imagenSeleccionada" src="imagenes/granja.jpg" alt="Granja">
     </div>
     <p id="nombrePersonaje">Granja</p>
     <button class="boton-verde" onclick="mezclarImagen()">Mezclar</button>
+  </div>
+
+  <div class="columna-derecha">
     <div class="recuadro-texto">
       <textarea id="oracionUsuario" placeholder="Escribe aquí tu oración..."></textarea>
-      <button class="boton-verde" onclick="siguienteNivel()">Finalizar</button>
+      <button class="boton-verde" onclick="siguienteNivel()">Siguiente</button>
     </div>
   </div>
+</div>
+
 
   <script>
     const personajes = [
       { src: 'imagenes/granja.jpg', nombre: 'Granja' },
       { src: 'imagenes/casa.jpg', nombre: 'Casa' },
-      { src: 'imagenes/carpa.jpg', nombre: 'Carpa' },
-      { src: 'imagenes/carrito.png', nombre: 'Carrito' },
-      { src: 'imagenes/planetas.jpg', nombre: 'Planeta' },
+      { src: 'imagenes/escuela.jpg', nombre: 'Escuela' },
+      { src: 'imagenes/bosque.jpg', nombre: 'Bosque' },
+      { src: 'imagenes/parque.jpg', nombre: 'Parque' },
       { src: 'imagenes/playa.png', nombre: 'Playa' }
     ];
 

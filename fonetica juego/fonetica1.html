@@ -15,8 +15,11 @@
     }
     body {
       background: #fff6e6;
-      background-image: url('imagenes/fonetica/fondo_naranja.png');
-      background-repeat: repeat;
+      background-image: url('imagenes/fondo naranja.svg');
+      background-repeat: no-repeat;
+       background-size: cover;
+      background-position: center;
+      margin: 0;
       min-height: 100vh;
       padding: 30px;
     }
@@ -39,57 +42,76 @@
       margin-left: auto;
       margin-right: auto;
     }
-    .game-area {
-      display: flex;
-      justify-content: space-around;
-      align-items: flex-start;
-      gap: 40px;
-      max-width: 1200px;
-      margin: auto;
-      flex-wrap: wrap;
-    }
-    .images-col, .letters-col {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
-    .image-box {
-      width: 160px;
-      height: 160px;
-      background: white;
-      border: 3px solid #ff6632;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .image-box img {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
-    }
-    .letter-tile {
-      width: 100px;
-      height: 100px;
-      background: white;
-      border: 3px solid #ff6632;
-      border-radius: 20px;
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #ff6632;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-    }
+
+   .game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.letters-col,
+.images-col {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+}
+
+.image-box {
+  width: 220px;
+  height: 220px;
+  background: white;
+  border: 4px solid #ff6632;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.image-box img {
+  max-width: 95%;
+  max-height: 95%;
+  object-fit: contain;
+}
+
+
+  .letter-tile {
+  width: 130px;
+  height: 130px;
+  background: white;
+  border: 4px solid #ff6632;
+  border-radius: 20px;
+  font-size: 3.2rem;
+  font-weight: bold;
+  color: #ff6632;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: auto;
+}
+
     .image-box.dragover {
       background: #ffe6cc;
       border-color: #e65c00;
     }
   </style>
 </head>
+
 <body>
   <div class="instructions">
     Arrastrá la letra que creas correcta sobre cada imagen según la letra inicial de su nombre.
@@ -107,11 +129,11 @@
     </div>
 
     <div class="images-col">
-      <div class="image-box" data-answer="m"><img src="imagenes/mono.png" alt="Mono" /></div>
-      <div class="image-box" data-answer="c"><img src="imagenes/cebra.png" alt="cebra" /></div>
-      <div class="image-box" data-answer="g"><img src="imagenes/gato.png" alt="Gato" /></div>
-      <div class="image-box" data-answer="l"><img src="imagenes/leon.png" alt="León" /></div>
-      <div class="image-box" data-answer="p"><img src="imagenes/pato.png" alt="Pato" /></div>
+      <div class="image-box" data-answer="m"><img src="imagenes/mono.jpg" alt="Mono" /></div>
+      <div class="image-box" data-answer="c"><img src="imagenes/cebra.jpg" alt="cebra" /></div>
+      <div class="image-box" data-answer="g"><img src="imagenes/gato.jpg" alt="Gato" /></div>
+      <div class="image-box" data-answer="l"><img src="imagenes/leon.jpg" alt="León" /></div>
+      <div class="image-box" data-answer="p"><img src="imagenes/pato.jpg" alt="Pato" /></div>
     </div>
   </div>
 
@@ -139,33 +161,22 @@
         const correct = box.getAttribute('data-answer');
         if (draggedLetter === correct) {
           Swal.fire('¡Correcto!', '', 'success');
-          setTimeout(() => {
-            box.remove();
-            const usedLetter = document.querySelector(`.letter-tile[data-letter="${draggedLetter}"]`);
-            if (usedLetter) usedLetter.remove();
-          }, 300);
-        } else {
-          Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
-        }
-        draggedLetter = null;
-      });
-    });
-
-  if (draggedLetter === correct) {
-  Swal.fire('¡Correcto!', '', 'success');
   setTimeout(() => {
     box.remove();
     const usedLetter = document.querySelector(`.letter-tile[data-letter="${draggedLetter}"]`);
     if (usedLetter) usedLetter.remove();
 
-    // ✅ Verifica si no quedan más imágenes y avanza al siguiente nivel
+    // ✅ Verificamos si quedan imágenes
     if (document.querySelectorAll('.image-box').length === 0) {
       Swal.fire('¡Muy bien!', 'Pasando al siguiente nivel...', 'success').then(() => {
         window.location.href = 'fonetica2.html';
       });
     }
   }, 300);
-}
+}})
+})
+
+
   </script>
 </body>
 </html>

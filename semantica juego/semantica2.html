@@ -9,26 +9,31 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     * 
-    body {
-  font-family: 'Fredoka', sans-serif;
-  background-color: #fffbe6;
-  background-image: url('images/semantica/patron_burbujas_amarillo.png');
-  background-repeat: repeat;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-}
+   body {
+      font-family: 'Fredoka', sans-serif;
+      background-color: #fffbe6;
+      background-image: url("imagenes/fondo amarillo.svg");
+      background-repeat: repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
 
-.container {
-  max-width: 1000px;
-  padding: 30px 40px;
+   .container {
+  width: 90%;
+  max-width: 1200px;
+  padding: 20px 60px;
   background-color: rgba(255, 255, 255, 0.95);
   border: 5px solid #ffd817;
   border-radius: 25px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 
     .instructions {
       background: #fff8c5;
@@ -43,31 +48,32 @@
       width: 100%;
     }
 
-.game-layout {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 30px;
-  width: 100%;
+    .game-layout {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+.clue-card {
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  border-radius: 20px;
+  padding: 22px 40px;
+  color: white;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  cursor: grab;
+  transition: transform 0.3s;
+  width: 520px;
+  min-height: 140px;
+  text-align: left;
+  align-self: center;
 }
 
 
-    .clue-card {
-      background: linear-gradient(45deg, #FFD700, #FFA500);
-      border-radius: 20px;
-      padding: 25px;
-      color: white;
-      font-size: 1.2rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      cursor: grab;
-      transition: transform 0.3s;
-      width: 280px;
-      min-height: 180px;
-      text-align: left;
-      align-self: center;
-    }
 
     .clue-card:active {
       cursor: grabbing;
@@ -132,7 +138,7 @@
   <script>
     const items = [
   {
-    image: 'imagenes/murcielago.png',
+    image: 'imagenes/murcielago.jpg',
     name: 'Murciélago',
     clues: [
       'Salgo de noche',
@@ -152,7 +158,7 @@
     ]
   },
   {
-    image: 'imagenes/reloj.png',
+    image: 'imagenes/reloj.jpg',
     name: 'Reloj',
     clues: [
       'Estoy en tu muñeca o en la pared',
@@ -162,8 +168,8 @@
     ]
   },
   {
-    image: 'imagenes/lentes.png',
-    name: 'Lentes',
+    image: 'imagenes/anteojos.jpg',
+    name: 'Anteojos',
     clues: [
       'Van en la cara',
       'Ayudan a ver mejor',

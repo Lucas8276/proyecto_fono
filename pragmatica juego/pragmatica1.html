@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pragmática - Nivel 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    body {
+      background-color: #E6F0FF;
+      background-image: url('imagenes/fondo azul.svg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background: white;
+      border: 5px solid #0074ff;
+      border-radius: 25px;
+      padding: 40px;
+      max-width: 1100px; /* ajustado */
+      margin: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #0074ff;
+      margin-bottom: 30px;
+    }
+
+    .image-box {
+      width: 450px; /* ajustado */
+      height: 450px; /* ajustado */
+      margin: 0 auto 30px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 3px solid #90caf9;
+      background: white;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .options {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .option-btn {
+      background-color: #90caf9;
+      color: white;
+      padding: 15px 25px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+      min-width: 150px;
+    }
+
+    .option-btn:hover {
+      background-color: #64b5f6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>¿Qué emoción siente el animal?</h1>
+    <div class="image-box">
+      <img id="animalImage" src="imagenes/mono_triste.png" alt="Animal">
+    </div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer('triste')">Triste</button>
+      <button class="option-btn" onclick="checkAnswer('feliz')">Feliz</button>
+      <button class="option-btn" onclick="checkAnswer('enojado')">Enojado</button>
+    </div>
+  </div>
+
+  <script>
+    const emociones = [
+      {
+        imagen: 'imagenes/mono triste.jpg',
+        respuesta: 'triste'
+      },
+      {
+        imagen: 'imagenes/tigre enojado.jpg',
+        respuesta: 'enojado'
+      },
+      {
+        imagen: 'imagenes/oso feliz}.jpg',
+        respuesta: 'feliz'
+      },
+    ];
+
+    let index = 0;
+
+    function mostrarImagen() {
+      document.getElementById("animalImage").src = emociones[index].imagen;
+    }
+
+    function checkAnswer(opcion) {
+      const correcta = emociones[index].respuesta;
+      if (opcion === correcta) {
+        Swal.fire("¡Muy bien!", "El animal se siente " + correcta + ".", "success").then(() => {
+          index++;
+          if (index >= emociones.length) {
+            Swal.fire("¡Nivel completado!", "Pasando al siguiente nivel...", "success").then(() => {
+              window.location.href = "pragmatica2.html";
+            });
+          } else {
+            mostrarImagen();
+          }
+        });
+      } else {
+        Swal.fire("Ups...", "Esa no es la emoción correcta. Intenta de nuevo.", "error");
+      }
+    }
+
+    mostrarImagen();
+  </script>
+</body>
+</html>

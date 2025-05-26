@@ -5,79 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fonología - Nivel 1</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Fredoka', sans-serif;
+    }
+
     body {
       background-color: #fff0f6;
-      background-image: url('imagenes/fonologia/fondo_isla_faro.png'); /* Ruta a definir imagen */
+      background-image: url('imagenes/fonfo rosa.svg');
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      padding: 40px 20px;
       min-height: 100vh;
     }
+
+    .instructions {
+      background: #fff1f7;
+      border: 3px solid #ff86bb;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 30px;
+      max-width: 950px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #c44679;
+      box-shadow: 0 8px 24px rgba(255, 134, 187, 0.1);
+    }
+
     .container {
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(255, 255, 255, 0.95);
       border: 5px solid #ff86bb;
       border-radius: 25px;
-      padding: 30px;
-      max-width: 800px;
-      width: 90%;
+      padding: 50px;
+      max-width: 1100px;
+      width: 100%;
       text-align: center;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     }
-    .instructions {
-      font-size: 1.3rem;
-      margin-bottom: 20px;
-      font-weight: bold;
-      color: #b84b74;
+
+    .word-row {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
     }
-    .faro-img {
-      width: 160px;
-      margin-bottom: 20px;
+
+    .word-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 220px;
     }
-    .word-pair {
-      font-size: 2rem;
+
+    .word-img {
+      width: 180px;
+      height: 180px;
+      object-fit: contain;
+      border: 4px solid #ff86bb;
+      border-radius: 18px;
+      background: white;
+      margin-bottom: 15px;
+    }
+
+    .word-text {
+      font-size: 2.4rem;
       font-weight: bold;
       color: #ff4f9c;
-      margin-bottom: 30px;
+      text-align: center;
     }
+
     .buttons {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 40px;
+      flex-wrap: wrap;
     }
+
     .btn {
-      padding: 15px 25px;
-      font-size: 1.2rem;
+      padding: 18px 32px;
+      font-size: 1.4rem;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       transition: 0.3s ease;
       font-weight: bold;
     }
+
     .igual {
       background-color: #b8f2e6;
       color: #00776c;
     }
+
     .distinto {
       background-color: #ffd6e6;
       color: #a90040;
     }
+
     .btn:hover {
       transform: scale(1.05);
     }
   </style>
 </head>
 <body>
+
+  <div class="instructions">
+    Observá las imágenes y leé las palabras en voz baja. ¿Suenan igual o diferente?
+  </div>
+
   <div class="container">
-    <div class="instructions">¿Estas palabras suenan igual o diferente?</div>
-    <img src="imagenes/fonologia/faro.png" alt="Faro" class="faro-img">
-    <div class="word-pair" id="wordPair">taza - casa</div>
+    <div class="word-row">
+      <div class="word-block">
+        <img id="img1" src="" alt="Imagen 1" class="word-img">
+        <div class="word-text" id="word1"></div>
+      </div>
+      <div class="word-block">
+        <img id="img2" src="" alt="Imagen 2" class="word-img">
+        <div class="word-text" id="word2"></div>
+      </div>
+    </div>
+
     <div class="buttons">
       <button class="btn igual" onclick="checkAnswer(true)">Suenan igual</button>
       <button class="btn distinto" onclick="checkAnswer(false)">Suenan diferente</button>
@@ -86,17 +142,44 @@
 
   <script>
     const pairs = [
-      { words: "taza - casa", same: false },
-      { words: "pata - pata", same: true },
-      { words: "pelo - perro", same: false },
-      { words: "mesa - fresa", same: false },
-      { words: "luna - luna", same: true }
-    ];
+  {
+    word1: "taza",
+    word2: "casa",
+    img1: "imagenes/taza.jpg",
+    img2: "imagenes/casa.jpg",
+    same: false
+  },
+  {
+    word1: "pato",
+    word2: "gato",
+    img1: "imagenes/pato.jpg",
+    img2: "imagenes/gato.jpg",
+    same: false
+  },
+  {
+    word1: "pelo",
+    word2: "perro",
+    img1: "imagenes/pelo.jpg",
+    img2: "imagenes/perro.jpg",
+    same: false
+  },
+  {
+    word1: "mesa",
+    word2: "fresa",
+    img1: "imagenes/mesa.jpg",
+    img2: "imagenes/fresa.jpg",
+    same: false
+  },
+];
 
     let current = 0;
 
     function showPair() {
-      document.getElementById("wordPair").textContent = pairs[current].words;
+      const pair = pairs[current];
+      document.getElementById("word1").textContent = pair.word1;
+      document.getElementById("word2").textContent = pair.word2;
+      document.getElementById("img1").src = pair.img1;
+      document.getElementById("img2").src = pair.img2;
     }
 
     function checkAnswer(userSaysSame) {
@@ -116,25 +199,9 @@
         Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
       }
     }
+
     showPair();
 
-
-      function nextRound() {
-  currentRound = currentRound + 1;
-  if (currentRound >= items.length) {
-    Swal.fire('¡Nivel completado!', 'Prepárate para el siguiente desafío ', 'success').then(() => {
-      window.location.href = 'fonologia2.html'; // Redirige al siguiente nivel
-    });
-  } else {
-    loadRound();
-  }
-}
-
-
-
-
-
-        
         function enviarDatosAlServidor() {
             const id_paciente = localStorage.getItem('id_paciente');
             const paciente_juego = 'Fonologia';
