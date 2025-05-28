@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Menú Principal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet"/>
   <style>
     * {
       margin: 0;
@@ -24,13 +24,40 @@
       align-items: center;
       justify-content: flex-start;
       padding: 30px 20px;
+      overflow: auto;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
     }
 
     h1 {
       font-size: 3rem;
-      color:  #00b453;
-      margin-bottom: 40px;
+      color: #00b453;
+      margin-bottom: 30px;
       text-align: center;
+    }
+
+    #registerButton {
+      padding: 20px 40px;
+      font-size: 2rem;
+      color: white;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      margin-bottom: 40px;
+    }
+
+    #registerButton:hover {
+      background: linear-gradient(135deg, #2575fc, #6a11cb);
+      transform: scale(1.05);
+    }
+
+    #registerButton:active {
+      transform: scale(0.98);
     }
 
     .menu-container {
@@ -68,39 +95,99 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     }
 
-    .semantica {
-      background-color: #ffd817;
-      color: white;
+    .semantica { background-color: #ffd817; }
+    .pragmatica { background-color: #0074ff; }
+    .morfosintaxis { background-color: #00b453; }
+    .fonetica { background-color: #ff6632; }
+    .fonologia { background-color: #ff86bb; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
-    .pragmatica {
-      background-color: #0074ff;
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
     }
-    .morfosintaxis {
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      color: #333;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .modal-content button {
+      padding: 12px 25px;
       background-color: #00b453;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
     }
-    .fonetica {
-      background-color: #ff6632;
-    }
-    .fonologia {
-      background-color: #ff86bb;
+
+    .modal-content button:hover {
+      background-color: #009944;
     }
 
     @media (max-width: 600px) {
       h1 {
         font-size: 2.2rem;
       }
-
       .menu-button {
         font-size: 1.3rem;
         border-radius: 20px;
         width: 160px;
         height: 160px;
       }
+      #registerButton {
+        font-size: 1.5rem;
+        padding: 15px 30px;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Selecciona una sección</h1>
+
+  <!-- Botón registrar -->
+  <button id="registerButton">Registrar Paciente</button>
+
+  <!-- Modal -->
+  <div class="modal" id="infoModal">
+    <div class="modal-content">
+      <h2>Información del Niño paciente</h2>
+      <form id="pacienteForm">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="dni" placeholder="DNI" required>
+        <input type="number" name="edad" placeholder="Edad" required>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Menú -->
   <div class="menu-container">
     <button class="menu-button semantica" onclick="location.href='semantica juego/semantica1.html'">Semántica</button>
     <button class="menu-button pragmatica" onclick="location.href='pragmatica juego/pragmatica1.html'">Pragmática</button>
@@ -109,6 +196,64 @@
     <button class="menu-button fonologia" onclick="location.href='fonologia juego/fonologia1.html'">Fonología</button>
   </div>
 
-
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('infoModal');
+      const body = document.body;
+      const registerButton = document.getElementById('registerButton');
+  
+      registerButton.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        body.classList.add('no-scroll');
+      });
+  
+      document.getElementById('pacienteForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const nombre = this.nombre.value.trim();
+        const dni = this.dni.value.trim();
+        const edad = this.edad.value.trim();
+  
+        if (nombre && dni && edad) {
+          try {
+            const response = await fetch('http://localhost:3000/submit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ nombre, dni, edad })
+            });
+  
+            if (response.ok) {
+              const data = await response.json();
+              localStorage.setItem('id_paciente', data.id_paciente);
+              Swal.fire('¡Éxito!', 'Datos guardados de manera exitosa!', 'success');
+              modal.style.display = 'none';
+              body.classList.remove('no-scroll');
+              registerButton.style.display = 'none';
+            } else {
+              Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+            }
+          } catch (error) {
+            Swal.fire('Error', 'Ocurrió un error al enviar los datos.', 'error');
+          }
+        } else {
+          Swal.fire('Advertencia', 'Por favor, completa todos los campos.', 'warning');
+        }
+      });
+  
+      window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+          body.classList.remove('no-scroll');
+        }
+      });
+  
+      // Ocultar botón si ya hay paciente registrado
+      if (localStorage.getItem('id_paciente')) {
+        registerButton.style.display = 'none';
+      }
+    });
+  </script>
+  
 </body>
 </html>

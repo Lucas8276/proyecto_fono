@@ -161,6 +161,7 @@
         Swal.fire('Ups...', 'Escribe una oración más completa.', 'warning');
         return;
       }
+      enviarDatosAlServidor();
       Swal.fire('¡Bien hecho!', 'Vamos al siguiente nivel...', 'success').then(() => {
         window.location.href = 'morfosintaxis2.html';
       });
@@ -168,8 +169,8 @@
     
 function enviarDatosAlServidor() {
             const id_paciente = localStorage.getItem('id_paciente');
-            const paciente_juego = 'Morfosintaxis';
-            const paciente_resultado = 'Completado';
+            const paciente_juego = 'Morfosintaxis - Nivel 1';
+            const paciente_resultado = document.getElementById("oracionUsuario").value.trim();
             fetch('http://localhost:3000/juegos', {
                 method: 'POST',
                 headers: {

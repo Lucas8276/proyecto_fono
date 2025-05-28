@@ -161,10 +161,33 @@
         Swal.fire('Ups...', 'Escribe una oración más completa.', 'warning');
         return;
       }
+      enviarDatosAlServidor();
       Swal.fire('¡Excelente!', 'Has completado todos los niveles de Morfosintaxis 🎉', 'success').then(() => {
         window.location.href = '../index.html';
       });
     }
+    function enviarDatosAlServidor() {
+            const id_paciente = localStorage.getItem('id_paciente');
+            const paciente_juego = 'Morfosintaxis - Nivel 3';
+            const paciente_resultado = document.getElementById("oracionUsuario").value.trim();
+            fetch('http://localhost:3000/juegos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
+                } else {
+                    Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+            });
+        }
   </script>
 </body>
 </html>

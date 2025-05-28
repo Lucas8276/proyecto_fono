@@ -86,63 +86,90 @@
 
   <script>
     const pairs = [
-  {
-    word1: "vaso",
-    word2: "palo",
-    img1: "imagenes/fonologia/vaso.jpg",
-    img2: "imagenes/fonologia/paso.jpg",
-    same: false
-  },
-  {
-    word1: "nube",
-    word2: "nube",
-    img1: "imagenes/fonologia/nube.jpg",
-    img2: "imagenes/fonologia/nube.jpg",
-    same: true
-  },
- {
-    word1: "lupa",
-    word2: "ropa",
-    img1: "imagenes/fonologia/lupa.jpg",
-    img2: "imagenes/fonologia/ropa.jpg",
-    same: false
-  }
-];
-
+      {
+        word1: "vaso",
+        word2: "palo",
+        img1: "imagenes/fonologia/vaso.jpg",
+        img2: "imagenes/fonologia/paso.jpg",
+        same: false
+      },
+      {
+        word1: "nube",
+        word2: "nube",
+        img1: "imagenes/fonologia/nube.jpg",
+        img2: "imagenes/fonologia/nube.jpg",
+        same: true
+      },
+      {
+        word1: "lupa",
+        word2: "ropa",
+        img1: "imagenes/fonologia/lupa.jpg",
+        img2: "imagenes/fonologia/ropa.jpg",
+        same: false
+      }
+    ];
+  
     let current = 0;
-
+    let aciertos = 0;
+    let desaciertos = 0;
+  
     function showPair() {
-      document.getElementById("wordPair").textContent = pairs[current].words;
+      document.getElementById("wordPair").textContent = `${pairs[current].word1} - ${pairs[current].word2}`;
     }
-
+  
     function checkAnswer(userSaysSame) {
       const isCorrect = userSaysSame === pairs[current].same;
       if (isCorrect) {
+        aciertos++;
         Swal.fire('¡Correcto!', '', 'success').then(() => {
           current++;
           if (current >= pairs.length) {
-            Swal.fire('¡Nivel completado!', 'Pasando al siguiente nivel...', 'success').then(() => {
-              window.location.href = 'fonologia2.html';
-            });
+            enviarDatosAlServidor();
           } else {
             showPair();
           }
         });
       } else {
+        desaciertos++;
         Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
       }
     }
+  
+    function enviarDatosAlServidor() {
+      const id_paciente = localStorage.getItem('id_paciente');
+      const paciente_juego = 'Fonologia-Nivel 3';
+      const paciente_resultado = `${aciertos} aciertos, ${desaciertos} desaciertos`;
+      const paciente_acierto = aciertos;
+      const paciente_desacierto = desaciertos;
+  
+      fetch('http://localhost:3000/juegos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_paciente,
+          paciente_juego,
+          paciente_resultado,
+          paciente_acierto,
+          paciente_desacierto
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          Swal.fire('¡Nivel completado!', 'Datos guardados correctamente.', 'success').then(() => {
+            window.location.href = '../index.html'; // o ../index.html
+          });
+        } else {
+          Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+        }
+      })
+      .catch(() => {
+        Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+      });
+    }
+  
+    // Inicializa el primer par al cargar
     showPair();
-
-
-  function nextRound() {
-  currentRound = (currentRound + 1);
-  if (currentRound >= items.length) {
-    Swal.fire('¡Felicitaciones!', 'Completaste todos los niveles 🎉', 'success').then(() => {
-      window.location.href = '../index.html'; // O al menú principal
-    });
-  } else {
-    loadRound();
-  }
-}
-    loadRound();
+  </script>
+  

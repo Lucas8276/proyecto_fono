@@ -139,7 +139,8 @@
 
   <script>
     let draggedLetter = null;
-
+    let aciertos = 0;
+    let desaciertos = 0;
     document.querySelectorAll('.letter-tile').forEach(letter => {
       letter.addEventListener('dragstart', (e) => {
         draggedLetter = letter.getAttribute('data-letter');
@@ -157,24 +158,65 @@
       });
 
       box.addEventListener('drop', () => {
-        box.classList.remove('dragover');
-        const correct = box.getAttribute('data-answer');
-        if (draggedLetter === correct) {
-          Swal.fire('¡Correcto!', '', 'success');
-  setTimeout(() => {
-    box.remove();
-    const usedLetter = document.querySelector(`.letter-tile[data-letter="${draggedLetter}"]`);
-    if (usedLetter) usedLetter.remove();
+      box.classList.remove('dragover');
+      const correct = box.getAttribute('data-answer');
 
-    // ✅ Verificamos si quedan imágenes
-    if (document.querySelectorAll('.image-box').length === 0) {
-      Swal.fire('¡Muy bien!', 'Pasando al siguiente nivel...', 'success').then(() => {
-        window.location.href = 'fonetica2.html';
-      });
+      if (draggedLetter === correct) {
+        aciertos++;
+        Swal.fire('¡Correcto!', '', 'success');
+        setTimeout(() => {
+          box.remove();
+          const usedLetter = document.querySelector(`.letter-tile[data-letter="${draggedLetter}"]`);
+          if (usedLetter) usedLetter.remove();
+        
+          // Si ya no hay imágenes, guardar en el backend
+          if (document.querySelectorAll('.image-box').length === 0) {
+            Swal.fire('¡Muy bien!', 'Pasando al siguiente nivel...', 'success').then(() => {
+              guardarResultado();
+            });
+          }
+        }, 300);
+      } else {
+        desaciertos++;
+        Swal.fire('Ups...', 'Esa no es la letra correcta.', 'error');
+      }
+    });
+  });
+  function guardarResultado() {
+  const id_paciente = localStorage.getItem('id_paciente');
+
+  if (!id_paciente) {
+    console.error("ID de paciente no encontrado en localStorage");
+    return;
+  }
+
+  const data = {
+    id_paciente: parseInt(id_paciente),
+    paciente_juego: 'Fonetica-Nivel 1',
+    paciente_resultado: `Aciertos: ${aciertos}, Desaciertos: ${desaciertos}`,
+    paciente_acierto: aciertos,
+    paciente_desacierto: desaciertos
+  };
+
+  fetch('http://localhost:3000/juegos', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(res => {
+    if (res.ok) {
+      window.location.href = 'fonetica2.html';
+    } else {
+      throw new Error('Error al guardar resultado');
     }
-  }, 300);
-}})
-})
+  })
+  .catch(err => {
+    console.error(err);
+    Swal.fire('Error', 'No se pudo guardar el resultado.', 'error');
+  });
+}
 
 
   </script>

@@ -173,7 +173,8 @@
 ];
 
     let current = 0;
-
+    let aciertos = 0;
+    let desaciertos = 0;
     function showPair() {
       const pair = pairs[current];
       document.getElementById("word1").textContent = pair.word1;
@@ -185,9 +186,11 @@
     function checkAnswer(userSaysSame) {
       const isCorrect = userSaysSame === pairs[current].same;
       if (isCorrect) {
+        aciertos++;
         Swal.fire('¡Correcto!', '', 'success').then(() => {
           current++;
           if (current >= pairs.length) {
+            enviarDatosAlServidor();
             Swal.fire('¡Nivel completado!', 'Pasando al siguiente nivel...', 'success').then(() => {
               window.location.href = 'fonologia2.html';
             });
@@ -196,34 +199,48 @@
           }
         });
       } else {
+        desaciertos++;
         Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
       }
     }
 
     showPair();
 
-        function enviarDatosAlServidor() {
-            const id_paciente = localStorage.getItem('id_paciente');
-            const paciente_juego = 'Fonologia';
-            const paciente_resultado = 'Completado';
-            fetch('http://localhost:3000/juegos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
-            })
-            .then(response => {
-                if (response.ok) {
-                    Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
-                } else {
-                    Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
-            });
-        }
-    </script>
+    function enviarDatosAlServidor() {
+    const id_paciente = localStorage.getItem('id_paciente');
+    const paciente_juego = 'Fonologia-Nivel 1';
+    const paciente_resultado = `${aciertos} aciertos, ${desaciertos} desaciertos`;
+    const paciente_acierto = aciertos;
+    const paciente_desacierto = desaciertos;
+
+    fetch('http://localhost:3000/juegos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id_paciente,
+        paciente_juego,
+        paciente_resultado,
+        paciente_acierto,
+        paciente_desacierto
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        Swal.fire('¡Nivel completado!', 'Datos guardados correctamente.', 'success').then(() => {
+          window.location.href = 'fonologia2.html';
+        });
+      } else {
+        Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+      }
+    })
+    .catch(() => {
+      Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+    });
+  }
+
+  showPair();
+</script>
 </body>
 </html>

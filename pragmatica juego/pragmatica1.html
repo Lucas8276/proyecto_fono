@@ -112,6 +112,8 @@
     ];
 
     let index = 0;
+    let aciertos = 0;
+    let desaciertos = 0;
 
     function mostrarImagen() {
       document.getElementById("animalImage").src = emociones[index].imagen;
@@ -120,9 +122,11 @@
     function checkAnswer(opcion) {
       const correcta = emociones[index].respuesta;
       if (opcion === correcta) {
+        aciertos++;
         Swal.fire("¡Muy bien!", "El animal se siente " + correcta + ".", "success").then(() => {
           index++;
           if (index >= emociones.length) {
+            enviarResultados();
             Swal.fire("¡Nivel completado!", "Pasando al siguiente nivel...", "success").then(() => {
               window.location.href = "pragmatica2.html";
             });
@@ -131,11 +135,49 @@
           }
         });
       } else {
+        desaciertos++;
         Swal.fire("Ups...", "Esa no es la emoción correcta. Intenta de nuevo.", "error");
       }
     }
 
     mostrarImagen();
+    function enviarResultados() {
+  const id_paciente = localStorage.getItem('id_paciente');
+
+  if (!id_paciente) {
+    Swal.fire("Error", "ID de paciente no encontrado en localStorage", "error");
+    return;
+  }
+
+  const data = {
+    id_paciente: parseInt(id_paciente),
+    paciente_juego: "Pragmática - Nivel 1",
+    paciente_resultado: `${aciertos} aciertos, ${desaciertos} desaciertos`,
+    paciente_acierto: aciertos,
+    paciente_desacierto: desaciertos
+  };
+
+  fetch('http://localhost:3000/juegos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('Error al guardar los resultados');
+    return response.text();
+  })
+  .then(msg => {
+    console.log(msg);
+    Swal.fire("¡Nivel completado!", "Resultados guardados exitosamente.", "success").then(() => {
+      window.location.href = "pragmatica2.html";
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    Swal.fire("Error", "No se pudieron guardar los resultados", "error");
+  });
+}
+
   </script>
 </body>
 </html>

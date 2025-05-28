@@ -100,18 +100,24 @@ app.post('/login', (req, res) => {
   );
 });
 app.post('/juegos', (req, res) => {
-    const { id_paciente, paciente_juego, paciente_resultado } = req.body;
-    const query = 'INSERT INTO juegos (id_paciente, paciente_juego, paciente_resultado) VALUES ($1, $2, $3)';
-    const values = [id_paciente, paciente_juego, paciente_resultado];
-    client.query(query, values, (err) => {
-        if (err) {
-            console.error('Error guardando el resultado del juego', err.stack);
-            res.status(500).send('Error al guardar el resultado del juego');
-        } else {
-            res.status(200).send('Resultado guardado exitosamente');
-        }
-    });
+  const { id_paciente, paciente_juego, paciente_resultado, paciente_acierto, paciente_desacierto } = req.body;
+
+  const query = `
+    INSERT INTO juegos (id_paciente, paciente_juego, paciente_resultado, paciente_acierto, paciente_desacierto) 
+    VALUES ($1, $2, $3, $4, $5)
+  `;
+  const values = [id_paciente, paciente_juego, paciente_resultado, paciente_acierto, paciente_desacierto];
+
+  client.query(query, values, (err) => {
+    if (err) {
+      console.error('Error guardando el resultado del juego', err.stack);
+      res.status(500).send('Error al guardar el resultado del juego');
+    } else {
+      res.status(200).send('Resultado guardado exitosamente');
+    }
+  });
 });
+
 
 // Nueva ruta para obtener juegos por paciente
 app.get('/juegos-por-paciente', (req, res) => {

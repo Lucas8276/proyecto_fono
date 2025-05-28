@@ -192,6 +192,10 @@
     
     let currentRound = 0;
     let correctAnswer = null;
+    let aciertos = 0;
+    let desaciertos = 0;
+
+    const id_paciente = localStorage.getItem('id_paciente');
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -253,18 +257,45 @@
 
     function checkAnswer(selectedName) {
       if (selectedName === correctAnswer.name) {
+        aciertos++;
         Swal.fire('Correcto', 'Muy bien, ¡acertaste!', 'success');
         setTimeout(() => {
           nextRound();
         }, 1000);
       } else {
+        desaciertos++;
         Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
       }
     }
+    function enviarResultados() {
+    if (!id_paciente) {
+      console.error('No hay id_paciente en localStorage');
+      return;
+    }
+    const data = {
+      id_paciente: parseInt(id_paciente),
+      paciente_juego: 'Semantica-Nivel 3',
+      paciente_resultado: `aciertos: ${aciertos}, desaciertos: ${desaciertos}`,
+      paciente_acierto: aciertos,
+      paciente_desacierto: desaciertos
+    };
 
+    fetch('http://localhost:3000/juegos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Error al enviar resultados');
+      return res.text();
+    })
+    .then(msg => console.log(msg))
+    .catch(err => console.error(err));
+  }
 function nextRound() {
   currentRound = (currentRound + 1);
   if (currentRound >= items.length) {
+    enviarResultados();
     Swal.fire('¡Felicitaciones!', 'Completaste todos los niveles 🎉', 'success').then(() => {
       window.location.href = '../index.html'; // O al menú principal
     });

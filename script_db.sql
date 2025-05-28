@@ -20,6 +20,9 @@ CREATE TABLE juegos (
     id_juego SERIAL PRIMARY KEY,
     id_paciente INTEGER REFERENCES paciente(id_paciente) ON DELETE CASCADE,
     paciente_juego VARCHAR(100),
-    paciente_resultado VARCHAR(100)
+    paciente_resultado VARCHAR(100),
+    paciente_acierto INTEGER,
+    paciente_desacierto INTEGER
 );
+
 
