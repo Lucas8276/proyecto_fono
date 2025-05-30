@@ -1,96 +1,98 @@
-// loro.js
+document.addEventListener("DOMContentLoaded", function () {
+  const style = document.createElement("style");
+  style.innerHTML =
+   `
+    #loro-container {
+      position: absolute;
+      bottom: 200px;
+      left: 50px;
+      width: auto;
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
 
-// Inyectar estilos
-const style = document.createElement('style');
-style.innerHTML = 
-`
-  #loro-container {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 120px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    dotlottie-wc {
+      width: 600px !important;
+      height: auto !important;
+    }
 
-  #loro {
-    width: 100px;
-    height: auto;
-    animation: float 2s ease-in-out infinite;
-  }
+    #burbuja-loro {
+      position: relative;
+      background: #fff;
+      color: #333;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 22px;
+      padding: 18px 24px;
+      border-radius: 22px;
+      border: 4px solid #FFD817;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+      max-width: 320px;
+      text-align: center;
+      animation: aparecer 0.4s ease-in-out;
+    }
 
-  .plumas {
-    display: flex;
-    gap: 4px;
-    margin-top: 6px;
-  }
+    #burbuja-loro::after {
+      content: "";
+      position: absolute;
+      bottom: -20px;
+      left: 60px;
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 20px solid #fff;
+      filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.15));
+    }
 
-  .pluma {
-    width: 14px;
-    height: 20px;
-    border-radius: 4px;
-    background: #ccc;
-    transition: background 0.3s;
-  }
+    @keyframes aparecer {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+  `;
+  document.head.appendChild(style);
 
-  @keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-    100% { transform: translateY(0); }
-  }
-`;
-document.head.appendChild(style);
+  const moduleScript = document.createElement("script");
+  moduleScript.type = "module";
+  moduleScript.src = "https://unpkg.com/@lottiefiles/dotlottie-wc@0.3.0/dist/dotlottie-wc.js";
+  document.head.appendChild(moduleScript);
 
-// Inyectar HTML del loro
-const loroHTML = `
-  <div id="loro-container">
-    <img src="imagenes/loro.png" alt="LoroLolo" id="loro">
-    <div class="plumas">
-      <div class="pluma" id="pluma1"></div>
-      <div class="pluma" id="pluma2"></div>
-      <div class="pluma" id="pluma3"></div>
-      <div class="pluma" id="pluma4"></div>
-      <div class="pluma" id="pluma5"></div>
-    </div>
-  </div>
-`;
-document.body.insertAdjacentHTML('beforeend', loroHTML);
+  const audio = document.createElement("audio");
+  audio.id = "loro-audio";
+  audio.src = "https://cdn.pixabay.com/audio/2022/03/16/audio_93049c8cd1.mp3";
+  document.body.appendChild(audio);
 
-// Presentación una sola vez
-if (!localStorage.getItem('loro_saludo')) {
-  Swal.fire({
-    title: "¡Hola!",
-    text: "Soy LoroLolo 🦜 y voy a acompañarte en esta aventura. ¡Vamos a divertirnos aprendiendo!",
-    imageUrl: "imagenes/loro.png",
-    imageWidth: 100,
-    confirmButtonText: "¡Vamos!"
-  });
-  localStorage.setItem('loro_saludo', 'true');
-}
+  const container = document.createElement("div");
+  container.id = "loro-container";
+  container.innerHTML = `
+    <div id="burbuja-loro">¡Hola! Soy Blas, tu compañero de juego 🦜</div>
+    <dotlottie-wc 
+    src="https://lottie.host/a26f74c8-389b-4c26-88ab-32f9180aa246/eyuxo2A5ZR.lottie"
+      autoplay 
+      loop>
+    </dotlottie-wc>
+  `;
+  document.body.appendChild(container);
 
-// Pintar plumas según secciones completadas
-const colores = ['#FFD817', '#FF6632', '#FF86BB', '#00b453', '#0074FF'];
-const claves = ['semantica_completa', 'fonetica_completa', 'fonologia_completa', 'morfosintaxis_completa', 'pragmatica_completa'];
+  window.mostrarMensajeLoro = function(texto) {
+    const burbuja = document.getElementById('burbuja-loro');
+    const audio = document.getElementById('loro-audio');
+    if (burbuja) {
+      burbuja.innerText = texto;
+      burbuja.classList.remove('aparecer');
+      void burbuja.offsetWidth;
+      burbuja.classList.add('aparecer');
+    }
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+  };
 
-claves.forEach((clave, i) => {
-  if (localStorage.getItem(clave)) {
-    document.getElementById(`pluma${i + 1}`).style.background = colores[i];
-  }
+  setTimeout(() => {
+    mostrarMensajeLoro("¡Vamos a jugar juntos!");
+  }, 1500);
 });
-
-// Frases motivadoras
-const frases = [
-  "¡Excelente trabajo!",
-  "¡Lo estás haciendo genial!",
-  "¡Sos un campeón!",
-  "¡No te rindas!",
-  "¡Estoy muy orgulloso de vos!"
-];
-
-// Función global para usar desde cualquier juego
-window.loroMotiva = () => {
-  const frase = frases[Math.floor(Math.random() * frases.length)];
-  Swal.fire("LoroLolo dice:", frase, "info");
-};

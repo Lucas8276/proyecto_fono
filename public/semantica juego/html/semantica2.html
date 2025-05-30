@@ -7,127 +7,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-  body {
-      font-family: 'Fredoka', sans-serif;
-      background-color: #fffbe6;
-      background-image: url("imagenes/fondo amarillo.svg");
-      background-repeat: repeat;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
+  <link href="../css/semantica.css" rel="stylesheet">
 
-   .container {
-  width: 90%;
-  max-width: 1200px;
-  padding: 20px 60px;
-  background-color: rgba(255, 255, 255, 0.95);
-  border: 5px solid #ffd817;
-  border-radius: 25px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
-    .instructions {
-      background: #fff8c5;
-      border: 2px solid #ffd817;
-      border-radius: 15px;
-      padding: 20px;
-      font-size: 1.3rem;
-      color: #b8860b;
-      margin-bottom: 25px;
-      text-align: center;
-      font-weight: bold;
-      width: 100%;
-    }
-
-    .game-layout {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 30px;
-      width: 100%;
-    }
-
-.clue-card {
-  background: linear-gradient(45deg, #FFD700, #FFA500);
-  border-radius: 20px;
-  padding: 22px 40px;
-  color: white;
-  font-size: 1.3rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  cursor: grab;
-  transition: transform 0.3s;
-  width: 520px;
-  min-height: 140px;
-  text-align: left;
-  align-self: center;
-}
-
-
-    .clue-card:active {
-      cursor: grabbing;
-    }
-
-    .clue-card:hover {
-      transform: scale(1.05);
-    }
-
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      flex: 1;
-    }
-
-    .image-container {
-      border: 2px solid #ffd817;
-      border-radius: 15px;
-      padding: 18px;
-      background-color: white;
-      text-align: center;
-      transition: transform 0.3s;
-    }
-
-    .image-container.dragover {
-      background-color: #fff3cd;
-      border-color: #ffa000;
-    }
-
-    .image-container:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    }
-
-    .image-container img {
-      width: 110px;
-      height: 110px;
-      object-fit: contain;
-      border-radius: 10px;
-    }
-
-    .image-container p {
-      margin-top: 12px;
-      font-size: 1.1rem;
-      color: #ff9e00;
-      font-weight: bold;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
     <div class="instructions">
       Arrastrá la tarjeta amarilla con pistas hacia la imagen que creas correcta. Si acertás, avanzarás automáticamente al siguiente desafío.
     </div>
-
     <div class="game-layout">
       <div class="clue-card" draggable="true" id="clueCard"></div>
       <div class="options" id="imagesSection"></div>
@@ -136,51 +23,50 @@
 
   <script>
     const items = [
-      {
-        image: 'imagenes/perro.jpg',
-        name: 'Perro',
-        clues: [
-          'Soy un animal de cuatro patas',
-          'Ladro cuando veo extraños',
-          'Soy el mejor amigo del hombre',
-          'Me gusta jugar con pelotas'
-        ]
-      },
-      {
-        image: 'imagenes/manzanaa.png',
-        name: 'Manzana',
-        clues: [
-          'Soy una fruta roja',
-          'Crezco en árboles',
-          'Me usan en pasteles',
-          'Me como fresca'
-        ]
-      },
-      {
-        image: 'imagenes/pelota.png',
-        name: 'Pelota',
-        clues: [
-          'Soy redonda',
-          'Me usan para jugar',
-          'Puedo rebotar',
-          'Me patean en el fútbol'
-        ]
-      },
-      {
-        image: 'imagenes/libro.png',
-        name: 'Libro',
-        clues: [
-          'Tengo muchas páginas',
-          'Contengo historias',
-          'Me encuentras en bibliotecas',
-          'Ayudo a aprender'
-        ]
-      }
-    ];
+  {
+    image: 'imagenes/murcielago.jpg',
+    name: 'Murciélago',
+    clues: [
+      'Salgo de noche',
+      'Vuelo pero no soy un ave',
+      'Me cuelgo boca abajo',
+      'Uso el eco para moverme'
+    ]
+  },
+  {
+    image: 'imagenes/sandia.jpg',
+    name: 'Sandía',
+    clues: [
+      'Soy grande y verde por fuera',
+      'Roja por dentro',
+      'Refrescante en verano',
+      'Tengo muchas semillas'
+    ]
+  },
+  {
+    image: 'imagenes/reloj.jpg',
+    name: 'Reloj',
+    clues: [
+      'Estoy en tu muñeca o en la pared',
+      'Digo la hora',
+      'Tengo agujas',
+      'Hago tic-tac'
+    ]
+  },
+  {
+    image: 'imagenes/anteojos.jpg',
+    name: 'Anteojos',
+    clues: [
+      'Van en la cara',
+      'Ayudan a ver mejor',
+      'Tienen cristales',
+      'Se apoyan en la nariz'
+    ]
+  }
+];
 
     let currentRound = 0;
     let correctAnswer = null;
-  
     let aciertos = 0;
     let desaciertos = 0;
 
@@ -263,7 +149,7 @@
     }
     const data = {
       id_paciente: parseInt(id_paciente),
-      paciente_juego: 'Semantica-Nivel 1',
+      paciente_juego: 'Semantica-Nivel 2',
       paciente_resultado: `aciertos: ${aciertos}, desaciertos: ${desaciertos}`,
       paciente_acierto: aciertos,
       paciente_desacierto: desaciertos
@@ -282,16 +168,16 @@
     .catch(err => console.error(err));
   }
     function nextRound() {
-      currentRound++;
-      if (currentRound >= items.length) {
-        enviarResultados();
-        Swal.fire('¡Excelente!', 'Pasando al siguiente nivel...', 'success').then(() => {
-          window.location.href = 'semantica2.html'; 
-        });
-      } else {
-        loadRound();
-      }
-    }
+  currentRound = currentRound + 1;
+  if (currentRound >= items.length) {
+    enviarResultados();
+    Swal.fire('¡Nivel completado!', 'Prepárate para el ultimo desafío ', 'success').then(() => {
+      window.location.href = 'semantica3.html'; // Redirige al siguiente nivel
+    });
+  } else {
+    loadRound();
+  }
+}
 
     loadRound();
   </script>
