@@ -4,7 +4,7 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fonética - Nivel 1</title>
+  <title>Fonética - Nivel 3</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/fonetica.css" rel="stylesheet">
@@ -13,31 +13,30 @@
 
 <body>
   <div class="instructions">
-    Arrastrá la letra o fonema correcto al dibujo correspondiente. ¡Cuidado con los sonidos parecidos!
+    COLOCÁ CADA CONSONANTE CON SU POSICIÓN ARTICULATORIA
   </div>
 
   <div class="game-area">
     <div class="letters-col">
-      <div class="letter-tile" draggable="true" data-letter="k">k</div>
-      <div class="letter-tile" draggable="true" data-letter="t">t</div>
-      <div class="letter-tile" draggable="true" data-letter="rr">rr</div>
-      <div class="letter-tile" draggable="true" data-letter="ll">ll</div>
-      <div class="letter-tile" draggable="true" data-letter="ch">ch</div>
-          <div class="letter-tile" draggable="true" data-letter="z">cc</div>
-      <div class="letter-tile" draggable="true" data-letter="n">g</div>
+      <div class="letter-tile" draggable="true" data-letter="K">K</div>
+      <div class="letter-tile" draggable="true" data-letter="T">T</div>
+      <div class="letter-tile" draggable="true" data-letter="RR">RR</div>
+      <div class="letter-tile" draggable="true" data-letter="LL">LL</div>
+      <div class="letter-tile" draggable="true" data-letter="CH">CH</div>
+      <div class="letter-tile" draggable="true" data-letter="CC">CC</div>
+      <div class="letter-tile" draggable="true" data-letter="Ñ">Ñ</div>
     </div>
 
     <div class="images-col">
-      <div class="image-box" data-answer="ll"><img src="imagenes/castilo.jpg" alt="Castillo" /></div>
-      <div class="image-box" data-answer="t"><img src="imagenes/tenedor.jpg" alt="Tenedor" /></div>
-      <div class="image-box" data-answer="rr"><img src="imagenes/torre.jpg" alt="Torre" /></div>
-      <div class="image-box" data-answer="ll"><img src="imagenes/olla.jpg" alt="Olla" /></div>
-      <div class="image-box" data-answer="ch"><img src="imagenes/cancha.jpg"alt ="cancha" /></div>
+      <div class="image-box" data-answer="LL"><img src="imagenes/letraLL.png"  /></div>
+      <div class="image-box" data-answer="RR"><img src="imagenes/letraRR.png"  /></div>
+      <div class="image-box" data-answer="Ñ"><img src="imagenes/letraÑ.png"  /></div>
+      <div class="image-box" data-answer="CH"><img src="imagenes/letraCH.png" /></div>
       
     </div>
   </div>
 
- <script>
+<script>
     let draggedLetter = null;
     let aciertos = 0;
     let desaciertos = 0;

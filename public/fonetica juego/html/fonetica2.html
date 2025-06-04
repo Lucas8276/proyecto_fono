@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fonética - Nivel 1</title>
+  <title>Fonética - Nivel 2</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/fonetica.css" rel="stylesheet">
@@ -12,24 +12,24 @@
 
 <body>
   <div class="instructions">
-    Arrastrá la letra correcta al dibujo que contiene ese fonema dentro de la palabra.
+    COLOCÁ CADA CONSONANTE CON SU POSICIÓN ARTICULATORIA
   </div>
 
   <div class="game-area">
     <div class="letters-col">
-      <div class="letter-tile" draggable="true" data-letter="r">r</div>
-      <div class="letter-tile" draggable="true" data-letter="d">d</div>
-      <div class="letter-tile" draggable="true" data-letter="ñ">ñ</div>
-      <div class="letter-tile" draggable="true" data-letter="ch">ch</div>
-          <div class="letter-tile" draggable="true" data-letter="z">a</div>
-      <div class="letter-tile" draggable="true" data-letter="n">t</div>
+      <div class="letter-tile" draggable="true" data-letter="B">B</div>
+      <div class="letter-tile" draggable="true" data-letter="Z">Z</div>
+      <div class="letter-tile" draggable="true" data-letter="L">L</div>
+      <div class="letter-tile" draggable="true" data-letter="P">P</div>
+      <div class="letter-tile" draggable="true" data-letter="R">R</div>
+      <div class="letter-tile" draggable="true" data-letter="V">V</div>
     </div>
 
     <div class="images-col">
-      <div class="image-box" data-answer="r"><img src="imagenes/tijera.jpg" alt="Tijera" /></div>
-      <div class="image-box" data-answer="d"><img src="imagenes/dado.jpg" alt="Dado" /></div>
-      <div class="image-box" data-answer="ñ"><img src="imagenes/muneca.jpg" alt="Muñeca" /></div>
-      <div class="image-box" data-answer="ch"><img src="imagenes/chaleco.jpg" alt="Chaleco" /></div>
+      <div class="image-box" data-answer="B"><img src="imagenes/letraB.png"/></div>
+      <div class="image-box" data-answer="Z"><img src="imagenes/letraZ.png"/></div>
+      <div class="image-box" data-answer="L"><img src="imagenes/letraL.png"/></div>
+      <div class="image-box" data-answer="P"><img src="imagenes/letraP.png"/></div>
     </div>
   </div>
 <script>
@@ -77,6 +77,8 @@
       }
     });
   });
+
+
   function guardarResultado() {
   const id_paciente = localStorage.getItem('id_paciente');
 

@@ -9,90 +9,144 @@
   <link href="../css/pragmatica.css" rel="stylesheet">
 </head>
 <body>
-
-  <div class="container">
+<div class="container">
     <h1>¿Qué está pasando en esta situación?</h1>
     <div class="image-box">
-      <img id="situationImage" src="imagenes/nene llora.jpg" alt="Situación">
+      <img id="situationImage" src="" alt="Situación">
     </div>
+    <h2 id="preguntaTexto"></h2>
     <div class="options" id="optionsContainer"></div>
   </div>
 
   <script>
-    const situaciones = [
+  const imagenes = [
+  {
+    src: "imagenes/nenallorando.png",
+    preguntas: [
       {
-        imagen: "imagenes/nene llora.jpg",
-        opciones: ["Está jugando", "Está triste porque se golpeo", "Está enojado"],
-        respuesta: "Está triste porque se golpeo"
+        texto: "¿Qué crees que pasó antes?",
+        opciones: ["Se cayó jugando", "Ganó un premio", "Fue a pasear feliz"],
+        correcta: "Se cayó jugando"
       },
       {
-        imagen: "imagenes/nena jugando.jpg",
-        opciones: ["Está jugando", "Tiene hambre", "Está cansado"],
-        respuesta: "Está jugando"
+        texto: "¿Cómo se sienten esa persona?",
+        opciones: ["Triste", "Enojada", "Feliz"],
+        correcta: "Triste"
       },
       {
-        imagen: "imagenes/bebe come.jpg",
-        opciones: ["Está asustado", "Está comiendo", "Está durmiendo"],
-        respuesta: "Está comiendo"
+        texto: "¿Qué crees que podría pasar después?",
+        opciones: ["Los niños juegan con la nena", "Se va corriendo", "Empieza a gritar"],
+        correcta: "Los niños juegan con la nena"
       }
-    ];
+    ]
+  },
+  {
+    src: "imagenes/nenespeleando.png",
+    preguntas: [
+      {
+        texto: "¿Qué crees que pasó antes?",
+        opciones: ["Discutieron", "Estaban comiendo", "Se saludaron con un abrazo"],
+        correcta: "Discutieron"
+      },
+      {
+        texto: "¿Cómo se sienten esas dos personas?",
+        opciones: ["Enojados", "Asustados", "Contentos"],
+        correcta: "Enojados"
+      },
+      {
+        texto: "¿Qué crees que podría pasar después?",
+        opciones: ["Una maestra los separa", "Siguen peleando", "Se van juntos"],
+        correcta: "Una maestra los separa"
+      }
+    ]
+  },
+  {
+    src: "imagenes/nenaspeleando.png",
+    preguntas: [
+      {
+        texto: "¿Qué crees que pasó antes?",
+        opciones: ["Las dos querían el mismo juguete", "Les regalaron un peluche", "Fueron al recreo"],
+        correcta: "Las dos querían el mismo juguete"
+      },
+      {
+        texto: "¿Cómo se sienten esas dos personas?",
+        opciones: ["Celosas", "Enojadas", "Contentas"],
+        correcta: "Enojadas"
+      },
+      {
+        texto: "¿Qué crees que podría pasar después?",
+        opciones: ["Se lo prestan una a la otra", "Se lo lleva una sola", "Se olvidan del problema"],
+        correcta: "Se lo prestan una a la otra"
+      }
+    ]
+  }
+];
 
-    let index = 0;
+    const imagenSeleccionada = imagenes[Math.floor(Math.random() * imagenes.length)];
+    let preguntaIndex = 0;
     let aciertos = 0;
     let desaciertos = 0;
-    function mostrarSituacion() {
-      const s = situaciones[index];
-      document.getElementById("situationImage").src = s.imagen;
+
+    function mostrarPregunta() {
+      const pregunta = imagenSeleccionada.preguntas[preguntaIndex];
+      document.getElementById("situationImage").src = imagenSeleccionada.src;
+      document.getElementById("preguntaTexto").textContent = pregunta.texto;
+
       const container = document.getElementById("optionsContainer");
       container.innerHTML = "";
-      s.opciones.forEach(op => {
+
+      pregunta.opciones.forEach(opcion => {
         const btn = document.createElement("button");
         btn.className = "option-btn";
-        btn.textContent = op;
-        btn.onclick = () => checkAnswer(op);
+        btn.textContent = opcion;
+
+        btn.onclick = () => {
+          if (btn.disabled) return;
+
+          if (opcion === pregunta.correcta) {
+            aciertos++;
+            btn.classList.add("correcta");
+            Swal.fire("¡Correcto!", "", "success").then(() => {
+              siguientePregunta();
+            });
+          } else {
+            desaciertos++;
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            Swal.fire("Incorrecto", "Intentá de nuevo.", "error");
+          }
+        };
+
         container.appendChild(btn);
       });
     }
 
-    function checkAnswer(opcion) {
-      const correcta = situaciones[index].respuesta;
-      if (opcion === correcta) {
-        aciertos++;
-        Swal.fire("¡Bien hecho!", "Respuesta correcta", "success").then(() => {
-          index++;
-          if (index >= situaciones.length) {
-            enviarResultados();
-            Swal.fire("¡Nivel completado!", "Pasando al siguiente nivel...", "success").then(() => {
-              window.location.href = "pragmatica3.html";
-            });
-          } else {
-            mostrarSituacion();
-          }
-        });
+    function siguientePregunta() {
+      preguntaIndex++;
+      if (preguntaIndex < imagenSeleccionada.preguntas.length) {
+        mostrarPregunta();
       } else {
-        desaciertos++;
-        Swal.fire("Ups...", "Esa no es la respuesta correcta.", "error");
+        enviarResultados();
       }
     }
 
-    mostrarSituacion();
     function enviarResultados() {
-  const id_paciente = localStorage.getItem('id_paciente');
+      const id_paciente = localStorage.getItem('id_paciente');
 
-  if (!id_paciente) {
-    Swal.fire("Error", "ID de paciente no encontrado en localStorage", "error");
-    return;
-  }
+      if (!id_paciente) {
+        Swal.fire("Error", "ID de paciente no encontrado en localStorage", "error");
+        return;
+      }
 
-  const data = {
-    id_paciente: parseInt(id_paciente),
-    paciente_juego: "Pragmática - Nivel 2",
-    paciente_resultado: `${aciertos} aciertos, ${desaciertos} desaciertos`,
-    paciente_acierto: aciertos,
-    paciente_desacierto: desaciertos
-  };
+      const data = {
+        id_paciente: parseInt(id_paciente),
+        paciente_juego: "Pragmática - Nivel 1",
+        paciente_resultado: `${aciertos} aciertos, ${desaciertos} desaciertos`,
+        paciente_acierto: aciertos,
+        paciente_desacierto: desaciertos
+      };
 
-  fetch('http://localhost:3000/juegos', {
+    fetch('http://localhost:3000/juegos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -101,10 +155,10 @@
     if (!response.ok) throw new Error('Error al guardar los resultados');
     return response.text();
   })
-  .then(msg => {
+.then(msg => {
     console.log(msg);
     Swal.fire("¡Nivel completado!", "Resultados guardados exitosamente.", "success").then(() => {
-      window.location.href = "pragmatica3.html";
+      window.location.href = "pragmatica3.html"; 
     });
   })
   .catch(err => {
@@ -112,6 +166,8 @@
     Swal.fire("Error", "No se pudieron guardar los resultados", "error");
   });
 }
+
+    mostrarPregunta();
   </script>
 </body>
 </html>
