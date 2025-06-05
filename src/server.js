@@ -125,7 +125,7 @@ app.get('/juegos-por-paciente', (req, res) => {
     if (!id_paciente) {
         return res.status(400).json({ error: 'id_paciente requerido' });
     }
-    client.query('SELECT paciente_juego, paciente_resultado FROM juegos WHERE id_paciente = $1', [id_paciente], (err, result) => {
+    client.query('SELECT paciente_juego, paciente_resultado, paciente_acierto, paciente_desacierto FROM juegos WHERE id_paciente = $1', [id_paciente], (err, result) => {
         if (err) {
             res.status(500).json({ error: 'Error al consultar los juegos' });
         } else {
@@ -136,4 +136,25 @@ app.get('/juegos-por-paciente', (req, res) => {
 // Inicia el servidor
 app.listen(3000, () => {
     console.log('Servidor escuchando en el puerto 3000');
+});
+app.get('/buscar-paciente', async (req, res) => {
+  const query = req.query.query;
+
+  try {
+    const result = await client.query(
+      `SELECT id_paciente, paciente_nombre, paciente_edad, paciente_dni 
+       FROM paciente 
+       WHERE paciente_dni ILIKE $1 OR paciente_nombre ILIKE $2`,
+      [`%${query}%`, `%${query}%`] // ❗ Comodines % para búsqueda parcial
+    );
+
+    if (result.rows.length > 0) {
+      res.json(result.rows); // Devuelve array de pacientes
+    } else {
+      res.json([]);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al buscar el paciente' });
+  }
 });
