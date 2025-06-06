@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pragmática - Nivel 2</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/pragmatica.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="../css/pragmatica.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-    <h1>¿Qué está pasando en esta situación?</h1>
+    <h1>¿QUÉ ESTÁ PASANDO EN ESTA SITUACIÓN?</h1>
     <div class="image-box">
       <img id="situationImage" src="" alt="Situación">
     </div>
@@ -24,19 +24,19 @@
     src: "imagenes/nenallorando.png",
     preguntas: [
       {
-        texto: "¿Qué crees que pasó antes?",
-        opciones: ["Se cayó jugando", "Ganó un premio", "Fue a pasear feliz"],
-        correcta: "Se cayó jugando"
+        texto: "¿QUÉ CREES QUE PASÓ ANTES?",
+        opciones: ["NO LA INVITARON A JUGAR", "GANÓ UN PREMIO", "FUE A PASEAR FELIZ"],
+        correcta: "NO LA INVITARON A JUGAR"
       },
       {
-        texto: "¿Cómo se sienten esa persona?",
-        opciones: ["Triste", "Enojada", "Feliz"],
-        correcta: "Triste"
+        texto: "¿CÓMO SE SIENTEN ESA PERSONA?",
+        opciones: ["TRISTE", "ENOJADA", "FELIZ"],
+        correcta: "TRISTE"
       },
       {
-        texto: "¿Qué crees que podría pasar después?",
-        opciones: ["Los niños juegan con la nena", "Se va corriendo", "Empieza a gritar"],
-        correcta: "Los niños juegan con la nena"
+        texto: "¿QUÉ CREES QUE PODRÍA PASAR DESPUÉS?",
+        opciones: ["LOS NIÑOS JUEGAN CON LA NENA", "SE VA CORRIENDO", "EMPIEZA A GRITAR"],
+        correcta: "LOS NIÑOS JUEGAN CON LA NENA"
       }
     ]
   },
@@ -44,19 +44,19 @@
     src: "imagenes/nenespeleando.png",
     preguntas: [
       {
-        texto: "¿Qué crees que pasó antes?",
-        opciones: ["Discutieron", "Estaban comiendo", "Se saludaron con un abrazo"],
-        correcta: "Discutieron"
+        texto: "¿QUÉ CREES QUE PASÓ ANTES?",
+        opciones: ["DISCUTIERON", "ESTABAN COMIENDO", "SE SALUDARON CON UN ABRAZO"],
+        correcta: "DISCUTIERON"
       },
       {
-        texto: "¿Cómo se sienten esas dos personas?",
-        opciones: ["Enojados", "Asustados", "Contentos"],
-        correcta: "Enojados"
+        texto: "¿CÓMO SE SIENTEN ESAS DOS PERSONAS?",
+        opciones: ["ENOJADOS", "ASUSTADOS", "CONTENTOS"],
+        correcta: "ENOJADOS"
       },
       {
-        texto: "¿Qué crees que podría pasar después?",
-        opciones: ["Una maestra los separa", "Siguen peleando", "Se van juntos"],
-        correcta: "Una maestra los separa"
+        texto: "¿QUÉ CREES QUE PODRÍA PASAR DESPUÉS?",
+        opciones: ["UNA MAESTRA LOS SEPARA", "SIGUEN PELEANDO", "SE VAN JUNTOS"],
+        correcta: "UNA MAESTRA LOS SEPARA"
       }
     ]
   },
@@ -64,19 +64,19 @@
     src: "imagenes/nenaspeleando.png",
     preguntas: [
       {
-        texto: "¿Qué crees que pasó antes?",
-        opciones: ["Las dos querían el mismo juguete", "Les regalaron un peluche", "Fueron al recreo"],
-        correcta: "Las dos querían el mismo juguete"
+        texto: "¿QUÉ CREES QUE PASÓ ANTES?",
+        opciones: ["LAS DOS QUERÍAN EL MISMO JUGUETE", "LES REGALARON UN PELUCHE", "FUERON AL RECREO"],
+        correcta: "LAS DOS QUERÍAN EL MISMO JUGUETE"
       },
       {
-        texto: "¿Cómo se sienten esas dos personas?",
-        opciones: ["Celosas", "Enojadas", "Contentas"],
-        correcta: "Enojadas"
+        texto: "¿CÓMO SE SIENTEN ESAS DOS PERSONAS?",
+        opciones: ["CELOSAS", "ENOJADAS", "CONTENTAS"],
+        correcta: "ENOJADAS"
       },
       {
-        texto: "¿Qué crees que podría pasar después?",
-        opciones: ["Se lo prestan una a la otra", "Se lo lleva una sola", "Se olvidan del problema"],
-        correcta: "Se lo prestan una a la otra"
+        texto: "¿QUÉ CREES QUE PODRÍA PASAR DESPUÉS?",
+        opciones: ["SE LO PRESTAN UNA A LA OTRA", "SE LO LLEVA UNA SOLA", "SE OLVIDAN DEL PROBLEMA"],
+        correcta: "SE LO PRESTAN UNA A LA OTRA"
       }
     ]
   }
@@ -106,14 +106,32 @@
           if (opcion === pregunta.correcta) {
             aciertos++;
             btn.classList.add("correcta");
-            Swal.fire("¡Correcto!", "", "success").then(() => {
+            Swal.fire({
+              title: '🎉',
+              icon: 'none',
+              timer: 1500,
+              showConfirmButton: false,
+              customClass: {
+                title: 'emoji-title',
+                popup: 'emoji-popup'
+              }
+            }).then(() => {
               siguientePregunta();
             });
           } else {
             desaciertos++;
             btn.disabled = true;
             btn.style.opacity = "0.6";
-            Swal.fire("Incorrecto", "Intentá de nuevo.", "error");
+            Swal.fire({
+              title: '😢',
+              icon: 'none',
+              timer: 1500,
+              showConfirmButton: false,
+              customClass: {
+                title: 'emoji-title',
+                popup: 'emoji-popup'
+              }
+            });
           }
         };
 
@@ -133,41 +151,71 @@
     function enviarResultados() {
       const id_paciente = localStorage.getItem('id_paciente');
 
-      if (!id_paciente) {
-        Swal.fire("Error", "ID de paciente no encontrado en localStorage", "error");
-        return;
-      }
-
       const data = {
         id_paciente: parseInt(id_paciente),
-        paciente_juego: "Pragmática - Nivel 1",
+        paciente_juego: "Pragmática - Nivel 2",
         paciente_resultado: `${aciertos} aciertos, ${desaciertos} desaciertos`,
         paciente_acierto: aciertos,
         paciente_desacierto: desaciertos
       };
 
-    fetch('http://localhost:3000/juegos', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    if (!response.ok) throw new Error('Error al guardar los resultados');
-    return response.text();
-  })
-.then(msg => {
-    console.log(msg);
-    Swal.fire("¡Nivel completado!", "Resultados guardados exitosamente.", "success").then(() => {
-      window.location.href = "pragmatica3.html"; 
-    });
-  })
-  .catch(err => {
-    console.error(err);
-    Swal.fire("Error", "No se pudieron guardar los resultados", "error");
-  });
-}
+      fetch('http://localhost:3000/juegos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Error al guardar los resultados');
+        return response.text();
+      })
+      .then(msg => {
+        console.log(msg);
+        Swal.fire({
+          title: '¡NIVEL COMPLETADO!',
+          icon: 'none',
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: {
+            title: 'level-complete-title',
+            popup: 'level-complete-popup'
+          }
+        }).then(() => {
+          window.location.href = `pragmatica3.html?id_paciente=${id_paciente}`;
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        window.location.href = `pragmatica3.html?id_paciente=${id_paciente}`;
+      });
+    }
 
     mostrarPregunta();
+
+    // Agregar estilos para el emoji y el mensaje de nivel completado
+    const style = document.createElement('style');
+    style.textContent = `
+      .emoji-title {
+        font-size: 100px !important;
+        line-height: 1 !important;
+      }
+      .swal2-title {
+        padding: 0 !important;
+      }
+      .emoji-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .level-complete-title {
+        color: #338acc !important;
+        font-size: 40px !important;
+        text-align: center !important;
+      }
+      .level-complete-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>

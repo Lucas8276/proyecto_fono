@@ -4,87 +4,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Morfosintaxis - Nivel 1</title>
+  <title>Morfosintaxis - Nivel 3</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/morfosintaxis.css" rel="stylesheet">
 </head>
 
 <body>
-  <div class="instructions">Haz clic en "Mezclar" para obtener un lugar y escribir una oración.</div>
+  <div class="instructions">Arrastra las palabras para completar la oración según la imagen.</div>
+  
   <div class="contenedor-principal">
-  <div class="columna-izquierda">
-    <div class="imagen-box">
-      <img id="imagenSeleccionada" src="imagenes/granja.jpg" alt="Granja">
+    <div class="columna-izquierda">
+      <div class="imagen-box">
+        <img id="imagenSeleccionada" src="imagenes/familia.png" alt="Familia">
+      </div>
+      <p id="nombrePersonaje">Familia</p>
     </div>
-    <p id="nombrePersonaje">Granja</p>
-    <button class="boton-verde" onclick="mezclarImagen()">Mezclar</button>
-  </div>
 
-  <div class="columna-derecha">
-    <div class="recuadro-texto">
-      <textarea id="oracionUsuario" placeholder="Escribe aquí tu oración..."></textarea>
-      <button class="boton-verde" onclick="siguienteNivel()">Siguiente</button>
+    <div class="columna-derecha">
+      <div class="oracion-container" id="oracionContainer">
+        La <div class="espacio-palabra" data-palabra="familia"></div>
+        está <div class="espacio-palabra" data-palabra="cenando"></div>
+        en la <div class="espacio-palabra" data-palabra="mesa"></div>
+        de la <div class="espacio-palabra" data-palabra="casa"></div>.
+      </div>
+
+      <div class="palabras-container" id="palabrasContainer">
+        <div class="palabra" draggable="true" data-palabra="familia">familia</div>
+        <div class="palabra" draggable="true" data-palabra="cenando">cenando</div>
+        <div class="palabra" draggable="true" data-palabra="mesa">mesa</div>
+        <div class="palabra" draggable="true" data-palabra="casa">casa</div>
+        <div class="palabra" draggable="true" data-palabra="comiendo">comiendo</div>
+        <div class="palabra" draggable="true" data-palabra="cocina">cocina</div>
+      </div>
+
+      <button class="boton-verde" onclick="verificarOracion()">Verificar</button>
     </div>
   </div>
-</div>
 
   <script>
-    const personajes = [
-      { src: 'imagenes/granja.jpg', nombre: 'Granja' },
-      { src: 'imagenes/casa.jpg', nombre: 'Casa' },
-      { src: 'imagenes/escuela.jpg', nombre: 'Escuela' },
-      { src: 'imagenes/bosque.jpg', nombre: 'Bosque' },
-      { src: 'imagenes/parque.jpg', nombre: 'Parque' },
-      { src: 'imagenes/playa.png', nombre: 'Playa' }
-    ];
+    // Configurar eventos de arrastrar y soltar
+    document.addEventListener('DOMContentLoaded', () => {
+      const palabras = document.querySelectorAll('.palabra');
+      const espacios = document.querySelectorAll('.espacio-palabra');
 
-    function mezclarImagen() {
-      let contador = 0;
-      const imagen = document.getElementById('imagenSeleccionada');
-      const nombre = document.getElementById('nombrePersonaje');
-      const intervalo = setInterval(() => {
-        const index = Math.floor(Math.random() * personajes.length);
-        imagen.src = personajes[index].src;
-        nombre.textContent = personajes[index].nombre;
-        contador++;
-        if (contador > 15) clearInterval(intervalo);
-      }, 100);
+      palabras.forEach(palabra => {
+        palabra.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', palabra.dataset.palabra);
+          palabra.classList.add('dragging');
+        });
+
+        palabra.addEventListener('dragend', () => {
+          palabra.classList.remove('dragging');
+        });
+      });
+
+      espacios.forEach(espacio => {
+        espacio.addEventListener('dragover', e => {
+          e.preventDefault();
+        });
+
+        espacio.addEventListener('drop', e => {
+          e.preventDefault();
+          const palabra = e.dataTransfer.getData('text/plain');
+          espacio.textContent = palabra;
+          espacio.dataset.palabra = palabra;
+        });
+      });
+    });
+
+    function verificarOracion() {
+      const espacios = document.querySelectorAll('.espacio-palabra');
+      let correcto = true;
+      let oracionCompleta = '';
+
+      espacios.forEach(espacio => {
+        if (espacio.textContent !== espacio.dataset.palabra) {
+          correcto = false;
+        }
+        oracionCompleta += espacio.textContent + ' ';
+      });
+
+      if (correcto) {
+        Swal.fire('¡Correcto!', 'Has completado la oración correctamente.', 'success').then(() => {
+          enviarDatosAlServidor(oracionCompleta.trim());
+          window.location.href = '../index.html';
+        });
+      } else {
+        Swal.fire('Inténtalo de nuevo', 'La oración no está completa o tiene errores.', 'warning');
+      }
     }
 
-    function siguienteNivel() {
-      const texto = document.getElementById("oracionUsuario").value.trim();
-      if (texto.length < 5) {
-        Swal.fire('Ups...', 'Escribe una oración más completa.', 'warning');
-        return;
-      }
-      enviarDatosAlServidor();
-      Swal.fire('¡Excelente!', 'Has completado todos los niveles de Morfosintaxis 🎉', 'success').then(() => {
-        window.location.href = '../index.html';
+    function enviarDatosAlServidor(oracion) {
+      const id_paciente = localStorage.getItem('id_paciente');
+      const paciente_juego = 'Morfosintaxis - Nivel 3';
+      const paciente_resultado = oracion;
+      
+      fetch('http://localhost:3000/juegos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
+      })
+      .then(response => {
+        if (response.ok) {
+          Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
+        } else {
+          Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+        }
+      })
+      .catch(() => {
+        Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
       });
     }
-    function enviarDatosAlServidor() {
-            const id_paciente = localStorage.getItem('id_paciente');
-            const paciente_juego = 'Morfosintaxis - Nivel 3';
-            const paciente_resultado = document.getElementById("oracionUsuario").value.trim();
-            fetch('http://localhost:3000/juegos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
-            })
-            .then(response => {
-                if (response.ok) {
-                    Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
-                } else {
-                    Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
-            });
-        }
   </script>
 </body>
 </html>
