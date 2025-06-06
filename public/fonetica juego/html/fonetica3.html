@@ -4,7 +4,7 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fonética - Nivel 3</title>
+  <title>FONÉTICA - NIVEL 3</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/fonetica.css" rel="stylesheet">
@@ -18,105 +18,157 @@
 
   <div class="game-area">
     <div class="letters-col">
-      <div class="letter-tile" draggable="true" data-letter="K">K</div>
-      <div class="letter-tile" draggable="true" data-letter="T">T</div>
       <div class="letter-tile" draggable="true" data-letter="RR">RR</div>
+      <div class="letter-tile" draggable="true" data-letter="Ñ">Ñ</div>
       <div class="letter-tile" draggable="true" data-letter="LL">LL</div>
       <div class="letter-tile" draggable="true" data-letter="CH">CH</div>
-      <div class="letter-tile" draggable="true" data-letter="CC">CC</div>
-      <div class="letter-tile" draggable="true" data-letter="Ñ">Ñ</div>
+      <div class="letter-tile" draggable="true" data-letter="D">D</div>
+      <div class="letter-tile" draggable="true" data-letter="F">F</div>
+      <div class="letter-tile" draggable="true" data-letter="S">S</div>
     </div>
 
     <div class="images-col">
-      <div class="image-box" data-answer="LL"><img src="imagenes/letraLL.png"  /></div>
-      <div class="image-box" data-answer="RR"><img src="imagenes/letraRR.png"  /></div>
-      <div class="image-box" data-answer="Ñ"><img src="imagenes/letraÑ.png"  /></div>
-      <div class="image-box" data-answer="CH"><img src="imagenes/letraCH.png" /></div>
-      
+      <div class="image-box" data-answer="Ñ"><img src="imagenes/letraÑ.png" alt="LETRA Ñ" /></div>
+      <div class="image-box" data-answer="CH"><img src="imagenes/letraCH.png" alt="LETRA CH" /></div>
+      <div class="image-box" data-answer="LL"><img src="imagenes/letraLL.png" alt="LETRA LL" /></div>
+      <div class="image-box" data-answer="RR"><img src="imagenes/letraRR.png" alt="LETRA RR" /></div>
     </div>
   </div>
 
-<script>
-    let draggedLetter = null;
-    let aciertos = 0;
-    let desaciertos = 0;
-    document.querySelectorAll('.letter-tile').forEach(letter => {
-      letter.addEventListener('dragstart', (e) => {
-        draggedLetter = letter.getAttribute('data-letter');
-      });
-    });
+  <div id="alertBox" class="alert" style="display: none;">
+    <span id="alertMessage"></span>
+  </div>
 
-    document.querySelectorAll('.image-box').forEach(box => {
-      box.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        box.classList.add('dragover');
-      });
+  <button id="nextButton" style="display: none;">SIGUIENTE</button>
 
-      box.addEventListener('dragleave', () => {
-        box.classList.remove('dragover');
-      });
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const letterTiles = document.querySelectorAll(".letter-tile");
+      const imageBoxes = document.querySelectorAll(".image-box");
+      let correctMatches = 0;
+      let currentLevel = 3;
+      let id_paciente = localStorage.getItem('id_paciente');
 
-      box.addEventListener('drop', () => {
-      box.classList.remove('dragover');
-      const correct = box.getAttribute('data-answer');
-
-      if (draggedLetter === correct) {
-        aciertos++;
-        Swal.fire('¡Correcto!', '', 'success');
-        setTimeout(() => {
-          box.remove();
-          const usedLetter = document.querySelector(`.letter-tile[data-letter="${draggedLetter}"]`);
-          if (usedLetter) usedLetter.remove();
-        
-          // Si ya no hay imágenes, guardar en el backend
-          if (document.querySelectorAll('.image-box').length === 0) {
-            Swal.fire('¡Muy bien!', 'Pasando al siguiente nivel...', 'success').then(() => {
-              guardarResultado();
-            });
+      // Función para mostrar alerta
+      function showAlert(message, isSuccess) {
+        Swal.fire({
+          title: message,
+          icon: 'none',
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: {
+            title: 'emoji-title',
+            popup: 'emoji-popup'
           }
-        }, 300);
-      } else {
-        desaciertos++;
-        Swal.fire('Ups...', 'Esa no es la letra correcta.', 'error');
+        });
       }
+
+      // Función para verificar si se completó el nivel
+      function checkLevelCompletion() {
+        if (correctMatches === imageBoxes.length) {
+          Swal.fire({
+            title: '¡NIVEL COMPLETADO!',
+            icon: 'none',
+            timer: 1500,
+            showConfirmButton: false,
+            customClass: {
+              title: 'level-complete-title',
+              popup: 'level-complete-popup'
+            }
+          });
+          goToNextLevel();
+        }
+      }
+
+      // Función para navegar al siguiente nivel
+      function goToNextLevel() {
+        // Si estamos en el nivel 3, volvemos al index
+        setTimeout(() => {
+          window.location.href = `../../index.html?id_paciente=${id_paciente}`;
+        }, 1500);
+      }
+
+      // Eventos de arrastre para las letras
+      letterTiles.forEach((tile) => {
+        tile.setAttribute("draggable", "true");
+        
+        tile.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", tile.dataset.letter);
+          tile.classList.add("dragging");
+        });
+
+        tile.addEventListener("dragend", () => {
+          tile.classList.remove("dragging");
+        });
+      });
+
+      // Eventos para las cajas de imágenes
+      imageBoxes.forEach((box) => {
+        box.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          box.classList.add("drag-over");
+        });
+
+        box.addEventListener("dragleave", () => {
+          box.classList.remove("drag-over");
+        });
+
+        box.addEventListener("drop", (e) => {
+          e.preventDefault();
+          box.classList.remove("drag-over");
+          const letter = e.dataTransfer.getData("text/plain");
+          const correctLetter = box.getAttribute("data-answer");
+
+          console.log("Letra arrastrada:", letter);
+          console.log("Letra correcta:", correctLetter);
+
+          if (letter === correctLetter) {
+            // Eliminar la letra
+            const tile = document.querySelector(
+              `.letter-tile[data-letter="${letter}"]`
+            );
+            if (tile) {
+              tile.remove();
+            }
+
+            // Eliminar la imagen
+            box.remove();
+
+            correctMatches++;
+            showAlert("🎉", true);
+            checkLevelCompletion();
+          } else {
+            showAlert("😢", false);
+          }
+        });
+      });
+
+      // Agregar estilos para el emoji y el mensaje de nivel completado
+      const style = document.createElement('style');
+      style.textContent = `
+        .emoji-title {
+          font-size: 100px !important;
+          line-height: 1 !important;
+        }
+        .swal2-title {
+          padding: 0 !important;
+        }
+        .emoji-popup {
+          background: transparent !important;
+          box-shadow: none !important;
+        }
+        .level-complete-title {
+          color: #ff6632 !important;
+          font-size: 40px !important;
+          text-align: center !important;
+        }
+        .level-complete-popup {
+          background: transparent !important;
+          box-shadow: none !important;
+        }
+      `;
+      document.head.appendChild(style);
     });
-  });
-  function guardarResultado() {
-  const id_paciente = localStorage.getItem('id_paciente');
-
-  if (!id_paciente) {
-    console.error("ID de paciente no encontrado en localStorage");
-    return;
-  }
-
-  const data = {
-    id_paciente: parseInt(id_paciente),
-    paciente_juego: 'Fonetica-Nivel 3',
-    paciente_resultado: `Aciertos: ${aciertos}, Desaciertos: ${desaciertos}`,
-    paciente_acierto: aciertos,
-    paciente_desacierto: desaciertos
-  };
-
-  fetch('http://localhost:3000/juegos', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(res => {
-    if (res.ok) {
-      window.location.href = '../index.html';
-    } else {
-      throw new Error('Error al guardar resultado');
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    Swal.fire('Error', 'No se pudo guardar el resultado.', 'error');
-  });
-}
-
   </script>
 </body>
 </html>

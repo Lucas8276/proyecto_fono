@@ -43,7 +43,7 @@
       padding: 20px 40px;
       font-size: 2rem;
       color: white;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      background: linear-gradient(135deg, #8a9cfc, #6a7cf8);
       border: none;
       border-radius: 12px;
       cursor: pointer;
@@ -53,7 +53,7 @@
     }
 
     #registerButton:hover {
-      background: linear-gradient(135deg, #2575fc, #6a11cb);
+      background: linear-gradient(135deg, #6a7cf8, #8a9cfc);
       transform: scale(1.05);
     }
 
@@ -62,20 +62,23 @@
     }
 
     .menu-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 40px;
       width: 100%;
-      max-width: 1200px;
+      max-width: 1400px;
+      justify-items: center;
+      align-items: center;
+      padding: 20px;
     }
 
     .menu-button {
-      width: 280px;
-      height: 280px;
+      width: 400px;
+      height: 400px;
       border: none;
-      border-radius: 30px;
-      font-size: 1.8rem;
+      border-radius: 40px;
+      font-size: 2.5rem;
       font-weight: bold;
       color: white;
       cursor: pointer;
@@ -96,8 +99,44 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     }
 
+    .menu-button:nth-child(4),
+    .menu-button:nth-child(5) {
+      grid-column: span 1;
+    }
+
+    .menu-button:nth-child(4) {
+      grid-column: 2;
+      grid-row: 2;
+      transform: translateX(-60%);
+    }
+
+    .menu-button:nth-child(5) {
+      grid-column: 2;
+      grid-row: 2;
+      transform: translateX(60%);
+    }
+
+    .menu-button:nth-child(4):hover,
+    .menu-button:nth-child(5):hover {
+      transform: translateX(var(--translate)) scale(1.05);
+    }
+
+    .menu-button:nth-child(4) {
+      --translate: -60%;
+    }
+
+    .menu-button:nth-child(5) {
+      --translate: 60%;
+    }
+
+    .menu-container::after {
+      content: '';
+      grid-column: 3;
+      grid-row: 2;
+    }
+
     .semantica { background-color: #ffd817; }
-    .pragmatica { background-color: #0074ff; }
+    .pragmatica { background-color: #4a94ff; }
     .morfosintaxis { background-color: #00b453; }
     .fonetica { background-color: #ff6632; }
     .fonologia { background-color: #ff86bb; }
@@ -156,11 +195,23 @@
       h1 {
         font-size: 2.2rem;
       }
+      .menu-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
       .menu-button {
-        font-size: 1.3rem;
-        border-radius: 20px;
-        width: 160px;
-        height: 160px;
+        font-size: 1.8rem;
+        border-radius: 25px;
+        width: 250px;
+        height: 250px;
+      }
+      .menu-button:nth-child(4) {
+        grid-column: 1;
+        transform: none;
+      }
+      .menu-button:nth-child(5) {
+        grid-column: 2;
+        transform: none;
       }
       #registerButton {
         font-size: 1.5rem;
@@ -171,31 +222,31 @@
 </head>
 
 <body>
-  <h1>Selecciona una sección</h1>
+  <h1>SELECCIONA UNA SECCIÓN</h1>
 
   <!-- Botón registrar -->
-  <button id="registerButton">Registrar Paciente</button>
+  <button id="registerButton">REGISTRAR PACIENTE</button>
 
   <!-- Modal -->
   <div class="modal" id="infoModal">
     <div class="modal-content">
-      <h2>Información del Niño paciente</h2>
+      <h2>INFORMACIÓN DEL NIÑO PACIENTE</h2>
       <form id="pacienteForm">
-        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="nombre" placeholder="NOMBRE" required>
         <input type="text" name="dni" placeholder="DNI" required>
-        <input type="number" name="edad" placeholder="Edad" required>
-        <button type="submit">Enviar</button>
+        <input type="number" name="edad" placeholder="EDAD" required>
+        <button type="submit">ENVIAR</button>
       </form>
     </div>
   </div>
 
   <!-- Menú -->
   <div class="menu-container">
-    <button class="menu-button semantica" onclick="location.href='semantica juego/html/semantica1.html'">Semántica</button>
-    <button class="menu-button pragmatica" onclick="location.href='pragmatica juego/html/pragmatica1.html'">Pragmática</button>
-    <button class="menu-button morfosintaxis" onclick="location.href='morfosintaxis juego/html/morfosintaxis1.html'">Morfosintaxis</button>
-    <button class="menu-button fonetica" onclick="location.href='fonetica juego/html/fonetica1.html'">Fonética</button>
-    <button class="menu-button fonologia" onclick="location.href='fonologia juego/html/fonologia1.html'">Fonología</button>
+    <button class="menu-button semantica" onclick="location.href='semantica juego/html/semantica1.html'">SEMÁNTICA</button>
+    <button class="menu-button pragmatica" onclick="location.href='pragmatica juego/html/pragmatica1.html'">PRAGMÁTICA</button>
+    <button class="menu-button morfosintaxis" onclick="location.href='morfosintaxis juego/html/morfosintaxis1.html'">MORFOSINTAXIS</button>
+    <button class="menu-button fonetica" onclick="location.href='fonetica juego/html/fonetica1.html'">FONÉTICA</button>
+    <button class="menu-button fonologia" onclick="location.href='fonologia juego/html/fonologia1.html'">FONOLOGÍA</button>
   </div>
 
   <!-- Scripts -->

@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pragmática - Nivel 1</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/pragmatica.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="../css/pragmatica.css" rel="stylesheet">
 </head>
 
 <body>
 <div class="container">
-    <h1>¿Qué está pasando en esta situación?</h1>
+    <h1>¿QUÉ ESTÁ PASANDO EN ESTA SITUACIÓN?</h1>
     <div class="image-box">
       <img id="situationImage" src="" alt="Situación">
     </div>
@@ -25,19 +25,19 @@
         src: "imagenes/nenallorando.png",
         preguntas: [
           {
-            texto: "¿Qué ves en la imagen?",
-            opciones: ["Una familia de paseo", "Una maestra enseñando", "Una nena llorando en un banco"],
-            correcta: "Una nena llorando en un banco"
+            texto: "¿QUÉ VES EN LA IMAGEN?",
+            opciones: ["UNA FAMILIA DE PASEO", "UNA MAESTRA ENSEÑANDO", "UNA NENA LLORANDO EN UN BANCO"],
+            correcta: "UNA NENA LLORANDO EN UN BANCO"
           },
           {
-            texto: "¿Quiénes están ahí?",
-            opciones: ["Un doctor y sus pacientes", "Unos niños en la escuela", "Una nena triste y niños jugando"],
-            correcta: "Una nena triste y niños jugando"
+            texto: "¿QUIÉNES ESTÁN AHÍ?",
+            opciones: ["UN DOCTOR Y SUS PACIENTES", "UNOS NIÑOS EN LA ESCUELA", "UNA NENA TRISTE Y NIÑOS JUGANDO"],
+            correcta: "UNA NENA TRISTE Y NIÑOS JUGANDO"
           },
           {
-            texto: "¿Qué están haciendo?",
-            opciones: ["Durmiendo", "Están leyendo cuentos", "La nena llora y los niños juegan"],
-            correcta: "La nena llora y los niños juegan"
+            texto: "¿QUÉ ESTÁN HACIENDO?",
+            opciones: ["DURMIENDO", "ESTÁN LEYENDO CUENTOS", "LA NENA LLORA Y LOS NIÑOS JUEGAN"],
+            correcta: "LA NENA LLORA Y LOS NIÑOS JUEGAN"
           }
         ]
       },
@@ -91,7 +91,7 @@
     function mostrarPregunta() {
       const pregunta = imagenSeleccionada.preguntas[preguntaIndex];
       document.getElementById("situationImage").src = imagenSeleccionada.src;
-      document.getElementById("preguntaTexto").textContent = pregunta.texto;
+      document.getElementById("preguntaTexto").textContent = pregunta.texto.toUpperCase();
 
       const container = document.getElementById("optionsContainer");
       container.innerHTML = "";
@@ -99,22 +99,37 @@
       pregunta.opciones.forEach(opcion => {
         const btn = document.createElement("button");
         btn.className = "option-btn";
-        btn.textContent = opcion;
+        btn.textContent = opcion.toUpperCase();
 
         btn.onclick = () => {
           if (btn.disabled) return;
 
           if (opcion === pregunta.correcta) {
             aciertos++;
-            btn.classList.add("correcta");
-            Swal.fire("¡Correcto!", "", "success").then(() => {
+            Swal.fire({
+              title: '🎉',
+              icon: 'none',
+              timer: 1500,
+              showConfirmButton: false,
+              customClass: {
+                title: 'emoji-title',
+                popup: 'emoji-popup'
+              }
+            }).then(() => {
               siguientePregunta();
             });
           } else {
             desaciertos++;
-            btn.disabled = true;
-            btn.style.opacity = "0.6";
-            Swal.fire("Incorrecto", "Intentá de nuevo.", "error");
+            Swal.fire({
+              title: '😢',
+              icon: 'none',
+              timer: 1500,
+              showConfirmButton: false,
+              customClass: {
+                title: 'emoji-title',
+                popup: 'emoji-popup'
+              }
+            });
           }
         };
 
@@ -134,39 +149,69 @@
     function enviarResultados() {
       const id_paciente = localStorage.getItem('id_paciente');
 
-      if (!id_paciente) {
-        Swal.fire("Error", "ID de paciente no encontrado en localStorage", "error");
-        return;
-      }
-
       const data = {
         id_paciente: parseInt(id_paciente),
-        paciente_juego: "Pragmática - Nivel 2",
+        paciente_juego: "Pragmática - Nivel 1",
         paciente_resultado: `${aciertos} aciertos, ${desaciertos} desaciertos`,
         paciente_acierto: aciertos,
         paciente_desacierto: desaciertos
       };
 
-    fetch('http://localhost:3000/juegos', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    if (!response.ok) throw new Error('Error al guardar los resultados');
-    return response.text();
-  })
-.then(msg => {
-    console.log(msg);
-    Swal.fire("¡Nivel completado!", "Resultados guardados exitosamente.", "success").then(() => {
-      window.location.href = "pragmatica2.html"; 
-    });
-  })
-  .catch(err => {
-    console.error(err);
-    Swal.fire("Error", "No se pudieron guardar los resultados", "error");
-  });
-}
+      fetch('http://localhost:3000/juegos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Error al guardar los resultados');
+        return response.text();
+      })
+      .then(msg => {
+        console.log(msg);
+        Swal.fire({
+          title: '¡NIVEL COMPLETADO!',
+          icon: 'none',
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: {
+            title: 'level-complete-title',
+            popup: 'level-complete-popup'
+          }
+        }).then(() => {
+          window.location.href = `pragmatica2.html?id_paciente=${id_paciente}`;
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        window.location.href = `pragmatica2.html?id_paciente=${id_paciente}`;
+      });
+    }
+
+    // Agregar estilos para el emoji y el mensaje de nivel completado
+    const style = document.createElement('style');
+    style.textContent = `
+      .emoji-title {
+        font-size: 100px !important;
+        line-height: 1 !important;
+      }
+      .swal2-title {
+        padding: 0 !important;
+      }
+      .emoji-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .level-complete-title {
+        color: #338acc !important;
+        font-size: 40px !important;
+        text-align: center !important;
+      }
+      .level-complete-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
 
     mostrarPregunta();
   </script>

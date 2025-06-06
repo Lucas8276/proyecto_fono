@@ -3,14 +3,11 @@
   font-family: "Fredoka", sans-serif;
   margin: 0;
   padding: 0;
+  text-transform: uppercase;
 }
 
 body {
-  background: #fff9f0;
-  background-image: url("imagenes/fondo naranja.svg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  background: #ffd6b3;
   min-height: 100vh;
   padding: clamp(15px, 3vw, 30px);
 }
@@ -23,124 +20,141 @@ h1 {
 }
 
 .instructions {
-  background: #fff4e6;
+  background: rgba(255, 255, 255, 0.9);
   border: 2px solid #ff9966;
   border-radius: 15px;
   padding: clamp(15px, 3vw, 20px);
-  font-size: clamp(1rem, 2.5vw, 1.3rem);
-  color: #e6704d;
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  color: #ff6632;
   margin-bottom: clamp(20px, 4vw, 30px);
   text-align: center;
-  max-width: 900px;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  font-weight: 600;
 }
+
 .game-area {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(40px, 8vw, 60px);
-  max-width: 1400px;
+  gap: clamp(60px, 8vw, 80px);
+  max-width: 1600px;
   margin: 0 auto;
   padding: clamp(20px, 4vw, 40px) 0;
 }
 
 .letters-col {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  display: flex;
   justify-content: center;
-  gap: clamp(20px, 4vw, 40px);
+  gap: clamp(30px, 4vw, 50px);
   width: 100%;
-  max-width: 800px;
+  max-width: 1400px;
   margin-bottom: clamp(20px, 4vw, 30px);
+  position: relative;
 }
 
 .images-col {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: flex;
   justify-content: center;
-  gap: clamp(20px, 4vw, 40px);
+  gap: clamp(30px, 4vw, 50px);
   width: 100%;
-  max-width: 800px;
+  max-width: 1400px;
+  position: relative;
 }
 
 .image-box {
-  width: 100%;
-  aspect-ratio: 1;
-  max-width: 220px;
+  width: 280px;
+  height: 280px;
   background: white;
   border: 3px solid #ff9966;
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
 }
 
 .image-box img {
-  max-width: 95%;
-  max-height: 95%;
+  width: 90%;
+  height: 90%;
   object-fit: contain;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .letter-tile {
-  width: 100%;
-  aspect-ratio: 1;
-  max-width: 130px;
+  width: 180px;
+  height: 180px;
   background: white;
   border: 3px solid #ff9966;
   border-radius: 20px;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(3rem, 5vw, 4rem);
   font-weight: bold;
-  color: #ff9966;
+  color: #ff6632;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
-  margin: 0 auto;
+  position: relative;
+}
+
+.letter-tile:hover {
+  transform: scale(1.1);
+  z-index: 1;
+  transition: transform 0.3s ease;
 }
 
 .image-box.dragover {
-  background: #fff4e6;
-  border-color: #ff8040;
+  background: rgba(255, 255, 255, 0.8);
+  border-color: #ff6632;
+}
+
+@media (max-width: 1200px) {
+  .image-box {
+    width: 220px;
+    height: 220px;
+  }
+
+  .letter-tile {
+    width: 140px;
+    height: 140px;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+  }
 }
 
 @media (max-width: 768px) {
-  .letters-col {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-  }
-
+  .letters-col,
   .images-col {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 20px;
   }
 
-  .image-box,
+  .image-box {
+    width: 180px;
+    height: 180px;
+  }
+
   .letter-tile {
-    max-width: 100px;
+    width: 120px;
+    height: 120px;
+    font-size: 2.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .letters-col {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-
-  .images-col {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  .image-box,
-  .letter-tile {
-    max-width: 80px;
-    border-radius: 12px;
+  .image-box {
+    width: 140px;
+    height: 140px;
   }
 
   .letter-tile {
-    font-size: 1.8rem;
+    width: 100px;
+    height: 100px;
+    font-size: 2rem;
   }
 }
