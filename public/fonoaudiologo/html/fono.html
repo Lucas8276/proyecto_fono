@@ -136,6 +136,9 @@
 </div>
 
 <script>
+
+
+
 document.getElementById('buscarPacienteForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const query = document.getElementById('buscarPacienteInput').value.trim();
@@ -217,30 +220,35 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
 });
 
 // Login
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
+
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  fetch('http://localhost:3000/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  })
-  .then(res => res.json())
-  .then(data => {
+  try {
+    const response = await fetch('http://localhost:3000/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
     if (data.success) {
+      // Guardar el ID del fonoaudiólogo
       if (data.id_fono) {
         localStorage.setItem('id_fono', data.id_fono);
       }
-      document.getElementById('loginContainer').style.display = 'none';
-      document.getElementById('registerContainer').style.display = 'none';
-      document.getElementById('postLoginContainer').style.display = 'block';
+      // Redirigir directamente a la página de visualización
+      window.location.href = 'visualizacion_pacientes.html';
     } else {
       Swal.fire('Login fallido', data.message || 'Credenciales incorrectas.', 'error');
     }
-  })
-  .catch(() => Swal.fire('Error', 'No se pudo conectar al servidor.', 'error'));
+
+  } catch (error) {
+    Swal.fire('Error', 'No se pudo conectar al servidor.', 'error');
+  }
 });
 
 // Mostrar modal de datos del niño
