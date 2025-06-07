@@ -7,124 +7,160 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/fonologia.css" rel="stylesheet">
-  
 </head>
 
 <body>
 
   <div class="instructions">
-    Observá las imágenes y leé las palabras en voz baja. ¿Suenan igual o diferente?
+    QUITÁ EL FONEMA CORRESPONDIETE Y FORMÁ NUEVAS PALABRAS
   </div>
 
   <div class="container">
-    <div class="word-row">
-      <div class="word-block">
-        <img id="img1" src="" alt="Imagen 1" class="word-img">
-        <div class="word-text" id="word1"></div>
+    <div class="exercises-container">
+      <div class="exercise-block">
+        <div class="question">Si a COMER le quitamos el fonema R, ¿qué palabra nos queda?</div>
+        <div class="operation">
+          <div class="base-word">COMER</div>
+          <div class="plus-sign">-</div>
+          <div class="phoneme">R</div>
+          <div class="equals-sign">=</div>
+          <input type="text" class="word-input" id="input1" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(1, 'CASAS')">
+        </div>
       </div>
-      <div class="word-block">
-        <img id="img2" src="" alt="Imagen 2" class="word-img">
-        <div class="word-text" id="word2"></div>
-      </div>
-    </div>
 
-    <div class="buttons">
-      <button class="btn igual" onclick="checkAnswer(true)">Suenan igual</button>
-      <button class="btn distinto" onclick="checkAnswer(false)">Suenan diferente</button>
+      <div class="exercise-block">
+        <div class="question">Si a PALTA le quitamos el fonema P, ¿qué palabra nos queda?</div>
+        <div class="operation">
+          <div class="base-word">PALTA</div>
+          <div class="plus-sign">-</div>
+          <div class="phoneme">P</div>
+          <div class="equals-sign">=</div>
+          <input type="text" class="word-input" id="input2" placeholder="Escribe la palabra">
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="question">Si a PASTO le quitamos el fonema S, ¿qué palabra nos queda?</div>
+        <div class="operation">
+          <div class="base-word">PASTO</div>
+          <div class="plus-sign">-</div>
+          <div class="phoneme">S</div>
+          <div class="equals-sign">=</div>
+          <input type="text" class="word-input" id="input3" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(3, 'MESAS')">
+        </div>
+      </div>
     </div>
-  </div>
 
   <script>
-    const pairs = [
-  {
-    word1: "vaca",
-    word2: "foca",
-    img1: "imagenes/vaca.jpg",
-    img2: "imagenes/foca.jpg",
-    same: false
-  },
-  {
-    word1: "pato",
-    word2: "dado",
-    img1: "imagenes/pato.jpg",
-    img2: "imagenes/dado.jpg",
-    same: false
-  },
-  {
-    word1: "gota",
-    word2: "sopa",
-    img1: "imagenes/gota.jpg",
-    img2: "imagenes/sopa.jpg",
-    same: false
-  }
-];
-
-    let current = 0;
     let aciertos = 0;
     let desaciertos = 0;
-    function showPair() {
-      const pair = pairs[current];
-      document.getElementById("word1").textContent = pair.word1;
-      document.getElementById("word2").textContent = pair.word2;
-      document.getElementById("img1").src = pair.img1;
-      document.getElementById("img2").src = pair.img2;
-    }
+    let correctAnswers = new Set();
 
-    function checkAnswer(userSaysSame) {
-      const isCorrect = userSaysSame === pairs[current].same;
-      if (isCorrect) {
-        aciertos++;
-        Swal.fire('¡Correcto!', '', 'success').then(() => {
-          current++;
-          if (current >= pairs.length) {
-            enviarDatosAlServidor();
-            Swal.fire('¡Nivel completado!', 'Pasando al siguiente nivel...', 'success').then(() => {
-              window.location.href = 'fonologia3.html';
-            });
-          } else {
-            showPair();
+    function checkAnswerOnInput(inputId, correctAnswer) {
+      const input = document.getElementById(`input${inputId}`);
+      const userAnswer = input.value.toUpperCase().trim();
+      if (userAnswer.length === correctAnswer.length) {
+        const isCorrect = userAnswer === correctAnswer;
+        
+        if (isCorrect) {
+          if (!correctAnswers.has(inputId)) {
+            aciertos++;
+            correctAnswers.add(inputId);
           }
-        });
-      } else {
-        desaciertos++;
-        Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
+          Swal.fire({
+            title: '🎉',
+            icon: 'none',
+            timer: 1500,
+            showConfirmButton: false,
+            customClass: {
+              title: 'emoji-title',
+              popup: 'emoji-popup'
+            }
+          }).then(() => {
+            if (correctAnswers.size === 3) {
+              enviarDatosAlServidor();
+              window.location.href = 'fonologia3.html';
+            }
+          });
+        } else {
+          if (!correctAnswers.has(inputId)) {
+            desaciertos++;
+          }
+          Swal.fire({
+            title: '😢',
+            icon: 'none',
+            timer: 1500,
+            showConfirmButton: false,
+            customClass: {
+              title: 'emoji-title',
+              popup: 'emoji-popup'
+            }
+          }).then(() => {
+            input.value = ''; // Borrar el contenido del input
+          });
+        }
       }
     }
-    function enviarDatosAlServidor() {
-    const id_paciente = localStorage.getItem('id_paciente');
-    const paciente_juego = 'Fonologia-Nivel 2';
-    const paciente_resultado = `${aciertos} aciertos, ${desaciertos} desaciertos`;
-    const paciente_acierto = aciertos;
-    const paciente_desacierto = desaciertos;
 
-    fetch('http://localhost:3000/juegos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id_paciente,
-        paciente_juego,
-        paciente_resultado,
-        paciente_acierto,
-        paciente_desacierto
-      })
-    })
-    .then(response => {
-      if (response.ok) {
-        Swal.fire('¡Nivel completado!', 'Datos guardados correctamente.', 'success').then(() => {
-          window.location.href = 'fonologia2.html';
-        });
+    function checkAllAnswers() {
+      if (correctAnswers.size === 3) {
+        enviarDatosAlServidor();
+        window.location.href = 'fonologia3.html';
       } else {
-        Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+        Swal.fire('Atención', 'Necesitas completar todos los ejercicios correctamente para continuar.', 'warning');
       }
-    })
-    .catch(() => {
-      Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
-    });
-  }
+    }
 
-  showPair();
+    function enviarDatosAlServidor() {
+      const id_paciente = localStorage.getItem('id_paciente');
+      const paciente_juego = 'Fonologia-Nivel 2';
+      const paciente_resultado = `${aciertos} aciertos, ${desaciertos} desaciertos`;
+      const paciente_acierto = aciertos;
+      const paciente_desacierto = desaciertos;
+
+      fetch('http://localhost:3000/juegos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_paciente,
+          paciente_juego,
+          paciente_resultado,
+          paciente_acierto,
+          paciente_desacierto
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          Swal.fire('¡Nivel completado!', 'Datos guardados correctamente.', 'success').then(() => {
+            window.location.href = 'fonologia3.html';
+          });
+        } else {
+          Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+        }
+      })
+      .catch(() => {
+        Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+      });
+    }
+
+    // Agregar estilos para el emoji
+    const style = document.createElement('style');
+    style.textContent = `
+      .emoji-title {
+        font-size: 100px !important;
+        line-height: 1 !important;
+      }
+      .swal2-title {
+        padding: 0 !important;
+      }
+      .emoji-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>

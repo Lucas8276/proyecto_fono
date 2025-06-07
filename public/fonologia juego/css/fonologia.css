@@ -6,11 +6,12 @@
     }
 
     body {
+      font-family: 'Fredoka', sans-serif;
       background-color: #fff0f6;
       background-image: url('imagenes/fonfo rosa.svg');
       background-repeat: no-repeat;
       background-size: cover;
-      background-position: center;
+      margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -28,8 +29,9 @@
       text-align: center;
       font-size: 1.3rem;
       font-weight: bold;
-      color: #c44679;
+      color: #ff86bb;
       box-shadow: 0 8px 24px rgba(255, 134, 187, 0.1);
+      text-transform: uppercase;
     }
 
     .container {
@@ -43,10 +45,24 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     }
 
+    .exercises-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .exercise-block {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
     .word-row {
       display: flex;
       justify-content: center;
-      gap: 80px;
+      gap: 40px;
       margin-bottom: 40px;
       flex-wrap: wrap;
     }
@@ -55,24 +71,88 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      max-width: 220px;
+      max-width: 800px;
+      width: 100%;
     }
 
-    .word-img {
-      width: 180px;
-      height: 180px;
-      object-fit: contain;
-      border: 4px solid #ff86bb;
-      border-radius: 18px;
-      background: white;
-      margin-bottom: 15px;
-    }
-
-    .word-text {
-      font-size: 2.4rem;
+    .question {
+      font-size: 1.8rem;
       font-weight: bold;
-      color: #ff4f9c;
+      color: #000;
       text-align: center;
+      margin-bottom: 30px;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .base-word {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #ff86bb;
+      text-transform: uppercase;
+    }
+
+    .phoneme {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #ff86bb;
+      text-transform: uppercase;
+    }
+
+    .plus-sign, .equals-sign {
+      font-size: 2rem;
+      color: #000;
+    }
+
+    .operation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+
+    .word-input {
+      width: 250px;
+      height: 60px;
+      font-size: 1.8rem;
+      text-align: center;
+      border: 3px solid #ff86bb;
+      border-radius: 12px;
+      color: #000;
+      font-weight: bold;
+      padding: 0 20px;
+      text-transform: uppercase;
+      margin-right: 10px;
+    }
+
+    .word-input:focus {
+      outline: none;
+      border-color: #ff4f9c;
+      box-shadow: 0 0 10px rgba(255, 79, 156, 0.3);
+    }
+
+    .word-input::placeholder {
+      color: #ffb6d9;
+    }
+
+    .check-btn {
+      background-color: rgba(255, 134, 187, 0.7);
+      color: #000;
+      font-size: 16px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .check-btn:hover {
+      background-color: rgba(255, 134, 187, 0.9);
     }
 
     .buttons {
@@ -80,6 +160,7 @@
       justify-content: center;
       gap: 40px;
       flex-wrap: wrap;
+      margin-top: 20px;
     }
 
     .btn {
@@ -93,15 +174,36 @@
     }
 
     .igual {
-      background-color: #b8f2e6;
-      color: #00776c;
-    }
-
-    .distinto {
-      background-color: #ffd6e6;
-      color: #a90040;
+      background-color: rgba(255, 134, 187, 0.7);
+      color: #000;
     }
 
     .btn:hover {
       transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 10px;
+      }
+
+      .instructions {
+        font-size: 20px;
+        width: 95%;
+      }
+
+      .question {
+        font-size: 18px;
+      }
+
+      .base-word, .phoneme {
+        font-size: 20px;
+        padding: 8px 15px;
+      }
+
+      .word-input {
+        font-size: 18px;
+        width: 120px;
+      }
     }

@@ -9,27 +9,21 @@
   <link href="../css/morfosintaxis.css" rel="stylesheet">
 </head>
 <body>
-  <div class="instructions">OBSERVA LA IMAGEN, COMPLETA LA ORACION CON EL VERBO QUE FALTA</div>
+  <div class="instructions">OBSERVA LA IMAGEN Y ORDENÁ LA ORACION CORRECTAMENTE</div>
   
   <div class="contenedor-principal">
-    <div class="columna-izquierda">
-      <div class="imagen-box">
-        <img id="imagenSeleccionada" src="imagenes/perro.jpg" alt="Perro">
-      </div>
+    <div class="imagen-box">
+      <img id="imagenSeleccionada" src="imagenes/perro.jpg" alt="Perro">
     </div>
 
-    <div class="columna-derecha">
-      <div class="oracion-container" id="oracionContainer">
-        El perro está <div class="espacio-palabra" data-palabra="corriendo"></div>
-      </div>
+    <div class="oracion-container" id="oracionContainer">
+      El perro está <div class="espacio-palabra" data-palabra="corriendo"></div>
+    </div>
 
-      <div class="palabras-container" id="palabrasContainer">
-        <div class="palabra" draggable="true" data-palabra="corriendo">corriendo</div>
-        <div class="palabra" draggable="true" data-palabra="saltando">saltando</div>
-        <div class="palabra" draggable="true" data-palabra="comiendo">comiendo</div>
-      </div>
-
-      <button class="boton-verde" onclick="verificarOracion()">Verificar</button>
+    <div class="palabras-container" id="palabrasContainer">
+      <div class="palabra" draggable="true" data-palabra="durmiendo">durmiendo</div>
+      <div class="palabra" draggable="true" data-palabra="corriendo">corriendo</div>
+      <div class="palabra" draggable="true" data-palabra="comiendo">comiendo</div>
     </div>
   </div>
 
@@ -60,6 +54,12 @@
           const palabra = e.dataTransfer.getData('text/plain');
           espacio.textContent = palabra;
           espacio.dataset.palabra = palabra;
+          
+          // Verificar si todos los espacios están llenos
+          const todosLlenos = Array.from(espacios).every(esp => esp.textContent.trim() !== '');
+          if (todosLlenos) {
+            verificarOracion();
+          }
         });
       });
     });
@@ -70,19 +70,43 @@
       let oracionCompleta = 'El perro está ';
 
       espacios.forEach(espacio => {
-        if (espacio.textContent !== espacio.dataset.palabra) {
+        if (espacio.textContent !== 'corriendo') {
           correcto = false;
         }
         oracionCompleta += espacio.textContent + ' ';
       });
 
       if (correcto) {
-        Swal.fire('¡Correcto!', 'Has completado la oración correctamente.', 'success').then(() => {
+        Swal.fire({
+          title: '🎉',
+          icon: 'none',
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: {
+            title: 'emoji-title',
+            popup: 'emoji-popup'
+          }
+        }).then(() => {
           enviarDatosAlServidor(oracionCompleta.trim());
           window.location.href = 'morfosintaxis2.html';
         });
       } else {
-        Swal.fire('Inténtalo de nuevo', 'La oración no está completa o tiene errores.', 'warning');
+        Swal.fire({
+          title: '😢',
+          icon: 'none',
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: {
+            title: 'emoji-title',
+            popup: 'emoji-popup'
+          }
+        }).then(() => {
+          // Limpiar todos los espacios cuando la respuesta es incorrecta
+          espacios.forEach(espacio => {
+            espacio.textContent = '';
+            espacio.dataset.palabra = '';
+          });
+        });
       }
     }
 
@@ -109,6 +133,23 @@
         Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
       });
     }
+
+    // Agregar estilos para el emoji
+    const style = document.createElement('style');
+    style.textContent = `
+      .emoji-title {
+        font-size: 100px !important;
+        line-height: 1 !important;
+      }
+      .swal2-title {
+        padding: 0 !important;
+      }
+      .emoji-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>

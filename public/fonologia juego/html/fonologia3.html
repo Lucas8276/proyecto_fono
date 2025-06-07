@@ -3,82 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fonología - Nivel 1</title>
+  <title>Fonología - Nivel 3</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/fonologia.css" rel="stylesheet">
-
 </head>
 <body>
+  <div class="instructions">
+    CAMBIÁ EL FONEMA CORRESPONDIENTE PARA ASI FORMAR NUEVAS PALABRAS
+  </div>
+
   <div class="container">
-    <div class="instructions">¿Estas palabras suenan igual o diferente?</div>
-    <img src="imagenes/fonologia/faro.png" alt="Faro" class="faro-img">
-    <div class="word-pair" id="wordPair">taza - casa</div>
-    <div class="buttons">
-      <button class="btn igual" onclick="checkAnswer(true)">Suenan igual</button>
-      <button class="btn distinto" onclick="checkAnswer(false)">Suenan diferente</button>
+    <div class="exercises-container">
+      <div class="exercise-block">
+        <div class="question">Si a BESO le cambiamos el fonema B por P, ¿qué palabra nos queda?</div>
+        <div class="operation">
+          <div class="base-word">BESO</div>
+          <div class="plus-sign">x</div>
+          <div class="phoneme">P</div>
+          <div class="equals-sign">=</div>
+          <input type="text" class="word-input" id="input1" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(1, 'PERO')">
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="question">Si a PATO le cambiamos el fonema T por L, ¿qué palabra nos queda?</div>
+        <div class="operation">
+          <div class="base-word">PATO</div>
+          <div class="plus-sign">x</div>
+          <div class="phoneme">L</div>
+          <div class="equals-sign">=</div>
+          <input type="text" class="word-input" id="input2" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(2, 'PEO')">
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="question">Si a CALOR le cambiamos el fonema A por O ¿qué palabra nos queda?</div>
+        <div class="operation">
+          <div class="base-word">CALOR</div>
+          <div class="plus-sign">x</div>
+          <div class="phoneme">O</div>
+          <div class="equals-sign">=</div>
+          <input type="text" class="word-input" id="input3" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(3, 'FREA')">
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    const pairs = [
-      {
-        word1: "vaso",
-        word2: "palo",
-        img1: "imagenes/fonologia/vaso.jpg",
-        img2: "imagenes/fonologia/paso.jpg",
-        same: false
-      },
-      {
-        word1: "nube",
-        word2: "nube",
-        img1: "imagenes/fonologia/nube.jpg",
-        img2: "imagenes/fonologia/nube.jpg",
-        same: true
-      },
-      {
-        word1: "lupa",
-        word2: "ropa",
-        img1: "imagenes/fonologia/lupa.jpg",
-        img2: "imagenes/fonologia/ropa.jpg",
-        same: false
-      }
-    ];
-  
-    let current = 0;
     let aciertos = 0;
     let desaciertos = 0;
-  
-    function showPair() {
-      document.getElementById("wordPair").textContent = `${pairs[current].word1} - ${pairs[current].word2}`;
-    }
-  
-    function checkAnswer(userSaysSame) {
-      const isCorrect = userSaysSame === pairs[current].same;
-      if (isCorrect) {
-        aciertos++;
-        Swal.fire('¡Correcto!', '', 'success').then(() => {
-          current++;
-          if (current >= pairs.length) {
-            enviarDatosAlServidor();
-          } else {
-            showPair();
+    let correctAnswers = new Set();
+
+    function checkAnswerOnInput(inputId, correctAnswer) {
+      const input = document.getElementById(`input${inputId}`);
+      const userAnswer = input.value.toUpperCase().trim();
+      if (userAnswer.length === correctAnswer.length) {
+        const isCorrect = userAnswer === correctAnswer;
+        
+        if (isCorrect) {
+          if (!correctAnswers.has(inputId)) {
+            aciertos++;
+            correctAnswers.add(inputId);
           }
-        });
-      } else {
-        desaciertos++;
-        Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
+          Swal.fire({
+            title: '🎉',
+            icon: 'none',
+            timer: 1500,
+            showConfirmButton: false,
+            customClass: {
+              title: 'emoji-title',
+              popup: 'emoji-popup'
+            }
+          }).then(() => {
+            if (correctAnswers.size === 3) {
+              enviarDatosAlServidor();
+              window.location.href = '../../index.html';
+            }
+          });
+        } else {
+          if (!correctAnswers.has(inputId)) {
+            desaciertos++;
+          }
+          Swal.fire({
+            title: '😢',
+            icon: 'none',
+            timer: 1500,
+            showConfirmButton: false,
+            customClass: {
+              title: 'emoji-title',
+              popup: 'emoji-popup'
+            }
+          }).then(() => {
+            input.value = ''; // Borrar el contenido del input
+          });
+        }
       }
     }
-  
+
     function enviarDatosAlServidor() {
       const id_paciente = localStorage.getItem('id_paciente');
       const paciente_juego = 'Fonologia-Nivel 3';
       const paciente_resultado = `${aciertos} aciertos, ${desaciertos} desaciertos`;
       const paciente_acierto = aciertos;
       const paciente_desacierto = desaciertos;
-  
+
       fetch('http://localhost:3000/juegos', {
         method: 'POST',
         headers: {
@@ -94,9 +123,7 @@
       })
       .then(response => {
         if (response.ok) {
-          Swal.fire('¡Nivel completado!', 'Datos guardados correctamente.', 'success').then(() => {
-            window.location.href = '../index.html'; // o ../index.html
-          });
+          window.location.href = '../../index.html';
         } else {
           Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
         }
@@ -105,8 +132,25 @@
         Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
       });
     }
-  
-    // Inicializa el primer par al cargar
-    showPair();
+
+    // Agregar estilos para el emoji
+    const style = document.createElement('style');
+    style.textContent = `
+      .emoji-title {
+        font-size: 100px !important;
+        line-height: 1 !important;
+      }
+      .swal2-title {
+        padding: 0 !important;
+      }
+      .emoji-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
+</body>
+</html>
+  
   

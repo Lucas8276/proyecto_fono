@@ -11,34 +11,31 @@
 </head>
 
 <body>
-  <div class="instructions">Arrastra las palabras para completar la oración según la imagen.</div>
+  <div class="instructions">OBSERVA LA IMAGEN Y ORDENÁ LA ORACION CORRECTAMENTE</div>
   
-  <div class="contenedor-principal">
-    <div class="columna-izquierda">
-      <div class="imagen-box">
-        <img id="imagenSeleccionada" src="imagenes/familia.png" alt="Familia">
-      </div>
-      <p id="nombrePersonaje">Familia</p>
+  <div class="contenedor-principal container nivel3">
+    <div class="imagen-box">
+      <img id="imagenSeleccionada" src="imagenes/familia.png" alt="Familia">
     </div>
 
-    <div class="columna-derecha">
-      <div class="oracion-container" id="oracionContainer">
-        La <div class="espacio-palabra" data-palabra="familia"></div>
-        está <div class="espacio-palabra" data-palabra="cenando"></div>
-        en la <div class="espacio-palabra" data-palabra="mesa"></div>
-        de la <div class="espacio-palabra" data-palabra="casa"></div>.
-      </div>
+    <div class="oracion-container" id="oracionContainer">
+      <div class="espacio-palabra" data-palabra="La"></div>
+      <div class="espacio-palabra" data-palabra="familia"></div>
+      <div class="espacio-palabra" data-palabra="mira"></div>
+      <div class="espacio-palabra" data-palabra="television"></div>
+      <div class="espacio-palabra" data-palabra="mientras"></div>
+      <div class="espacio-palabra" data-palabra="come"></div>
+      <div class="espacio-palabra" data-palabra="pochoclos"></div>
+    </div>
 
-      <div class="palabras-container" id="palabrasContainer">
-        <div class="palabra" draggable="true" data-palabra="familia">familia</div>
-        <div class="palabra" draggable="true" data-palabra="cenando">cenando</div>
-        <div class="palabra" draggable="true" data-palabra="mesa">mesa</div>
-        <div class="palabra" draggable="true" data-palabra="casa">casa</div>
-        <div class="palabra" draggable="true" data-palabra="comiendo">comiendo</div>
-        <div class="palabra" draggable="true" data-palabra="cocina">cocina</div>
-      </div>
-
-      <button class="boton-verde" onclick="verificarOracion()">Verificar</button>
+    <div class="palabras-container" id="palabrasContainer">
+      <div class="palabra" draggable="true" data-palabra="pochoclos">pochoclos</div>
+      <div class="palabra" draggable="true" data-palabra="mientras">mientras</div>
+      <div class="palabra" draggable="true" data-palabra="familia">familia</div>
+      <div class="palabra" draggable="true" data-palabra="television">televisión</div>
+      <div class="palabra" draggable="true" data-palabra="La">La</div>
+      <div class="palabra" draggable="true" data-palabra="mira">mira</div>
+      <div class="palabra" draggable="true" data-palabra="come">come</div>
     </div>
   </div>
 
@@ -69,6 +66,12 @@
           const palabra = e.dataTransfer.getData('text/plain');
           espacio.textContent = palabra;
           espacio.dataset.palabra = palabra;
+          
+          // Verificar si todos los espacios están llenos
+          const todosLlenos = Array.from(espacios).every(esp => esp.textContent.trim() !== '');
+          if (todosLlenos) {
+            verificarOracion();
+          }
         });
       });
     });
@@ -78,20 +81,46 @@
       let correcto = true;
       let oracionCompleta = '';
 
-      espacios.forEach(espacio => {
-        if (espacio.textContent !== espacio.dataset.palabra) {
+      const ordenCorrecto = ['La', 'familia', 'mira', 'television', 'mientras', 'come', 'pochoclos'];
+
+      espacios.forEach((espacio, index) => {
+        if (espacio.textContent !== ordenCorrecto[index]) {
           correcto = false;
         }
         oracionCompleta += espacio.textContent + ' ';
       });
 
       if (correcto) {
-        Swal.fire('¡Correcto!', 'Has completado la oración correctamente.', 'success').then(() => {
+        Swal.fire({
+          title: '🎉',
+          icon: 'none',
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: {
+            title: 'emoji-title',
+            popup: 'emoji-popup'
+          }
+        }).then(() => {
           enviarDatosAlServidor(oracionCompleta.trim());
-          window.location.href = '../index.html';
+          window.location.href = '../../index.html';
         });
       } else {
-        Swal.fire('Inténtalo de nuevo', 'La oración no está completa o tiene errores.', 'warning');
+        Swal.fire({
+          title: '😢',
+          icon: 'none',
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: {
+            title: 'emoji-title',
+            popup: 'emoji-popup'
+          }
+        }).then(() => {
+          // Limpiar todos los espacios cuando la respuesta es incorrecta
+          espacios.forEach(espacio => {
+            espacio.textContent = '';
+            espacio.dataset.palabra = '';
+          });
+        });
       }
     }
 
@@ -118,6 +147,23 @@
         Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
       });
     }
+
+    // Agregar estilos para el emoji
+    const style = document.createElement('style');
+    style.textContent = `
+      .emoji-title {
+        font-size: 100px !important;
+        line-height: 1 !important;
+      }
+      .swal2-title {
+        padding: 0 !important;
+      }
+      .emoji-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
