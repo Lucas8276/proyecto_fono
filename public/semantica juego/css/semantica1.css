@@ -12,9 +12,9 @@ body {
 }
 
 .container {
-  width: 95%;
-  max-width: 1400px;
-  padding: 30px;
+  width: 85%;
+  max-width: 900px;
+  padding: 15px;
   background-color: rgba(255, 255, 255, 0.95);
   border: 5px solid #ffd817;
   border-radius: 25px;
@@ -28,20 +28,20 @@ body {
   background: #fff8c5;
   border: 2px solid #ffd817;
   border-radius: 15px;
-  padding: 20px 40px;
-  font-size: 1.4rem;
+  padding: 12px 25px;
+  font-size: 1.1rem;
   color: #b8860b;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   text-align: center;
   font-weight: bold;
   width: 100%;
-  max-width: 800px;
+  max-width: 600px;
   text-transform: uppercase;
 }
 
 .instructions h2 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
   text-transform: uppercase;
 }
 
@@ -54,32 +54,32 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  gap: 60px;
+  gap: 20px;
   width: 100%;
-  padding: 0 40px;
+  padding: 0 15px;
 }
 
 .categories-container {
   width: 35%;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  padding: 20px;
+  gap: 15px;
+  padding: 12px;
   background: rgba(255, 248, 197, 0.3);
   border-radius: 20px;
-  margin-top: 40px;
+  margin-top: 15px;
 }
 
 .images-container {
   width: 60%;
   display: flex;
   flex-wrap: wrap;
-  gap: 25px;
+  gap: 15px;
   justify-content: center;
-  padding: 20px;
+  padding: 12px;
   background: rgba(255, 248, 197, 0.3);
   border-radius: 20px;
-  min-height: 600px;
+  min-height: 350px;
   align-items: flex-start;
 }
 
@@ -87,8 +87,8 @@ body {
   background: linear-gradient(135deg, #fff8c5 0%, #fff3cd 100%);
   border: 3px solid #ffd817;
   border-radius: 20px;
-  padding: 25px;
-  min-height: 200px;
+  padding: 15px;
+  min-height: 120px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
@@ -100,21 +100,21 @@ body {
 }
 
 .drop-zone {
-  min-height: 150px;
+  min-height: 120px;
   border: 3px dashed #ffd817;
   border-radius: 15px;
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #b8860b;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-align: center;
   background: rgba(255, 255, 255, 0.5);
 }
@@ -127,12 +127,12 @@ body {
 }
 
 .draggable-image {
-  width: 180px;
-  height: 220px;
+  width: 110px;
+  height: 140px;
   background: white;
   border: 2px solid #ffd817;
   border-radius: 15px;
-  padding: 15px;
+  padding: 10px;
   cursor: grab;
   transition: all 0.3s ease;
   text-align: center;
@@ -149,16 +149,16 @@ body {
 }
 
 .draggable-image img {
-  width: 160px;
-  height: 160px;
+  width: 90px;
+  height: 90px;
   object-fit: contain;
   border-radius: 10px;
   flex-shrink: 0;
 }
 
 .draggable-image p {
-  margin: 10px 0 0 0;
-  font-size: 1.2rem;
+  margin: 8px 0 0 0;
+  font-size: 1rem;
   color: #b8860b;
   font-weight: bold;
   text-transform: uppercase;
@@ -173,14 +173,15 @@ body {
 .clue-card {
   background: linear-gradient(45deg, #FFD700, #FFA500);
   border-radius: 20px;
-  padding: 22px 40px;
+  padding: 18px 30px;
   color: white;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   cursor: grab;
   transition: transform 0.3s;
-  width: 520px;
-  min-height: 140px;
+  width: 100%;
+  max-width: 500px;
+  min-height: 120px;
   text-align: left;
   align-self: center;
 }
@@ -233,102 +234,141 @@ body {
   font-weight: bold;
 }
 
+#volver-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: 2px solid #b8860b;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #fff8c5;
+  color: #b8860b;
+  font-family: 'Fredoka', sans-serif;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+#volver-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: #fff3cd;
+  border-color: #ffd817;
+}
+
 /* Responsive Design */
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 12px;
+  }
+
   .game-layout {
     flex-direction: column;
     align-items: center;
+    gap: 15px;
   }
 
   .categories-container,
   .images-container {
     width: 100%;
-  }
-
-  .category {
-    min-height: 180px;
-  }
-
-  .drop-zone {
-    min-height: 120px;
-    font-size: 1.8rem;
+    max-width: 500px;
   }
 
   .draggable-image {
-    width: 160px;
-    height: 200px;
+    width: 100px;
+    height: 130px;
   }
 
   .draggable-image img {
-    width: 140px;
-    height: 140px;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .container {
-    padding: 20px;
+    width: 80px;
+    height: 80px;
   }
 
   .instructions {
-    font-size: 1.2rem;
-    padding: 15px 20px;
+    padding: 12px 20px;
+    font-size: 1.1rem;
   }
 
   .instructions h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .category {
     padding: 15px;
+    min-height: 140px;
   }
 
   .drop-zone {
-    font-size: 1.5rem;
-    padding: 15px;
+    min-height: 100px;
+    font-size: 1.2rem;
   }
 
-  .draggable-image {
-    width: 140px;
-    height: 180px;
+  .draggable-image p {
+    font-size: 0.9rem;
   }
 
-  .draggable-image img {
-    width: 120px;
-    height: 120px;
+  .clue-card {
+    padding: 15px 25px;
+    font-size: 1.1rem;
+  }
+
+  #volver-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
   }
 }
 
 @media screen and (max-width: 480px) {
   .container {
-    padding: 15px;
-  }
-
-  .instructions {
-    font-size: 1.1rem;
-    padding: 10px 15px;
-  }
-
-  .instructions h2 {
-    font-size: 1.3rem;
-  }
-
-  .category {
-    padding: 10px;
-  }
-
-  .drop-zone {
-    font-size: 1.3rem;
+    width: 98%;
     padding: 10px;
   }
 
   .draggable-image {
-    width: 120px;
-    height: 160px;
+    width: 90px;
+    height: 120px;
   }
 
   .draggable-image img {
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .instructions {
+    padding: 10px 15px;
+    font-size: 1rem;
+  }
+
+  .instructions h2 {
+    font-size: 1.2rem;
+  }
+
+  .category {
+    padding: 12px;
+    min-height: 120px;
+  }
+
+  .drop-zone {
+    min-height: 90px;
+    font-size: 1.1rem;
+  }
+
+  .draggable-image p {
+    font-size: 0.8rem;
+  }
+
+  .clue-card {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  #volver-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 }

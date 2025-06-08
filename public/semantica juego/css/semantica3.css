@@ -1,34 +1,41 @@
 body {
   font-family: 'Fredoka', sans-serif;
   background-color: #fffbe6;
-  padding: 20px 10px;
-  text-align: center;
+  background-image: url("imagenes/fondo amarillo.svg");
+  background-repeat: repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #fff;
-  border-radius: 24px;
-  padding: 40px 40px 50px 40px;
-  box-shadow: 0 0 32px 0 #ffe082, 0 2px 8px rgba(255, 193, 7, 0.10);
-  border: 3px solid #ffe082;
-  font-family: 'Fredoka', sans-serif;
+  width: 85%;
+  max-width: 900px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 5px solid #ffd817;
+  border-radius: 25px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .instructions {
-  font-size: 1.3rem;
-  margin-bottom: 60px;
-  color: #b48a00;
-  padding: 18px 28px;
+  background: #fff8c5;
+  border: 2px solid #ffd817;
+  border-radius: 15px;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  color: #b8860b;
+  margin-bottom: 15px;
+  text-align: center;
   font-weight: bold;
-  background: #fff3cd;
-  border-radius: 18px;
-  border: 3px solid #ffe082;
-  display: inline-block;
-  min-width: 400px;
-  min-height: 60px;
-  box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
   text-transform: uppercase;
 }
 
@@ -44,98 +51,152 @@ body {
 .game-layout {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
   align-items: center;
+  width: 100%;
 }
 
 .sentences-list {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 15px;
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: 800px;
+  padding: 12px;
+  background: rgba(255, 248, 197, 0.3);
+  border-radius: 20px;
 }
 
 .sentence-row {
   display: flex;
   align-items: center;
-  gap: 32px;
-  width: 100%;
+  gap: 15px;
+  background: white;
+  border: 2px solid #ffd817;
+  border-radius: 15px;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
 }
 
-.sentence-box {
-  background-color: #fffbe6;
-  color: #b48a00;
-  padding: 28px 36px;
-  border-radius: 18px;
-  border: 3px solid #ffd54f;
-  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.08);
-  font-size: 1.45rem;
-  font-weight: bold;
-  letter-spacing: 1px;
+.sentence-text {
   flex: 1;
-  text-align: left;
-  transition: box-shadow 0.2s, background 0.2s, border 0.2s;
-  min-height: unset;
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  word-break: break-word;
-}
-
-.sentence-actions {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  margin-left: 0;
+  font-size: 1.1rem;
+  color: #333;
 }
 
 .like-btn, .dislike-btn {
-  border: 2.5px solid #ffd54f;
+  width: 40px;
+  height: 40px;
+  border: none;
   border-radius: 50%;
-  width: 90px;
-  height: 90px;
-  font-size: 3.2rem;
-  color: #fff;
   cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, border 0.2s, transform 0.2s;
-  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.10);
-  background: #fff3cd;
-  text-transform: uppercase;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .like-btn {
-  background: #43d15d;
-  border-color: #43d15d;
-}
-.like-btn:hover {
-  background: #2eb043;
-  border-color: #2eb043;
-  transform: scale(1.08);
+  background: #4CAF50;
+  color: white;
 }
 
 .dislike-btn {
-  background: #ff6b6b;
-  border-color: #ff6b6b;
-}
-.dislike-btn:hover {
-  background: #d32f2f;
-  border-color: #d32f2f;
-  transform: scale(1.08);
+  background: #f44336;
+  color: white;
 }
 
-.like-btn:disabled, .dislike-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.like-btn:hover, .dislike-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#volver-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: 2px solid #b8860b;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #fff8c5;
+  color: #b8860b;
+  font-family: 'Fredoka', sans-serif;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+#volver-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: #fff3cd;
+  border-color: #ffd817;
 }
 
 .emoji-title {
-  font-size: 100px !important;
+  font-size: 80px !important;
   line-height: 1 !important;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 12px;
+  }
+
+  .sentence-row {
+    padding: 10px 15px;
+    gap: 12px;
+  }
+
+  .sentence-text {
+    font-size: 1rem;
+  }
+
+  .like-btn, .dislike-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+  }
+
+  #volver-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    width: 98%;
+    padding: 10px;
+  }
+
+  .sentence-row {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .sentence-text {
+    font-size: 0.9rem;
+  }
+
+  .like-btn, .dislike-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  #volver-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
 }
 
 .swal2-title {

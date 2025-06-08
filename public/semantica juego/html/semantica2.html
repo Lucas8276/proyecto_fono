@@ -119,6 +119,46 @@
       setupWordBoxes();
     }
 
+    function createConnection(left, right) {
+      // Eliminar cualquier flecha existente entre estas palabras
+      document.querySelectorAll('.connection-line, .connection-arrow').forEach(el => el.remove());
+      
+      const line = document.createElement('div');
+      line.className = 'connection-line';
+      
+      const arrow = document.createElement('div');
+      arrow.className = 'connection-arrow';
+      
+      const container = document.querySelector('.words-container');
+      container.appendChild(line);
+      container.appendChild(arrow);
+      
+      updateConnection(left, right, line, arrow);
+    }
+
+    function updateConnection(left, right, line, arrow) {
+      const leftRect = left.getBoundingClientRect();
+      const rightRect = right.getBoundingClientRect();
+      const containerRect = document.querySelector('.words-container').getBoundingClientRect();
+      
+      const startX = leftRect.right - containerRect.left;
+      const startY = leftRect.top + leftRect.height/2 - containerRect.top;
+      const endX = rightRect.left - containerRect.left;
+      const endY = rightRect.top + rightRect.height/2 - containerRect.top;
+      
+      const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+      const angle = Math.atan2(endY - startY, endX - startX);
+      
+      line.style.width = `${length}px`;
+      line.style.left = `${startX}px`;
+      line.style.top = `${startY}px`;
+      line.style.transform = `rotate(${angle}rad)`;
+      
+      arrow.style.left = `${endX - 10}px`;
+      arrow.style.top = `${endY - 8}px`;
+      arrow.style.transform = `rotate(${angle}rad)`;
+    }
+
     function setupWordBoxes() {
       const wordBoxes = document.querySelectorAll('.word-box');
       wordBoxes.forEach(box => {
@@ -152,7 +192,11 @@
             const isCorrect = sets[currentSet].pares.some(pair => pair.word1 === left.dataset.word && pair.word2 === right.dataset.word);
             if (isCorrect) {
               connections.push({ left, right });
-              createArrow(left, right);
+              left.classList.remove('selected');
+              right.classList.remove('selected');
+              left.classList.add('connected');
+              right.classList.add('connected');
+              createConnection(left, right);
               Swal.fire({
                 title: '🎉',
                 icon: 'none',
@@ -172,7 +216,8 @@
                     connections = [];
                     correctPairs = 0;
                     desaciertos = 0;
-                    document.querySelectorAll('.arrow').forEach(a => a.remove());
+                    document.querySelectorAll('.word-box').forEach(box => box.classList.remove('connected'));
+                    document.querySelectorAll('.connection-line, .connection-arrow').forEach(el => el.remove());
                     loadGame();
                   }, 1500);
                 } else {
@@ -201,30 +246,6 @@
           }
         });
       });
-    }
-
-    function createArrow(fromBox, toBox) {
-      const arrow = document.createElement('div');
-      arrow.className = 'arrow';
-      
-      const fromRect = fromBox.getBoundingClientRect();
-      const toRect = toBox.getBoundingClientRect();
-      const containerRect = document.querySelector('.words-container').getBoundingClientRect();
-      
-      const fromX = fromRect.right - containerRect.left;
-      const fromY = fromRect.top + fromRect.height/2 - containerRect.top;
-      const toX = toRect.left - containerRect.left;
-      const toY = toRect.top + toRect.height/2 - containerRect.top;
-      
-      const angle = Math.atan2(toY - fromY, toX - fromX);
-      const length = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
-      
-      arrow.style.width = `${length}px`;
-      arrow.style.left = `${fromX}px`;
-      arrow.style.top = `${fromY}px`;
-      arrow.style.transform = `rotate(${angle}rad)`;
-      
-      document.querySelector('.words-container').appendChild(arrow);
     }
 
     function enviarResultados() {
