@@ -1,63 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Menú Principal</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet"/>
-
+  <link rel="stylesheet" href="styles/main.css" />
+  <script src="js/sound.js"></script>
   <style>
-    * {
+    body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: 'Fredoka', sans-serif;
-    }
-
-    body {
-      background-image: url('images/fondo/fondo inicial.svg');
+      min-height: 100vh;
+      background-image: url('images/fondo inicial.svg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      min-height: 100vh;
+    }
+
+    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 30px 20px;
-      overflow: auto;
-    }
-
-    body.no-scroll {
-      overflow: hidden;
-    }
-
-    h1 {
-      font-size: 3rem;
-      color: #00b453;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-
-
-    .menu-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto;
-      gap: 40px;
-      width: 100%;
-      max-width: 1400px;
-      justify-items: center;
-      align-items: center;
+      justify-content: center;
       padding: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .game-box {
+      width: 400px;
+      height: 400px;
+      margin: 150px;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: transparent;
+      font-size: 1px;
+      font-weight: bold;
+      text-align: center;
+      transition: none;
+      box-shadow: none;
+      background-clip: padding-box;
+    }
+
+    .game-box:hover {
+      transform: none;
     }
 
     .menu-button {
-      width: 400px;
-      height: 400px;
+      width: 300px;
+      height: 300px;
       border: none;
       border-radius: 40px;
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-weight: bold;
       color: white;
       cursor: pointer;
@@ -71,47 +78,12 @@
       background-position: center;
       background-repeat: no-repeat;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      text-transform: uppercase;
     }
 
     .menu-button:hover {
       transform: scale(1.05);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .menu-button:nth-child(4),
-    .menu-button:nth-child(5) {
-      grid-column: span 1;
-    }
-
-    .menu-button:nth-child(4) {
-      grid-column: 2;
-      grid-row: 2;
-      transform: translateX(-60%);
-    }
-
-    .menu-button:nth-child(5) {
-      grid-column: 2;
-      grid-row: 2;
-      transform: translateX(60%);
-    }
-
-    .menu-button:nth-child(4):hover,
-    .menu-button:nth-child(5):hover {
-      transform: translateX(var(--translate)) scale(1.05);
-    }
-
-    .menu-button:nth-child(4) {
-      --translate: -60%;
-    }
-
-    .menu-button:nth-child(5) {
-      --translate: 60%;
-    }
-
-    .menu-container::after {
-      content: '';
-      grid-column: 3;
-      grid-row: 2;
     }
 
     .semantica { background-color: #ffd817; }
@@ -120,51 +92,158 @@
     .fonetica { background-color: #ff6632; }
     .fonologia { background-color: #ff86bb; }
 
-    
+    .game-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 15px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2.2rem;
-      }
-      .menu-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-      }
-      .menu-button {
-        font-size: 1.8rem;
-        border-radius: 25px;
-        width: 250px;
-        height: 250px;
-      }
-      .menu-button:nth-child(4) {
-        grid-column: 1;
-        transform: none;
-      }
-      .menu-button:nth-child(5) {
-        grid-column: 2;
-        transform: none;
-      }
-      
+    #avatar-panel * {
+      text-transform: uppercase !important;
+    }
+
+    #selected-avatar {
+      position: absolute;
+      top: 30px;
+      left: 40px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 4px solid #00b453;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+      object-fit: cover;
+      background: #fffbe6;
+      z-index: 900;
+      display: none;
+      cursor: pointer;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #00b453;
+      margin-top: 100px;
+      margin-bottom: 50px;
+      text-align: center;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      font-weight: bold;
+      letter-spacing: 2px;
     }
   </style>
 </head>
 
 <body>
-  <h1>SELECCIONA UNA SECCIÓN</h1>
+  <img id="selected-avatar" src="" alt="Avatar Seleccionado" style="position:absolute;top:40px;left:40px;width:90px;height:90px;border-radius:50%;border:4px solid #00b453;box-shadow:0 2px 10px rgba(0,0,0,0.10);object-fit:cover;background:#fffbe6;z-index:900;display:none;cursor:pointer;">
 
- 
-  <!-- Menú -->
-  <div class="menu-container">
-    <button class="menu-button semantica" onclick="location.href='semantica juego/html/semantica1.html'">SEMÁNTICA</button>
-    <button class="menu-button pragmatica" onclick="location.href='pragmatica juego/html/pragmatica1.html'">PRAGMÁTICA</button>
-    <button class="menu-button morfosintaxis" onclick="location.href='morfosintaxis juego/html/morfosintaxis1.html'">MORFOSINTAXIS</button>
-    <button class="menu-button fonetica" onclick="location.href='fonetica juego/html/fonetica1.html'">FONÉTICA</button>
-    <button class="menu-button fonologia" onclick="location.href='fonologia juego/html/fonologia1.html'">FONOLOGÍA</button>
+  <!-- Panel lateral del avatar -->
+  <div id="avatar-panel" style="display:none;position:fixed;top:0;left:0;height:100vh;width:340px;max-width:90vw;background:#fffbe6;box-shadow:4px 0 24px rgba(0,0,0,0.13);z-index:2000;padding:36px 24px 24px 24px;transition:transform 0.3s cubic-bezier(.4,1.3,.5,1);transform:translateX(-100%);font-family:'Fredoka',sans-serif;">
+    <button id="close-panel" style="position:absolute;top:18px;right:18px;background:none;border:none;font-size:2rem;cursor:pointer;color:#00b453;">×</button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;">
+      <img id="avatar-panel-img" src="" alt="Avatar Grande" style="width:120px;height:120px;border-radius:50%;border:4px solid #00b453;box-shadow:0 2px 10px rgba(0,0,0,0.10);background:#fff;object-fit:cover;">
+      <div style="font-size:1.3rem;color:#00b453;font-weight:bold;">Nombre:</div>
+      <div id="panel-nombre" style="font-size:1.5rem;color:#333;margin-bottom:8px;"></div>
+      <div style="font-size:1.3rem;color:#00b453;font-weight:bold;"> Edad:</div>
+      <div id="panel-edad" style="font-size:1.5rem;color:#333;margin-bottom:18px;"></div>
+      <button id="sound-btn" style="display:flex;align-items:center;gap:10px;padding:12px 28px;font-size:1.1rem;font-family:'Fredoka',sans-serif;background:#ffd817;color:#333;border:none;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.10);font-weight:bold;cursor:pointer;transition:background 0.2s;">
+        <span id="sound-icon">🔊</span> <span id="sound-text">Sonido Activado</span>
+      </button>
+      <div style="margin-top:24px;font-size:1.2rem;color:#4a94ff;text-align:center;">¡Listo para jugar y aprender!</div>
+    </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="loro.js"></script>
+  <div id="main-content">
+    <h1>SELECCIONA UNA SECCIÓN</h1>
 
+    <!-- Menú -->
+    <div class="menu-container">
+      <button class="menu-button semantica" onclick="location.href='semantica juego/html/semantica1.html'">SEMÁNTICA</button>
+      <button class="menu-button pragmatica" onclick="location.href='pragmatica juego/html/pragmatica1.html'">PRAGMÁTICA</button>
+      <button class="menu-button morfosintaxis" onclick="location.href='morfosintaxis juego/html/morfosintaxis1.html'">MORFOSINTAXIS</button>
+      <button class="menu-button fonetica" onclick="location.href='fonetica juego/html/fonetica1.html'">FONÉTICA</button>
+      <button class="menu-button fonologia" onclick="location.href='fonologia juego/html/fonologia1.html'">FONOLOGÍA</button>
+    </div>
+  </div>
+
+  <script>
+    // Mostrar el avatar elegido o redirigir a avatar.html si no hay avatar
+    const avatar = sessionStorage.getItem('selectedAvatar');
+    const avatarImg = document.getElementById('selected-avatar');
+    if (avatar) {
+      avatarImg.src = avatar;
+      avatarImg.style.display = 'block';
+    } else {
+      window.location.href = 'avatar.html';
+    }
+
+    // Panel lateral
+    const avatarPanel = document.getElementById('avatar-panel');
+    const avatarPanelImg = document.getElementById('avatar-panel-img');
+    const panelNombre = document.getElementById('panel-nombre');
+    const panelEdad = document.getElementById('panel-edad');
+    const soundBtn = document.getElementById('sound-btn');
+    const soundIcon = document.getElementById('sound-icon');
+    const soundText = document.getElementById('sound-text');
+    const closePanel = document.getElementById('close-panel');
+
+    // Mostrar datos del niño
+    avatarImg.onclick = function() {
+      avatarPanel.style.display = 'block';
+      setTimeout(()=>{avatarPanel.style.transform = 'translateX(0)';},10);
+      avatarPanelImg.src = avatarImg.src;
+      let nombre = (localStorage.getItem('nombre_nino') || 'Sin nombre').toUpperCase();
+      let edad = (localStorage.getItem('edad_nino') || 'Sin edad').toUpperCase();
+      panelNombre.textContent = nombre;
+      panelEdad.textContent = edad;
+      let sonido = sessionStorage.getItem('sonido_activado');
+      if(sonido === null) sonido = 'true';
+      if(sonido === 'true') {
+        soundIcon.textContent = '🔊';
+        soundText.textContent = 'SONIDO ACTIVADO';
+        soundBtn.style.background = '#ffd817';
+        soundBtn.style.color = '#333';
+      } else {
+        soundIcon.textContent = '🔇';
+        soundText.textContent = 'SONIDO DESACTIVADO';
+        soundBtn.style.background = '#eee';
+        soundBtn.style.color = '#888';
+      }
+    };
+    closePanel.onclick = function() {
+      avatarPanel.style.transform = 'translateX(-100%)';
+      setTimeout(()=>{avatarPanel.style.display = 'none';},300);
+    };
+    soundBtn.onclick = function() {
+      let sonido = sessionStorage.getItem('sonido_activado');
+      if(sonido === null) sonido = 'true';
+      if(sonido === 'true') {
+        sessionStorage.setItem('sonido_activado','false');
+        if(window.globalAudio){window.globalAudio.pause();}
+        soundIcon.textContent = '🔇';
+        soundText.textContent = 'SONIDO DESACTIVADO';
+        soundBtn.style.background = '#eee';
+        soundBtn.style.color = '#888';
+      } else {
+        sessionStorage.setItem('sonido_activado','true');
+        if(window.globalAudio){window.globalAudio.play();}
+        soundIcon.textContent = '🔊';
+        soundText.textContent = 'SONIDO ACTIVADO';
+        soundBtn.style.background = '#ffd817';
+        soundBtn.style.color = '#333';
+      }
+    };
+    // Cerrar panel al hacer click fuera
+    window.addEventListener('click', function(e) {
+      if(avatarPanel.style.display==='block' && !avatarPanel.contains(e.target) && e.target!==avatarImg) {
+        avatarPanel.style.transform = 'translateX(-100%)';
+        setTimeout(()=>{avatarPanel.style.display = 'none';},300);
+      }
+    });
+  </script>
 </body>
 </html>

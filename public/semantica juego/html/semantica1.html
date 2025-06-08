@@ -4,10 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Semantica- Nivel 1</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/semantica1.css" rel="stylesheet">
+  <script src="../../js/sound.js"></script>
+  <style>
+    #avatar-panel * {
+      text-transform: uppercase !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -42,6 +48,24 @@
       <div class="images-container animate__animated animate__fadeInRight" id="imagesContainer"></div>
     </div>
   </div>
+
+  <img id="selected-avatar" src="" alt="Avatar Seleccionado" style="position:absolute;top:40px;left:40px;width:90px;height:90px;border-radius:50%;border:4px solid #00b453;box-shadow:0 2px 10px rgba(0,0,0,0.10);object-fit:cover;background:#fffbe6;z-index:900;display:none;cursor:pointer;">
+  <!-- Panel lateral del avatar -->
+  <div id="avatar-panel" style="display:none;position:fixed;top:0;left:0;height:100vh;width:340px;max-width:90vw;background:#fffbe6;box-shadow:4px 0 24px rgba(0,0,0,0.13);z-index:2000;padding:36px 24px 24px 24px;transition:transform 0.3s cubic-bezier(.4,1.3,.5,1);transform:translateX(-100%);font-family:'Fredoka',sans-serif;">
+    <button id="close-panel" style="position:absolute;top:18px;right:18px;background:none;border:none;font-size:2rem;cursor:pointer;color:#00b453;">×</button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;">
+      <img id="avatar-panel-img" src="" alt="Avatar Grande" style="width:120px;height:120px;border-radius:50%;border:4px solid #00b453;box-shadow:0 2px 10px rgba(0,0,0,0.10);background:#fff;object-fit:cover;">
+      <div style="font-size:1.3rem;color:#00b453;font-weight:bold;">Nombre:</div>
+      <div id="panel-nombre" style="font-size:1.5rem;color:#333;margin-bottom:8px;"></div>
+      <div style="font-size:1.3rem;color:#00b453;font-weight:bold;">Edad:</div>
+      <div id="panel-edad" style="font-size:1.5rem;color:#333;margin-bottom:18px;"></div>
+      <button id="sound-btn" style="display:flex;align-items:center;gap:10px;padding:12px 28px;font-size:1.1rem;font-family:'Fredoka',sans-serif;background:#ffd817;color:#333;border:none;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.10);font-weight:bold;cursor:pointer;transition:background 0.2s;">
+        <span id="sound-icon">🔊</span> <span id="sound-text">Sonido Activado</span>
+      </button>
+      <div style="margin-top:24px;font-size:1.2rem;color:#4a94ff;text-align:center;">¡Listo para jugar y aprender!</div>
+    </div>
+  </div>
+  <button id="volver-btn" style="position:fixed;top:40px;right:40px;z-index:1000;padding:16px 36px;font-size:1.2rem;font-weight:bold;border:none;border-radius:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.10);background:#ffd817;color:#333;font-family:'Fredoka',sans-serif;">VOLVER</button>
 
   <script>
     const items = [
@@ -283,6 +307,79 @@
       }
     `;
     document.head.appendChild(style);
+
+    const avatar = sessionStorage.getItem('selectedAvatar');
+    const avatarImg = document.getElementById('selected-avatar');
+    if (avatar) {
+      avatarImg.src = avatar;
+      avatarImg.style.display = 'block';
+    } else {
+      window.location.href = '../../avatar.html';
+    }
+    const volverBtn = document.getElementById('volver-btn');
+    volverBtn.onclick = () => window.location.href = '../../index.html';
+
+    // Panel lateral
+    const avatarPanel = document.getElementById('avatar-panel');
+    const avatarPanelImg = document.getElementById('avatar-panel-img');
+    const panelNombre = document.getElementById('panel-nombre');
+    const panelEdad = document.getElementById('panel-edad');
+    const soundBtn = document.getElementById('sound-btn');
+    const soundIcon = document.getElementById('sound-icon');
+    const soundText = document.getElementById('sound-text');
+    const closePanel = document.getElementById('close-panel');
+    avatarImg.onclick = function() {
+      avatarPanel.style.display = 'block';
+      setTimeout(()=>{avatarPanel.style.transform = 'translateX(0)';},10);
+      avatarPanelImg.src = avatarImg.src;
+      // SIEMPRE EN MAYÚSCULAS
+      let nombre = (localStorage.getItem('nombre_nino') || 'Sin nombre').toUpperCase();
+      let edad = (localStorage.getItem('edad_nino') || 'Sin edad').toUpperCase();
+      panelNombre.textContent = nombre;
+      panelEdad.textContent = edad;
+      let sonido = sessionStorage.getItem('sonido_activado');
+      if(sonido === null) sonido = 'true';
+      if(sonido === 'true') {
+        soundIcon.textContent = '🔊';
+        soundText.textContent = 'SONIDO ACTIVADO';
+        soundBtn.style.background = '#ffd817';
+        soundBtn.style.color = '#333';
+      } else {
+        soundIcon.textContent = '🔇';
+        soundText.textContent = 'SONIDO DESACTIVADO';
+        soundBtn.style.background = '#eee';
+        soundBtn.style.color = '#888';
+      }
+    };
+    closePanel.onclick = function() {
+      avatarPanel.style.transform = 'translateX(-100%)';
+      setTimeout(()=>{avatarPanel.style.display = 'none';},300);
+    };
+    soundBtn.onclick = function() {
+      let sonido = sessionStorage.getItem('sonido_activado');
+      if(sonido === null) sonido = 'true';
+      if(sonido === 'true') {
+        sessionStorage.setItem('sonido_activado','false');
+        if(window.globalAudio){window.globalAudio.pause();}
+        soundIcon.textContent = '🔇';
+        soundText.textContent = 'SONIDO DESACTIVADO';
+        soundBtn.style.background = '#eee';
+        soundBtn.style.color = '#888';
+      } else {
+        sessionStorage.setItem('sonido_activado','true');
+        if(window.globalAudio){window.globalAudio.play();}
+        soundIcon.textContent = '🔊';
+        soundText.textContent = 'SONIDO ACTIVADO';
+        soundBtn.style.background = '#ffd817';
+        soundBtn.style.color = '#333';
+      }
+    };
+    window.addEventListener('click', function(e) {
+      if(avatarPanel.style.display==='block' && !avatarPanel.contains(e.target) && e.target!==avatarImg) {
+        avatarPanel.style.transform = 'translateX(-100%)';
+        setTimeout(()=>{avatarPanel.style.display = 'none';},300);
+      }
+    });
   </script>
 </body>
 </html>
