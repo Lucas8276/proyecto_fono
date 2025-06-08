@@ -22,7 +22,7 @@
           <div class="plus-sign">x</div>
           <div class="phoneme">P</div>
           <div class="equals-sign">=</div>
-          <input type="text" class="word-input" id="input1" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(1, 'PERO')">
+          <input type="text" class="word-input" id="input1" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(1, 'PESO')">
         </div>
       </div>
 
@@ -33,7 +33,7 @@
           <div class="plus-sign">x</div>
           <div class="phoneme">L</div>
           <div class="equals-sign">=</div>
-          <input type="text" class="word-input" id="input2" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(2, 'PEO')">
+          <input type="text" class="word-input" id="input2" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(2, 'PALO')">
         </div>
       </div>
 
@@ -44,7 +44,7 @@
           <div class="plus-sign">x</div>
           <div class="phoneme">O</div>
           <div class="equals-sign">=</div>
-          <input type="text" class="word-input" id="input3" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(3, 'FREA')">
+          <input type="text" class="word-input" id="input3" placeholder="ESCRIBÍ ACA" onkeyup="checkAnswerOnInput(3, 'COLOR')">
         </div>
       </div>
     </div>
@@ -123,7 +123,9 @@
       })
       .then(response => {
         if (response.ok) {
-          window.location.href = '../../index.html';
+          Swal.fire('¡Nivel completado!', 'Datos guardados correctamente.', 'success').then(() => {
+            window.location.href = '../../index.html';
+          });
         } else {
           Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
         }

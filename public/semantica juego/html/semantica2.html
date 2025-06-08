@@ -3,73 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juego Infantil - Semántica</title>
+  <title>Semántica - Nivel 2</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="../css/semantica.css" rel="stylesheet">
-
+  <link href="../css/semantica2.css" rel="stylesheet">
 </head>
+
 <body>
   <div class="container">
-    <div class="instructions">
-      Arrastrá la tarjeta amarilla con pistas hacia la imagen que creas correcta. Si acertás, avanzarás automáticamente al siguiente desafío.
+    <div class="instructions animate__animated animate__fadeIn">
+      <h2>UNÍ CON FLECHAS LAS PALABRAS QUE SIGNIFIQUEN LO MISMO</h2>
     </div>
+
     <div class="game-layout">
-      <div class="clue-card" draggable="true" id="clueCard"></div>
-      <div class="options" id="imagesSection"></div>
+      <div class="words-container animate__animated animate__fadeIn" id="wordsContainer"></div>
     </div>
   </div>
 
   <script>
-    const items = [
-  {
-    image: 'imagenes/murcielago.jpg',
-    name: 'Murciélago',
-    clues: [
-      'Salgo de noche',
-      'Vuelo pero no soy un ave',
-      'Me cuelgo boca abajo',
-      'Uso el eco para moverme'
-    ]
-  },
-  {
-    image: 'imagenes/sandia.jpg',
-    name: 'Sandía',
-    clues: [
-      'Soy grande y verde por fuera',
-      'Roja por dentro',
-      'Refrescante en verano',
-      'Tengo muchas semillas'
-    ]
-  },
-  {
-    image: 'imagenes/reloj.jpg',
-    name: 'Reloj',
-    clues: [
-      'Estoy en tu muñeca o en la pared',
-      'Digo la hora',
-      'Tengo agujas',
-      'Hago tic-tac'
-    ]
-  },
-  {
-    image: 'imagenes/anteojos.jpg',
-    name: 'Anteojos',
-    clues: [
-      'Van en la cara',
-      'Ayudan a ver mejor',
-      'Tienen cristales',
-      'Se apoyan en la nariz'
-    ]
-  }
-];
+    const sets = [
+      {
+        instrucciones: 'UNÍ CON FLECHAS LAS PALABRAS QUE SIGNIFIQUEN LO MISMO',
+        pares: [
+          { word1: 'BALÓN', word2: 'PELOTA' },
+          { word1: 'RÁPIDO', word2: 'VELOZ' },
+          { word1: 'COLEGIO', word2: 'ESCUELA' },
+          { word1: 'FRÍO', word2: 'HELADO' }
+        ]
+      },
+      {
+        instrucciones: 'UNÍ CON FLECHAS LAS PALABRAS QUE SIGNIFIQUEN LO CONTRARIO / OPUESTO',
+        pares: [
+          { word1: 'ALTO', word2: 'BAJO' },
+          { word1: 'DESPIERTO', word2: 'DORMIDO' },
+          { word1: 'CONTENTO', word2: 'TRISTE' },
+          { word1: 'RAPIDO', word2: 'LENTO' }
+        ]
+      }
+    ];
 
-    let currentRound = 0;
-    let correctAnswer = null;
-    let aciertos = 0;
+    let currentSet = 0;
+    let selectedWord = null;
+    let connections = [];
+    let correctPairs = 0;
     let desaciertos = 0;
-
     const id_paciente = localStorage.getItem('id_paciente');
 
     function shuffleArray(array) {
@@ -80,106 +58,179 @@
       return array;
     }
 
-    function loadRound() {
-      const imagesSection = document.getElementById('imagesSection');
-      const clueCard = document.getElementById('clueCard');
+    function loadGame() {
+      const wordsContainer = document.getElementById('wordsContainer');
+      const instructionsBox = document.querySelector('.instructions h2');
+      instructionsBox.textContent = sets[currentSet].instrucciones;
+      const leftColumn = document.createElement('div');
+      const rightColumn = document.createElement('div');
+      leftColumn.className = 'column';
+      rightColumn.className = 'column';
 
-      correctAnswer = items[currentRound];
-      let roundItems = [correctAnswer];
-      let remainingItems = items.filter(item => item !== correctAnswer);
-      roundItems = roundItems.concat(shuffleArray(remainingItems).slice(0, 3));
-      roundItems = shuffleArray(roundItems);
+      // Separar las palabras en dos columnas
+      const leftWords = sets[currentSet].pares.map(pair => pair.word1);
+      const rightWords = sets[currentSet].pares.map(pair => pair.word2);
 
-      imagesSection.innerHTML = roundItems.map(item => `
-        <div class="image-container" data-name="${item.name}">
-          <img src="${item.image}" alt="${item.name}">
-          <p>${item.name}</p>
+      // Mezclar cada columna por separado
+      const shuffledLeftWords = shuffleArray([...leftWords]);
+      const shuffledRightWords = shuffleArray([...rightWords]);
+
+      // Crear las cajas de palabras para cada columna
+      leftColumn.innerHTML = shuffledLeftWords.map(word => `
+        <div class="word-box" data-word="${word}" data-side="left">
+          ${word}
         </div>
       `).join('');
 
-      clueCard.innerHTML = correctAnswer.clues.map(clue => `<p>• ${clue}</p>`).join('');
+      rightColumn.innerHTML = shuffledRightWords.map(word => `
+        <div class="word-box" data-word="${word}" data-side="right">
+          ${word}
+        </div>
+      `).join('');
 
-      setupDragAndDrop();
+      wordsContainer.innerHTML = '';
+      wordsContainer.appendChild(leftColumn);
+      wordsContainer.appendChild(rightColumn);
+
+      setupWordBoxes();
     }
 
-    function setupDragAndDrop() {
-      const clueCard = document.getElementById('clueCard');
-      const containers = document.querySelectorAll('.image-container');
+    function setupWordBoxes() {
+      const wordBoxes = document.querySelectorAll('.word-box');
+      wordBoxes.forEach(box => {
+        box.addEventListener('click', () => {
+          if (connections.some(conn => conn.left === box || conn.right === box)) return;
 
-      clueCard.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', correctAnswer.name);
-        e.dataTransfer.effectAllowed = 'move';
+          // Quitar selección previa
+          wordBoxes.forEach(b => b.classList.remove('selected'));
+
+          if (!selectedWord) {
+            selectedWord = box;
+            box.classList.add('selected');
+          } else {
+            if (selectedWord.dataset.side === box.dataset.side) {
+              selectedWord = box;
+              box.classList.add('selected');
+              return;
+            }
+            if (connections.some(conn => conn.left === selectedWord || conn.right === selectedWord || conn.left === box || conn.right === box)) {
+              selectedWord = null;
+              return;
+            }
+            let left, right;
+            if (selectedWord.dataset.side === 'left') {
+              left = selectedWord;
+              right = box;
+            } else {
+              left = box;
+              right = selectedWord;
+            }
+            const isCorrect = sets[currentSet].pares.some(pair => pair.word1 === left.dataset.word && pair.word2 === right.dataset.word);
+            if (isCorrect) {
+              connections.push({ left, right });
+              createArrow(left, right);
+              Swal.fire({
+                title: '🎉',
+                icon: 'none',
+                timer: 1500,
+                showConfirmButton: false,
+                customClass: {
+                  title: 'emoji-title',
+                  popup: 'emoji-popup'
+                }
+              });
+              correctPairs++;
+              if (correctPairs === sets[currentSet].pares.length) {
+                if (currentSet < sets.length - 1) {
+                  setTimeout(() => {
+                    currentSet++;
+                    selectedWord = null;
+                    connections = [];
+                    correctPairs = 0;
+                    desaciertos = 0;
+                    document.querySelectorAll('.arrow').forEach(a => a.remove());
+                    loadGame();
+                  }, 1500);
+                } else {
+                  setTimeout(() => {
+                    enviarResultados();
+                    window.location.href = 'semantica3.html';
+                  }, 1500);
+                }
+              }
+            } else {
+              desaciertos++;
+              Swal.fire({
+                title: '😢',
+                icon: 'none',
+                timer: 1500,
+                showConfirmButton: false,
+                customClass: {
+                  title: 'emoji-title',
+                  popup: 'emoji-popup'
+                }
+              });
+            }
+            // Quitar selección después de intentar unir
+            wordBoxes.forEach(b => b.classList.remove('selected'));
+            selectedWord = null;
+          }
+        });
       });
-
-      containers.forEach(container => {
-        container.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          container.classList.add('dragover');
-        });
-
-        container.addEventListener('dragleave', () => {
-          container.classList.remove('dragover');
-        });
-
-        container.addEventListener('drop', (e) => {
-          e.preventDefault();
-          container.classList.remove('dragover');
-          const selectedName = container.getAttribute('data-name');
-          checkAnswer(selectedName);
-        });
-      });
     }
 
-    function checkAnswer(selectedName) {
-      if (selectedName === correctAnswer.name) {
-        aciertos++;
-        Swal.fire('Correcto', 'Muy bien, ¡acertaste!', 'success');
-        setTimeout(() => {
-          nextRound();
-        }, 1000);
-      } else {
-        desaciertos++;
-        Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
-      }
+    function createArrow(fromBox, toBox) {
+      const arrow = document.createElement('div');
+      arrow.className = 'arrow';
+      
+      const fromRect = fromBox.getBoundingClientRect();
+      const toRect = toBox.getBoundingClientRect();
+      const containerRect = document.querySelector('.words-container').getBoundingClientRect();
+      
+      const fromX = fromRect.right - containerRect.left;
+      const fromY = fromRect.top + fromRect.height/2 - containerRect.top;
+      const toX = toRect.left - containerRect.left;
+      const toY = toRect.top + toRect.height/2 - containerRect.top;
+      
+      const angle = Math.atan2(toY - fromY, toX - fromX);
+      const length = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+      
+      arrow.style.width = `${length}px`;
+      arrow.style.left = `${fromX}px`;
+      arrow.style.top = `${fromY}px`;
+      arrow.style.transform = `rotate(${angle}rad)`;
+      
+      document.querySelector('.words-container').appendChild(arrow);
     }
+
     function enviarResultados() {
-    if (!id_paciente) {
-      console.error('No hay id_paciente en localStorage');
-      return;
+      if (!id_paciente) {
+        console.error('No hay id_paciente en localStorage');
+        return;
+      }
+      const data = {
+        id_paciente: parseInt(id_paciente),
+        paciente_juego: 'Semantica-Nivel 2',
+        paciente_resultado: `aciertos: ${correctPairs}, desaciertos: ${desaciertos}`,
+        paciente_acierto: correctPairs,
+        paciente_desacierto: desaciertos
+      };
+
+      fetch('http://localhost:3000/juegos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al enviar resultados');
+        return res.text();
+      })
+      .then(msg => console.log(msg))
+      .catch(err => console.error(err));
     }
-    const data = {
-      id_paciente: parseInt(id_paciente),
-      paciente_juego: 'Semantica-Nivel 2',
-      paciente_resultado: `aciertos: ${aciertos}, desaciertos: ${desaciertos}`,
-      paciente_acierto: aciertos,
-      paciente_desacierto: desaciertos
-    };
 
-    fetch('http://localhost:3000/juegos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    .then(res => {
-      if (!res.ok) throw new Error('Error al enviar resultados');
-      return res.text();
-    })
-    .then(msg => console.log(msg))
-    .catch(err => console.error(err));
-  }
-    function nextRound() {
-  currentRound = currentRound + 1;
-  if (currentRound >= items.length) {
-    enviarResultados();
-    Swal.fire('¡Nivel completado!', 'Prepárate para el ultimo desafío ', 'success').then(() => {
-      window.location.href = 'semantica3.html'; // Redirige al siguiente nivel
-    });
-  } else {
-    loadRound();
-  }
-}
-
-    loadRound();
+    // Iniciar el juego
+    loadGame();
   </script>
 </body>
 </html>

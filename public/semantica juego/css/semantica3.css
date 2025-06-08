@@ -1,0 +1,148 @@
+body {
+  font-family: 'Fredoka', sans-serif;
+  background-color: #fffbe6;
+  padding: 20px 10px;
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 24px;
+  padding: 40px 40px 50px 40px;
+  box-shadow: 0 0 32px 0 #ffe082, 0 2px 8px rgba(255, 193, 7, 0.10);
+  border: 3px solid #ffe082;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.instructions {
+  font-size: 1.3rem;
+  margin-bottom: 60px;
+  color: #b48a00;
+  padding: 18px 28px;
+  font-weight: bold;
+  background: #fff3cd;
+  border-radius: 18px;
+  border: 3px solid #ffe082;
+  display: inline-block;
+  min-width: 400px;
+  min-height: 60px;
+  box-sizing: border-box;
+  text-transform: uppercase;
+}
+
+.instructions h2 {
+  color: #b48a00;
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.game-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+}
+
+.sentences-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.sentence-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+}
+
+.sentence-box {
+  background-color: #fffbe6;
+  color: #b48a00;
+  padding: 28px 36px;
+  border-radius: 18px;
+  border: 3px solid #ffd54f;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.08);
+  font-size: 1.45rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  flex: 1;
+  text-align: left;
+  transition: box-shadow 0.2s, background 0.2s, border 0.2s;
+  min-height: unset;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  word-break: break-word;
+}
+
+.sentence-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  margin-left: 0;
+}
+
+.like-btn, .dislike-btn {
+  border: 2.5px solid #ffd54f;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  font-size: 3.2rem;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.10);
+  background: #fff3cd;
+  text-transform: uppercase;
+}
+
+.like-btn {
+  background: #43d15d;
+  border-color: #43d15d;
+}
+.like-btn:hover {
+  background: #2eb043;
+  border-color: #2eb043;
+  transform: scale(1.08);
+}
+
+.dislike-btn {
+  background: #ff6b6b;
+  border-color: #ff6b6b;
+}
+.dislike-btn:hover {
+  background: #d32f2f;
+  border-color: #d32f2f;
+  transform: scale(1.08);
+}
+
+.like-btn:disabled, .dislike-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.emoji-title {
+  font-size: 100px !important;
+  line-height: 1 !important;
+}
+
+.swal2-title {
+  padding: 0 !important;
+}
+
+.emoji-popup {
+  background: transparent !important;
+  box-shadow: none !important;
+}

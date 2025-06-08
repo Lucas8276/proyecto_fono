@@ -3,77 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juego Infantil - Semántica</title>
+  <title>Semantica- Nivel 1</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="../css/semantica.css" rel="stylesheet">
-  
+  <link href="../css/semantica1.css" rel="stylesheet">
 </head>
 
 <body>
   <div class="container">
-    <div class="instructions">
-      Arrastrá la tarjeta amarilla con pistas hacia la imagen que creas correcta. Si acertás, avanzarás automáticamente al siguiente desafío.
+    <div class="instructions animate__animated animate__fadeIn">
+      <h2>ARRASTRÁ CADA IMAGEN A SU GRUPO CORRESPONDIENTE</h2>
+      </h2>
+      
     </div>
 
     <div class="game-layout">
-      <div class="clue-card" draggable="true" id="clueCard"></div>
-      <div class="options" id="imagesSection"></div>
+      <div class="categories-container animate__animated animate__fadeInLeft">
+        <div class="category" data-category="ANIMALES">
+          <div class="drop-zone">ANIMALES</div>
+        </div>
+        <div class="category" data-category="VERDURAS">
+          <div class="drop-zone">VERDURAS</div>
+        </div>
+        <div class="category" data-category="TRANSPORTES">
+          <div class="drop-zone">TRANSPORTES</div>
+        </div>
+        <div class="category" data-category="VESTIMENTA">
+          <div class="drop-zone">VESTIMENTA</div>
+        </div>
+        <div class="category" data-category="FRUTAS">
+          <div class="drop-zone">FRUTAS</div>
+        </div>
+        <div class="category" data-category="COLORES">
+          <div class="drop-zone">COLORES</div>
+        </div>
+      </div>
+      <div class="images-container animate__animated animate__fadeInRight" id="imagesContainer"></div>
     </div>
   </div>
 
   <script>
     const items = [
-      {
-        image: 'imagenes/perro.jpg',
-        name: 'Perro',
-        clues: [
-          'Soy un animal de cuatro patas',
-          'Ladro cuando veo extraños',
-          'Soy el mejor amigo del hombre',
-          'Me gusta jugar con pelotas'
-        ]
-      },
-      {
-        image: 'imagenes/manzanaa.png',
-        name: 'Manzana',
-        clues: [
-          'Soy una fruta roja',
-          'Crezco en árboles',
-          'Me usan en pasteles',
-          'Me como fresca'
-        ]
-      },
-      {
-        image: 'imagenes/pelota.png',
-        name: 'Pelota',
-        clues: [
-          'Soy redonda',
-          'Me usan para jugar',
-          'Puedo rebotar',
-          'Me patean en el fútbol'
-        ]
-      },
-      {
-        image: 'imagenes/libro.png',
-        name: 'Libro',
-        clues: [
-          'Tengo muchas páginas',
-          'Contengo historias',
-          'Me encuentras en bibliotecas',
-          'Ayudo a aprender'
-        ]
-      }
+      // Animales
+      { image: 'imagenes/perro.jpg', name: 'Perro', category: 'ANIMALES' },
+      { image: 'imagenes/gato.webp', name: 'Gato', category: 'ANIMALES' },
+      { image: 'imagenes/conejo.webp', name: 'Conejo', category: 'ANIMALES' },
+      
+      // Verduras
+      { image: 'imagenes/zanahoria.jpg', name: 'Zanahoria', category: 'VERDURAS' },
+      { image: 'imagenes/lechuga.jpg', name: 'Lechuga', category: 'VERDURAS' },
+      { image: 'imagenes/tomate.jpg', name: 'Tomate', category: 'VERDURAS' },
+      
+      // Transportes
+      { image: 'imagenes/auto.jpg', name: 'Auto', category: 'TRANSPORTES' },
+      { image: 'imagenes/avion.webp', name: 'Avión', category: 'TRANSPORTES' },
+      { image: 'imagenes/bicicleta.jpg', name: 'Bicicleta', category: 'TRANSPORTES' },
+      
+      // Vestimenta
+      { image: 'imagenes/remera.jpg', name: 'Remera', category: 'VESTIMENTA' },
+      { image: 'imagenes/pantalon.png', name: 'Pantalón', category: 'VESTIMENTA' },
+      { image: 'imagenes/zapatos.webp', name: 'Zapatos', category: 'VESTIMENTA' },
+      
+      // Frutas
+      { image: 'imagenes/manzana.jpg', name: 'Manzana', category: 'FRUTAS' },
+      { image: 'imagenes/banana.webp', name: 'Banana', category: 'FRUTAS' },
+      { image: 'imagenes/frutilla.avif', name: 'Frutilla', category: 'FRUTAS' },
+      
+      // Colores
+      { image: 'imagenes/rojo.jpg', name: 'Rojo', category: 'COLORES' },
+      { image: 'imagenes/amarillo.jpg', name: 'Amarillo', category: 'COLORES' },
+      { image: 'imagenes/verde.avif', name: 'Verde', category: 'COLORES' },
+
+      // Imágenes distractoras (sin categoría)
+      { image: 'imagenes/reloj.webp', name: 'Reloj', category: 'NINGUNA' },
+      { image: 'imagenes/telefono.jpg', name: 'Teléfono', category: 'NINGUNA' },
+      { image: 'imagenes/silla.jpg', name: 'Silla', category: 'NINGUNA' },
     ];
 
-    let currentRound = 0;
-    let correctAnswer = null;
-  
     let aciertos = 0;
     let desaciertos = 0;
-
     const id_paciente = localStorage.getItem('id_paciente');
+    let currentCategories = [];
+    let currentLevel = 0;
+    const categoriesPerLevel = 3;
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -83,106 +96,193 @@
       return array;
     }
 
-    function loadRound() {
-      const imagesSection = document.getElementById('imagesSection');
-      const clueCard = document.getElementById('clueCard');
+    function getUniqueCategories() {
+      return [...new Set(items.map(item => item.category))].filter(cat => cat !== 'NINGUNA');
+    }
 
-      correctAnswer = items[currentRound];
-      let roundItems = [correctAnswer];
-      let remainingItems = items.filter(item => item !== correctAnswer);
-      roundItems = roundItems.concat(shuffleArray(remainingItems).slice(0, 3));
-      roundItems = shuffleArray(roundItems);
+    function showCategoriesForLevel() {
+      // Ocultar todas las categorías
+      document.querySelectorAll('.category').forEach(cat => {
+        cat.style.display = 'none';
+      });
 
-      imagesSection.innerHTML = roundItems.map(item => `
-        <div class="image-container" data-name="${item.name}">
+      // Mostrar solo las categorías actuales
+      currentCategories.forEach(category => {
+        const categoryElement = document.querySelector(`.category[data-category="${category}"]`);
+        if (categoryElement) {
+          categoryElement.style.display = 'block';
+        }
+      });
+    }
+
+    function loadGame() {
+      const imagesContainer = document.getElementById('imagesContainer');
+      const currentItems = items.filter(item => 
+        currentCategories.includes(item.category) || item.category === 'NINGUNA'
+      );
+      const shuffledItems = shuffleArray([...currentItems]);
+
+      imagesContainer.innerHTML = shuffledItems.map(item => `
+        <div class="draggable-image" draggable="true" data-category="${item.category}">
           <img src="${item.image}" alt="${item.name}">
           <p>${item.name}</p>
         </div>
       `).join('');
 
-      clueCard.innerHTML = correctAnswer.clues.map(clue => `<p>• ${clue}</p>`).join('');
-
       setupDragAndDrop();
     }
 
     function setupDragAndDrop() {
-      const clueCard = document.getElementById('clueCard');
-      const containers = document.querySelectorAll('.image-container');
+      const draggableImages = document.querySelectorAll('.draggable-image');
+      const dropZones = document.querySelectorAll('.drop-zone');
 
-      clueCard.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', correctAnswer.name);
-        e.dataTransfer.effectAllowed = 'move';
+      draggableImages.forEach(image => {
+        image.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', image.dataset.category);
+          image.classList.add('dragging');
+          image.style.opacity = '0.5';
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        image.addEventListener('dragend', () => {
+          image.classList.remove('dragging');
+          if (!image.style.pointerEvents) {
+            image.style.opacity = '1';
+          }
+        });
       });
 
-      containers.forEach(container => {
-        container.addEventListener('dragover', (e) => {
+      dropZones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
           e.preventDefault();
-          container.classList.add('dragover');
+          zone.classList.add('dragover');
+          e.dataTransfer.dropEffect = 'move';
         });
 
-        container.addEventListener('dragleave', () => {
-          container.classList.remove('dragover');
+        zone.addEventListener('dragleave', () => {
+          zone.classList.remove('dragover');
         });
 
-        container.addEventListener('drop', (e) => {
+        zone.addEventListener('drop', (e) => {
           e.preventDefault();
-          container.classList.remove('dragover');
-          const selectedName = container.getAttribute('data-name');
-          checkAnswer(selectedName);
+          zone.classList.remove('dragover');
+          
+          const draggedImage = document.querySelector('.dragging');
+          const category = zone.parentElement.dataset.category;
+          
+          if (draggedImage.dataset.category === category) {
+            aciertos++;
+            draggedImage.remove();
+            Swal.fire({
+              title: '🎉',
+              icon: 'none',
+              timer: 1500,
+              showConfirmButton: false,
+              customClass: {
+                title: 'emoji-title',
+                popup: 'emoji-popup'
+              }
+            });
+          } else if (draggedImage.dataset.category === 'NINGUNA') {
+            draggedImage.style.opacity = '0.5';
+            draggedImage.style.pointerEvents = 'none';
+          } else {
+            desaciertos++;
+            Swal.fire({
+              title: '😢',
+              icon: 'none',
+              timer: 1500,
+              showConfirmButton: false,
+              customClass: {
+                title: 'emoji-title',
+                popup: 'emoji-popup'
+              }
+            });
+          }
+
+          checkLevelCompletion();
         });
       });
     }
 
-    function checkAnswer(selectedName) {
-      if (selectedName === correctAnswer.name) {
-        aciertos++;
-        Swal.fire('Correcto', 'Muy bien, ¡acertaste!', 'success');
-        setTimeout(() => {
-          nextRound();
-        }, 1000);
-      } else {
-        desaciertos++;
-        Swal.fire('Incorrecto', 'Intenta nuevamente.', 'error');
+    function checkLevelCompletion() {
+      const remainingImages = document.querySelectorAll('.draggable-image:not([style*="pointer-events: none"])');
+      const allCategories = getUniqueCategories();
+      
+      if (remainingImages.length === 0 || (remainingImages.length === items.filter(item => item.category === 'NINGUNA').length)) {
+        if (currentCategories.includes('ANIMALES')) {
+          // Pasar a las siguientes categorías (ropa, frutas, colores)
+          currentCategories = ['VESTIMENTA', 'FRUTAS', 'COLORES'];
+          showCategoriesForLevel();
+          loadGame();
+        } else {
+          // Juego completado
+          enviarResultados();
+          window.location.href = 'semantica2.html';
+        }
       }
     }
+
     function enviarResultados() {
-    if (!id_paciente) {
-      console.error('No hay id_paciente en localStorage');
-      return;
-    }
-    const data = {
-      id_paciente: parseInt(id_paciente),
-      paciente_juego: 'Semantica-Nivel 1',
-      paciente_resultado: `aciertos: ${aciertos}, desaciertos: ${desaciertos}`,
-      paciente_acierto: aciertos,
-      paciente_desacierto: desaciertos
-    };
-
-    fetch('http://localhost:3000/juegos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    .then(res => {
-      if (!res.ok) throw new Error('Error al enviar resultados');
-      return res.text();
-    })
-    .then(msg => console.log(msg))
-    .catch(err => console.error(err));
-  }
-    function nextRound() {
-      currentRound++;
-      if (currentRound >= items.length) {
-        enviarResultados();
-        Swal.fire('¡Excelente!', 'Pasando al siguiente nivel...', 'success').then(() => {
-          window.location.href = 'semantica2.html'; 
-        });
-      } else {
-        loadRound();
+      if (!id_paciente) {
+        console.error('No hay id_paciente en localStorage');
+        return;
       }
+      const data = {
+        id_paciente: parseInt(id_paciente),
+        paciente_juego: 'Clasificacion-Nivel 1',
+        paciente_resultado: `aciertos: ${aciertos}, desaciertos: ${desaciertos}`,
+        paciente_acierto: aciertos,
+        paciente_desacierto: desaciertos
+      };
+
+      fetch('http://localhost:3000/juegos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al enviar resultados');
+        return res.text();
+      })
+      .then(msg => console.log(msg))
+      .catch(err => console.error(err));
     }
 
-    loadRound();
+    // Iniciar el juego con las primeras categorías
+    currentCategories = ['ANIMALES', 'VERDURAS', 'TRANSPORTES'];
+    showCategoriesForLevel();
+    loadGame();
+
+    // Agregar estilos para el emoji y mejorar el arrastre
+    const style = document.createElement('style');
+    style.textContent = `
+      .emoji-title {
+        font-size: 100px !important;
+        line-height: 1 !important;
+      }
+      .swal2-title {
+        padding: 0 !important;
+      }
+      .emoji-popup {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .draggable-image {
+        cursor: move;
+        user-select: none;
+        -webkit-user-drag: element;
+      }
+      .draggable-image.dragging {
+        opacity: 0.5;
+        box-shadow: none !important;
+      }
+      .drop-zone.dragover {
+        background-color: rgba(102, 179, 255, 0.2);
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
