@@ -5,11 +5,28 @@ const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const bcrypt = require('bcrypt');
+const path = require('path');
 require('dotenv').config();
 
 const { getClient } = require('./dbConnection');
 
+const express = require('express');
 const app = express();
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, '../public')));
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const session = require('express-session');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const bcrypt = require('bcrypt');
+const path = require('path');
+require('dotenv').config();
+
+const { getClient } = require('./dbConnection');
+
+
 const saltRounds = 10;
 
 app.use(cors());
@@ -230,8 +247,7 @@ app.get('/paciente', async (req, res) => {
   }
 });
 
-// Inicia el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
