@@ -55,6 +55,8 @@
   <button id="back-button" onclick="window.location.href='../../index.html'">VOLVER</button>
 
   <script>
+    let aciertos = 0;
+    let desaciertos = 0;
     // Configurar eventos de arrastrar y soltar
     document.addEventListener('DOMContentLoaded', () => {
       const palabras = document.querySelectorAll('.palabra');
@@ -92,74 +94,87 @@
     });
 
     function verificarOracion() {
-      const espacios = document.querySelectorAll('.espacio-palabra');
-      let correcto = true;
-      let oracionCompleta = 'El perro está ';
+  const espacios = document.querySelectorAll('.espacio-palabra');
+  let correcto = true;
+  let oracionCompleta = 'El perro está ';
 
-      espacios.forEach(espacio => {
-        if (espacio.textContent !== 'corriendo') {
-          correcto = false;
-        }
-        oracionCompleta += espacio.textContent + ' ';
-      });
+  espacios.forEach(espacio => {
+    if (espacio.textContent !== 'corriendo') {
+      correcto = false;
+    }
+    oracionCompleta += espacio.textContent + ' ';
+  });
 
-      if (correcto) {
-        Swal.fire({
-          title: '🎉',
-          icon: 'none',
-          timer: 1500,
-          showConfirmButton: false,
-          customClass: {
-            title: 'emoji-title',
-            popup: 'emoji-popup'
-          }
-        }).then(() => {
-          enviarDatosAlServidor(oracionCompleta.trim());
-          window.location.href = 'morfosintaxis2.html';
-        });
-      } else {
-        Swal.fire({
-          title: '😢',
-          icon: 'none',
-          timer: 1500,
-          showConfirmButton: false,
-          customClass: {
-            title: 'emoji-title',
-            popup: 'emoji-popup'
-          }
-        }).then(() => {
-          // Limpiar todos los espacios cuando la respuesta es incorrecta
-          espacios.forEach(espacio => {
-            espacio.textContent = '';
-            espacio.dataset.palabra = '';
-          });
-        });
+  if (correcto) {
+    aciertos++; // Sumar acierto
+
+    Swal.fire({
+      title: '🎉',
+      icon: 'none',
+      timer: 1500,
+      showConfirmButton: false,
+      customClass: {
+        title: 'emoji-title',
+        popup: 'emoji-popup'
       }
-    }
+    }).then(() => {
+      enviarDatosAlServidor(oracionCompleta.trim());
+      window.location.href = 'morfosintaxis2.html';
+    });
+  } else {
+    desaciertos++; // Sumar desacierto
 
-    function enviarDatosAlServidor(oracion) {
-      const id_paciente = localStorage.getItem('id_paciente');
-      const paciente_juego = 'Morfosintaxis - Nivel 1';
-      const paciente_resultado = oracion;
-      
-      fetch('http://localhost:3000/juegos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ id_paciente, paciente_juego, paciente_resultado })
-      })
-      .then(response => {
-        if (response.ok) {
-          Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
-        } else {
-          Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
-        }
-      })
-      .catch(() => {
-        Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+    Swal.fire({
+      title: '😢',
+      icon: 'none',
+      timer: 1500,
+      showConfirmButton: false,
+      customClass: {
+        title: 'emoji-title',
+        popup: 'emoji-popup'
+      }
+    }).then(() => {
+      // Limpiar los espacios
+      espacios.forEach(espacio => {
+        espacio.textContent = '';
+        espacio.dataset.palabra = '';
       });
+    });
+  }
+}
+
+
+   function enviarDatosAlServidor(oracion) {
+  const id_paciente = localStorage.getItem('id_paciente');
+  const paciente_juego = 'Morfosintaxis - Nivel 1';
+  const paciente_resultado = oracion;
+  const paciente_acierto = aciertos;
+  const paciente_desacierto = desaciertos;
+
+  fetch('http://localhost:3000/juegos', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id_paciente,
+      paciente_juego,
+      paciente_resultado,
+      paciente_acierto,
+      paciente_desacierto
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      Swal.fire('¡Datos guardados!', 'El resultado se ha registrado correctamente.', 'success');
+    } else {
+      Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
     }
+  })
+  .catch(() => {
+    Swal.fire('Error', 'No se pudieron guardar los datos.', 'error');
+  });
+}
 
     // Agregar estilos para el emoji
     const style = document.createElement('style');
@@ -204,14 +219,26 @@
       setTimeout(()=>{avatarPanel.style.transform = 'translateX(0)';},10);
       avatarPanelImg.src = avatarImg.src;
       // Mayúscula inicial para nombre y edad
-      let nombre = localStorage.getItem('nombre_nino') || 'Sin nombre';
-      let edad = localStorage.getItem('edad_nino') || 'Sin edad';
-      nombre = nombre.charAt(0).toUpperCase() + nombre.slice(1);
-      if (typeof edad === 'string' && edad.length > 0) {
-        edad = edad.charAt(0).toUpperCase() + edad.slice(1);
-      }
+      const idPaciente = localStorage.getItem('id_paciente');
+      if (idPaciente) {
+  fetch(`http://localhost:3000/paciente?id_paciente=${idPaciente}`)
+    .then(response => response.json())
+    .then(data => {
+      const nombre = (data.paciente_nombre || 'Sin nombre').toUpperCase();
+      const edad = (data.paciente_edad || 'Sin edad').toString().toUpperCase();
       panelNombre.textContent = nombre;
       panelEdad.textContent = edad;
+    })
+    .catch(err => {
+      console.error('Error al obtener datos del paciente:', err);
+      panelNombre.textContent = 'Sin nombre';
+      panelEdad.textContent = 'Sin edad';
+    });
+} else {
+  panelNombre.textContent = 'SIN NOMBRE';
+  panelEdad.textContent = 'SIN EDAD';
+}
+
       // Estado de sonido
       let sonido = sessionStorage.getItem('sonido_activado');
       if(sonido === null) sonido = 'true';

@@ -2,20 +2,74 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors'); // Importa el paquete cors
 const { Client } = require('pg');
-
+const session = require('express-session');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const app = express();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+require('dotenv').config();
+
 app.use(cors()); // Usa cors para permitir solicitudes desde cualquier origen
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json()); // Permite recibir JSON en el body
 
+
+// Configura express-session (requerido por passport)
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}));
+
+// Inicializa passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Serialización del usuario
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
+
+
+// Configura estrategia de Google
+passport.use(new GoogleStrategy({
+ clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL
+}, async (accessToken, refreshToken, profile, done) => {
+  const email = profile.emails[0].value;
+  const nombre_fono = profile.displayName;
+
+  try {
+    const result = await client.query('SELECT id_fono FROM fonoaudiologo WHERE email = $1', [email]);
+
+    if (result.rows.length > 0) {
+      profile.id_fono = result.rows[0].id_fono;
+    } else {
+      const insert = await client.query(
+  'INSERT INTO fonoaudiologo (nombre_fono, email, contraseña) VALUES ($1, $2, $3) RETURNING id_fono',
+  [nombre_fono, email, 'google-oauth']
+);
+
+      profile.id_fono = insert.rows[0].id_fono;
+    }
+
+    return done(null, profile);
+  } catch (error) {
+    console.error('Error en Google login:', error);
+    return done(error, null);
+  }
+}));
+
 // Configura los detalles de conexión
 const client = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'fono',
-    password: 'admin',
-    port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
+
 
 client.connect()
     .then(() => console.log('Conectado a PostgreSQL'))
@@ -23,9 +77,10 @@ client.connect()
 
 // Ruta para manejar el envío del formulario
 app.post('/submit', (req, res) => {
-    const { nombre, dni, edad } = req.body;
-    const query = 'INSERT INTO paciente (paciente_nombre, paciente_dni, paciente_edad) VALUES ($1, $2, $3) RETURNING id_paciente';
-    const values = [nombre, dni, edad];
+    const { nombre, dni, edad, id_fono } = req.body; // ← incluir id_fono
+    const query = 'INSERT INTO paciente (paciente_nombre, paciente_dni, paciente_edad, id_fono) VALUES ($1, $2, $3, $4) RETURNING id_paciente';
+    const values = [nombre, dni, edad, id_fono];
+
     client.query(query, values, (err, result) => {
         if (err) {
             console.error('Error ejecutando la consulta', err.stack);
@@ -35,6 +90,7 @@ app.post('/submit', (req, res) => {
         }
     });
 });
+
 
 // Ruta para obtener todos los pacientes
 app.get('/paciente-id', (req, res) => {
@@ -54,7 +110,19 @@ app.get('/paciente-id', (req, res) => {
 });
 
 app.get('/pacientes', (req, res) => {
-    client.query('SELECT DISTINCT paciente_nombre, paciente_dni, paciente_edad FROM paciente', (err, result) => {
+    const idFono = req.query.id_fono; // Lo que envía el frontend
+
+    if (!idFono) {
+        return res.status(400).json({ error: 'Falta el parámetro id_fono' });
+    }
+
+    const query = `
+        SELECT DISTINCT paciente_nombre, paciente_dni, paciente_edad
+        FROM paciente
+        WHERE id_fono = $1
+    `;
+
+    client.query(query, [idFono], (err, result) => {
         if (err) {
             console.error('Error ejecutando la consulta para obtener pacientes', err.stack);
             res.status(500).json({ error: 'Error al obtener los pacientes' });
@@ -64,41 +132,73 @@ app.get('/pacientes', (req, res) => {
     });
 });
 
-app.post('/register', (req, res) => {
+
+
+app.post('/register', async (req, res) => {
   const { nombre_fono, email, password } = req.body;
-  client.query(
-    'INSERT INTO fonoaudiologo (nombre_fono, email, contraseña) VALUES ($1, $2, $3) RETURNING *',
-    [nombre_fono, email, password],
-    (error, results) => {
-      if (error) {
-        if (error.code === '23505') {
-          return res.json({ success: false, message: 'El email ya está registrado.' });
-        }
-        console.error('Error en el registro:', error);
-        return res.status(500).json({ success: false, message: 'Error en el servidor.' });
-      }
-      res.json({ success: true });
+
+  try {
+    // Hashear la contraseña antes de guardar
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const result = await client.query(
+      'INSERT INTO fonoaudiologo (nombre_fono, email, contraseña) VALUES ($1, $2, $3) RETURNING *',
+      [nombre_fono, email, hashedPassword]
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    if (error.code === '23505') {
+      return res.json({ success: false, message: 'El email ya está registrado.' });
     }
-  );
+    console.error('Error en el registro:', error);
+    return res.status(500).json({ success: false, message: 'Error en el servidor.' });
+  }
 });
-app.post('/login', (req, res) => {
+
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  client.query(
-    'SELECT * FROM fonoaudiologo WHERE email = $1 AND contraseña = $2',
-    [email, password],
-    (error, results) => {
-      if (error) {
-        console.error('Error en la consulta de login:', error);
-        return res.status(500).json({ success: false, message: 'Error en el servidor.' });
-      }
-      if (results.rows.length > 0) {
-        res.json({ success: true });
+
+  try {
+   const result = await client.query(
+  'SELECT id_fono, nombre_fono, contraseña FROM fonoaudiologo WHERE email = $1',
+  [email]
+);
+
+    if (result.rows.length > 0) {
+      const user = result.rows[0];
+
+      // Verifica la contraseña con el hash almacenado
+      const passwordMatch = await bcrypt.compare(password, user.contraseña);
+
+      if (passwordMatch) {
+        return res.json({ 
+          success: true,
+          id_fono: user.id_fono, 
+          nombre_fono: user.nombre_fono ?? ''
+        });
       } else {
-        res.json({ success: false, message: 'Credenciales incorrectas.' });
+        return res.status(401).json({ 
+          success: false,
+          message: 'Credenciales incorrectas (contraseña no coincide)' 
+        });
       }
+    } else {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Credenciales incorrectas (email no existe)' 
+      });
     }
-  );
+  } catch (error) {
+    console.error('Error en login:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Error en el servidor' 
+    });
+  }
 });
+
+
 app.post('/juegos', (req, res) => {
   const { id_paciente, paciente_juego, paciente_resultado, paciente_acierto, paciente_desacierto } = req.body;
 
@@ -158,3 +258,58 @@ app.get('/buscar-paciente', async (req, res) => {
     res.status(500).json({ error: 'Error al buscar el paciente' });
   }
 });
+// Ruta para iniciar login con Google
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// Ruta de callback (donde Google redirige al usuario)
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// Ruta de callback (donde Google redirige al usuario)
+app.get('/auth/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/login',
+    session: false
+  }),
+  async (req, res) => {
+    try {
+      const id_fono = req.user.id_fono; // viene del profile.id_fono
+      const nombre_fono = req.user.displayName;
+      const email = req.user.emails[0].value;
+
+      // Nota: si querés, puedes evitar insertar aquí porque ya lo hiciste en la estrategia
+
+      res.redirect(`http://127.0.0.1:5501/public/fonoaudiologo/html/google-login-success.html?id_fono=${encodeURIComponent(id_fono)}&nombre_fono=${encodeURIComponent(nombre_fono)}&email=${encodeURIComponent(email)}`);
+    } catch (error) {
+      console.error('Error en callback Google:', error);
+      res.status(500).send('Error en el servidor');
+    }
+  }
+);
+app.get('/paciente', async (req, res) => {
+  const id_paciente = req.query.id_paciente;
+
+  if (!id_paciente) {
+    return res.status(400).json({ error: 'id_paciente requerido' });
+  }
+
+  try {
+    const result = await client.query(
+      'SELECT paciente_nombre, paciente_edad FROM paciente WHERE id_paciente = $1',
+      [id_paciente]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Paciente no encontrado' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error al obtener paciente por ID', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+

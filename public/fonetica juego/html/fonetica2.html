@@ -65,12 +65,59 @@
   </div>
 
   <script>
+  function enviarResultadosFonetica(correctMatches, wrongMatches, currentLevel) {
+  const id_paciente = localStorage.getItem('id_paciente');
+  if (!id_paciente || isNaN(parseInt(id_paciente))) {
+    console.error('id_paciente no válido');
+    return;
+  }
+
+  const data = {
+    id_paciente: parseInt(id_paciente),
+    paciente_juego: `Fonética - Nivel ${currentLevel}`,
+    paciente_resultado: `${correctMatches} aciertos, ${wrongMatches} desaciertos`,
+    paciente_acierto: correctMatches,
+    paciente_desacierto: wrongMatches
+  };
+
+  fetch('http://localhost:3000/juegos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('Error al guardar los resultados');
+    return response.text();
+  })
+  .then(msg => {
+    console.log(msg);
+    // Redirigir tras guardar resultados
+    const nextLevel = currentLevel + 1;
+    if (nextLevel <= 3) {
+      window.location.href = `fonetica${nextLevel}.html?id_paciente=${id_paciente}`;
+    } else {
+      window.location.href = `../../index.html?id_paciente=${id_paciente}`;
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    // Igual redirigir aunque haya error
+    const nextLevel = currentLevel + 1;
+    if (nextLevel <= 3) {
+      window.location.href = `fonetica${nextLevel}.html?id_paciente=${id_paciente}`;
+    } else {
+      window.location.href = `../../index.html?id_paciente=${id_paciente}`;
+    }
+  });
+}
+
     document.addEventListener("DOMContentLoaded", function () {
       const letterTiles = document.querySelectorAll(".letter-tile");
       const imageBoxes = document.querySelectorAll(".image-box");
       const alertBox = document.getElementById("alertBox");
       const alertMessage = document.getElementById("alertMessage");
       let correctMatches = 0;
+      let wrongMatches = 0; 
       let currentLevel = 2;
       let id_paciente = localStorage.getItem('id_paciente');
 
@@ -104,21 +151,22 @@
       }
 
       // Función para verificar si se completó el nivel
-      function checkLevelCompletion() {
-        if (correctMatches === imageBoxes.length) {
-          Swal.fire({
-            title: '¡NIVEL COMPLETADO!',
-            icon: 'none',
-            timer: 1500,
-            showConfirmButton: false,
-            customClass: {
-              title: 'level-complete-title',
-              popup: 'level-complete-popup'
-            }
-          });
-          goToNextLevel();
+       function checkLevelCompletion() {
+    if (correctMatches === imageBoxes.length) {
+      Swal.fire({
+        title: '¡NIVEL COMPLETADO!',
+        icon: 'none',
+        timer: 1500,
+        showConfirmButton: false,
+        customClass: {
+          title: 'level-complete-title',
+          popup: 'level-complete-popup'
         }
-      }
+      }).then(() => {
+        enviarResultadosFonetica(correctMatches, wrongMatches, currentLevel);
+      });
+    }
+  }
 
       // Eventos de arrastre para las letras
       letterTiles.forEach((tile) => {
@@ -226,10 +274,26 @@
         setTimeout(()=>{avatarPanel.style.transform = 'translateX(0)';},10);
         avatarPanelImg.src = avatarImg.src;
         // SIEMPRE EN MAYÚSCULAS
-        let nombre = (localStorage.getItem('nombre_nino') || 'Sin nombre').toUpperCase();
-        let edad = (localStorage.getItem('edad_nino') || 'Sin edad').toUpperCase();
-        panelNombre.textContent = nombre;
-        panelEdad.textContent = edad;
+        const idPaciente = localStorage.getItem('id_paciente');
+       if (idPaciente) {
+  fetch(`http://localhost:3000/paciente?id_paciente=${idPaciente}`)
+    .then(response => response.json())
+    .then(data => {
+      const nombre = (data.paciente_nombre || 'Sin nombre').toUpperCase();
+      const edad = (data.paciente_edad || 'Sin edad').toString().toUpperCase();
+      panelNombre.textContent = nombre;
+      panelEdad.textContent = edad;
+    })
+    .catch(err => {
+      console.error('Error al obtener datos del paciente:', err);
+      panelNombre.textContent = 'Sin nombre';
+      panelEdad.textContent = 'Sin edad';
+    });
+} else {
+  panelNombre.textContent = 'SIN NOMBRE';
+  panelEdad.textContent = 'SIN EDAD';
+}
+
         // Estado de sonido
         let sonido = sessionStorage.getItem('sonido_activado');
         if(sonido === null) sonido = 'true';

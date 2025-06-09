@@ -201,10 +201,26 @@
       setTimeout(()=>{avatarPanel.style.transform = 'translateX(0)';},10);
       avatarPanelImg.src = avatarImg.src;
       // SIEMPRE EN MAYÚSCULAS
-      let nombre = (localStorage.getItem('nombre_nino') || 'Sin nombre').toUpperCase();
-      let edad = (localStorage.getItem('edad_nino') || 'Sin edad').toUpperCase();
+      const idPaciente = localStorage.getItem('id_paciente');
+      if (idPaciente) {
+  fetch(`http://localhost:3000/paciente?id_paciente=${idPaciente}`)
+    .then(response => response.json())
+    .then(data => {
+      const nombre = (data.paciente_nombre || 'Sin nombre').toUpperCase();
+      const edad = (data.paciente_edad || 'Sin edad').toString().toUpperCase();
       panelNombre.textContent = nombre;
       panelEdad.textContent = edad;
+    })
+    .catch(err => {
+      console.error('Error al obtener datos del paciente:', err);
+      panelNombre.textContent = 'Sin nombre';
+      panelEdad.textContent = 'Sin edad';
+    });
+} else {
+  panelNombre.textContent = 'SIN NOMBRE';
+  panelEdad.textContent = 'SIN EDAD';
+}
+
       let sonido = sessionStorage.getItem('sonido_activado');
       if(sonido === null) sonido = 'true';
       if(sonido === 'true') {

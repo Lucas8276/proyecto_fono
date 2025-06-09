@@ -1,127 +1,199 @@
-<!-- archivo: ver_pacientes.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Listado de Pacientes</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    #pacientesContainer {
+      max-width: 960px;
+      margin: 5rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-weight: 700;
+      font-size: 2rem;
+    }
+    #botonesContenedor {
+      padding: 1rem;
+      background-color: #e9ecef;
+      border-radius: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #botonesContenedor .btn {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+    }
+    .card {
+      border: none;
+      border-radius: 0.75rem;
+    }
+    .card-header {
+      background-color: #007bff;
+      color: #fff;
+      font-weight: 600;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .modal-content {
+      border-radius: 1rem;
+    }
+    .modal-header {
+      border-bottom: 1px solid #dee2e6;
+    }
+    .modal-title {
+      font-weight: 600;
+    }
+    .form-control {
+      border-radius: 0.5rem;
+    }
+    #juegosPacienteContainer h2 {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .modo-oscuro {
+      background-color: #121212 !important;
+      color: #e0e0e0 !important;
+    }
+    .modo-oscuro .container, .modo-oscuro .card, .modo-oscuro .modal-content {
+      background-color: #1e1e1e !important;
+      color: #e0e0e0 !important;
+    }
+    .modo-oscuro .table-hover tbody tr:hover {
+      background-color: #2a2a2a !important;
+    }
+    .modo-oscuro .form-control {
+      background-color: #2a2a2a;
+      border-color: #444;
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
-<div class="container mt-5" id="pacientesContainer">
-  <h1 class="text-primary text-center">Registro de Pacientes</h1>
-  <div class="d-flex justify-content-between my-4">
-  <button id="btnBuscarPaciente" class="btn btn-info">Buscar Paciente</button>
-  <button id="btnRegistrarPaciente" class="btn btn-success">Registrar Paciente</button>
-
-</div>
-
-  <table class="table table-bordered table-hover mt-4">
-    <thead class="table-primary">
-      <tr>
-        <th>Nombre</th>
-        <th>DNI</th>
-        <th>Edad</th>
-        <th>Ver</th>
-      </tr>
-    </thead>
-    <tbody id="tablaPacientes">
-      <tr><td colspan="4">Cargando...</td></tr>
-    </tbody>
-  </table>
-  <div class="text-end mt-3">
-    <a href="login_registro.html" class="btn btn-secondary">Cerrar sesión</a>
+  <div class="container mt-3 d-flex justify-content-end">
+    <div class="dropdown">
+      <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="me-2">Hola, <strong id="nombreFono"></strong></span>
+        <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Usuario" width="40" height="40" class="rounded-circle">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+        <li><button class="dropdown-item text-danger" id="cerrarSesionBtn">Cerrar sesión</button></li>
+      </ul>
+    </div>
   </div>
-</div>
 
-<div class="container" id="juegosPacienteContainer" style="display:none; margin-top:30px;">
-  <h2 id="datosPacienteTitulo" class="text-center text-primary"></h2>
-  <table class="table table-bordered table-hover mt-3">
-    <thead>
-      <tr>
-        <th>Juego</th>
-        <th>Resultado</th>
-      </tr>
-    </thead>
-    <tbody id="tablaJuegosPaciente"></tbody>
-  </table>
+  <div id="pacientesContainer">
+    <h1 class="text-center text-primary mb-4">Registro de Pacientes</h1>
 
-  <!-- Contenedor para los gráficos -->
-  <div id="graficosContainer" class="row g-4"></div>
-
-  <div class="text-end mt-3">
-    <button onclick="cerrarJuegosPaciente()" class="btn btn-secondary">Cerrar</button>
-  </div>
-</div>
-
-<!-- Formulario de búsqueda -->
-<div class="card p-3 mb-4" id="formularioBusqueda" style="display: none;">
-  <h5 class="text-primary">Buscar Paciente</h5>
-  <form id="buscarPacienteForm">
-    <div class="mb-3">
-      <input type="text" id="buscarPacienteInput" class="form-control" placeholder="Ingrese DNI o nombre">
-    </div>
-    <button type="submit" class="btn btn-primary w-100">Buscar</button>
-  </form>
-  <div id="resultadosBusqueda" class="mt-3"></div>
-</div>
-
-<!-- Formulario de registro -->
-<div class="card p-3 mb-4" id="formularioRegistro" style="display: none;">
-  <h5 class="text-primary">Registrar nuevo Paciente</h5>
-  <form id="pacienteForm">
-    <div class="mb-3">
-      <input type="text" id="nombre_paciente" class="form-control" placeholder="Nombre completo" required>
-    </div>
-    <div class="mb-3">
-      <input type="text" id="dni_paciente" class="form-control" placeholder="Número de documento" required>
-    </div>
-    <div class="mb-3">
-      <input type="number" id="edad_paciente" class="form-control" placeholder="Edad" required>
-    </div>
-    <button type="submit" class="btn btn-success w-100">Registrar Paciente</button>
-  </form>
-</div>
-<!-- Modal de Bootstrap -->
-<div class="modal fade" id="modalJuegosPaciente" tabindex="-1" aria-labelledby="modalJuegosPacienteLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalJuegosPacienteLabel">Datos del Paciente</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+    <div id="listaPacientesSeccion">
+      <div id="botonesYtablaContenedor">
+        <div id="botonesContenedor">
+          <button id="btnBuscarPaciente" class="btn btn-outline-info"><i class="bi bi-search me-2"></i>Buscar Paciente</button>
+          <button id="btnRegistrarPaciente" class="btn btn-success"><i class="bi bi-person-plus-fill me-2"></i>Registrar Paciente</button>
+        </div>
+        <div class="card shadow-sm mt-3">
+          <div class="card-header">Lista de Pacientes</div>
+          <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr><th>Nombre</th><th>DNI</th><th>Edad</th><th>Ver</th></tr>
+              </thead>
+              <tbody id="tablaPacientes">
+                <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div class="modal-body">
-        <div id="modalJuegosPacienteContenido">
-          <!-- Aquí se inyectará dinámicamente el contenido -->
+    </div>
+
+    <div id="juegosPacienteContainer" style="display:none; margin-top:2rem;">
+      <h2 id="datosPacienteTitulo" class="text-center text-primary"></h2>
+      <div id="graficosContainer" class="row g-4 mt-3"></div>
+      <div class="text-end mt-4">
+        <button onclick="cerrarJuegosPaciente()" class="btn btn-outline-secondary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modales: sin cambios estructurales -->
+  <!-- Modal Buscar Paciente -->
+  <div class="modal fade" id="modalBuscarPaciente" tabindex="-1" aria-labelledby="modalBuscarPacienteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalBuscarPacienteLabel">Buscar Paciente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="buscarPacienteForm">
+            <input type="text" id="buscarPacienteInput" class="form-control mb-3" placeholder="Ingrese DNI o nombre" required>
+            <button type="submit" class="btn btn-primary w-100">Buscar</button>
+          </form>
+          <div id="resultadosBusqueda" class="mt-3"></div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Modal Registrar Paciente -->
+  <div class="modal fade" id="modalRegistrarPaciente" tabindex="-1" aria-labelledby="modalRegistrarPacienteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalRegistrarPacienteLabel">Registrar nuevo Paciente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="pacienteForm">
+            <input type="text" id="nombre_paciente" class="form-control mb-3" placeholder="Nombre completo" required>
+            <input type="text" id="dni_paciente" class="form-control mb-3" placeholder="Número de documento" required>
+            <input type="number" id="edad_paciente" class="form-control mb-3" placeholder="Edad" required>
+            <button type="submit" class="btn btn-success w-100">Registrar Paciente</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+  <script>
+    let pacientesData = [];
 
-
-
-<script>
-let pacientesData = [];
-
-function cargarPacientes() {
-  fetch('http://localhost:3000/pacientes')
+    function cargarPacientes() {
+    const idFono = localStorage.getItem('id_fono'); // Obtener id_fono del localStorage
+  fetch(`http://localhost:3000/pacientes?id_fono=${encodeURIComponent(idFono)}`)
     .then(res => res.json())
     .then(data => {
       pacientesData = data;
       const tbody = document.getElementById('tablaPacientes');
       tbody.innerHTML = '';
-      if (Array.isArray(data) && data.length > 0) {
+
+      if (Array.isArray(data) && data.length) {
         data.forEach(p => {
-          tbody.innerHTML += `<tr>
-            <td>${p.paciente_nombre}</td>
-            <td>${p.paciente_dni}</td>
-            <td>${p.paciente_edad}</td>
-            <td><button class="btn btn-link" onclick="verJuegosPaciente('${p.paciente_dni}')">Ver</button></td>
-          </tr>`;
+          tbody.innerHTML += `
+            <tr>
+              <td>${p.paciente_nombre}</td>
+              <td>${p.paciente_dni}</td>
+              <td>${p.paciente_edad}</td>
+              <td><button class="btn btn-link" onclick="verJuegosPaciente('${p.paciente_dni}')">Ver</button></td>
+            </tr>`;
         });
       } else {
         tbody.innerHTML = '<tr><td colspan="4">No hay pacientes registrados.</td></tr>';
@@ -132,97 +204,423 @@ function cargarPacientes() {
     });
 }
 
-function verJuegosPaciente(dni) {
-  const paciente = pacientesData.find(p => p.paciente_dni === dni);
-  fetch(`http://localhost:3000/paciente-id?dni=${dni}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.id_paciente) {
-        fetch(`http://localhost:3000/juegos-por-paciente?id_paciente=${data.id_paciente}`)
-          .then(res => res.json())
-          .then(juegos => {
-            document.getElementById('pacientesContainer').style.display = 'none';
-            document.getElementById('juegosPacienteContainer').style.display = 'block';
-            document.getElementById('datosPacienteTitulo').innerHTML =
-              `Nombre: <b>${paciente.paciente_nombre}</b> | DNI: <b>${paciente.paciente_dni}</b> | Edad: <b>${paciente.paciente_edad}</b>`;
 
-            const tbody = document.getElementById('tablaJuegosPaciente');
-            const graficosDiv = document.getElementById('graficosContainer');
-            tbody.innerHTML = '';
-            graficosDiv.innerHTML = '';
-
-            if (juegos.length > 0) {
-              juegos.forEach((j, index) => {
-                let resultadoTexto;
-                const tieneDatosValidos = (j.paciente_acierto !== null && j.paciente_desacierto !== null);
-
-                if (tieneDatosValidos) {
-                  resultadoTexto = `Aciertos: ${j.paciente_acierto}, Desaciertos: ${j.paciente_desacierto}`;
-                } else {
-                  resultadoTexto = `Datos insuficientes para gráfico`;
-                }
-
-                tbody.innerHTML += `<tr><td>${j.paciente_juego}</td><td>${resultadoTexto}</td></tr>`;
-
-                if (tieneDatosValidos) {
-                  // Crear un canvas para el gráfico
-                  const chartId = `grafico${index}`;
-                  graficosDiv.innerHTML += `
-                    <div class="col-md-4">
-                      <div class="card shadow-sm">
-                        <div class="card-body">
-                          <h5 class="card-title text-center">${j.paciente_juego}</h5>
-                          <canvas id="${chartId}" width="200" height="200"></canvas>
-                        </div>
-                      </div>
-                    </div>`;
-
-                  setTimeout(() => {
-                    const ctx = document.getElementById(chartId).getContext('2d');
-                    new Chart(ctx, {
-                      type: 'pie',
-                      data: {
-                        labels: ['Aciertos', 'Desaciertos'],
-                        datasets: [{
-                          data: [j.paciente_acierto, j.paciente_desacierto],
-                          backgroundColor: ['#198754', '#dc3545']
-                        }]
-                      },
-                      options: {
-                        responsive: true
-                      }
-                    });
-                  }, 100); // pequeño delay para asegurar que el canvas exista
-                }
-              });
-            } else {
-              tbody.innerHTML = '<tr><td colspan="2">Sin registros de juegos.</td></tr>';
-            }
-          });
+    function verJuegosPaciente(dni) {
+      
+      const paciente = pacientesData.find(p => p.paciente_dni === dni);
+      if (!paciente) {
+        Swal.fire('Error', 'Paciente no encontrado', 'error');
+        return;
       }
-    });
+
+      fetch(`http://localhost:3000/paciente-id?dni=${dni}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data?.id_paciente) {
+            throw new Error('ID de paciente no encontrado');
+          }
+           // Guardamos el id_paciente en localStorage aquí:
+          localStorage.setItem('id_paciente', data.id_paciente);
+          return fetch(`http://localhost:3000/juegos-por-paciente?id_paciente=${data.id_paciente}`);
+        })
+        .then(res => res.json())
+        .then(juegos => {
+          document.getElementById('listaPacientesSeccion').style.display = 'none';
+          document.getElementById('juegosPacienteContainer').style.display = 'block';
+
+          const promedio = calcularPromedio(juegos);
+
+            document.getElementById('datosPacienteTitulo').innerHTML = `
+  <div class="d-flex flex-wrap justify-content-start align-items-start gap-3 p-2">
+    
+    <!-- Columna: Datos del paciente -->
+    <div class="border rounded px-3 py-2" style="min-width: 220px; font-size: 0.85rem; flex: 1;">
+      <div class="fw-semibold text-muted mb-2">Datos del Paciente</div>
+      <div><i class="fas fa-user me-1 text-primary"></i><strong>Nombre:</strong> ${paciente.paciente_nombre}</div>
+      <div><i class="fas fa-id-card me-1 text-success"></i><strong>DNI:</strong> ${paciente.paciente_dni}</div>
+      <div><i class="fas fa-birthday-cake me-1 text-danger"></i><strong>Edad:</strong> ${paciente.paciente_edad}</div>
+      <td>
+      <button class="btn btn-outline-success btn-sm" title="Jugar" onclick="iniciarJuegoConPaciente('${paciente.id_paciente}')">
+        <i class="bi bi-controller"></i>
+      </button>
+    </td>
+      <!-- Promedio debajo -->
+      <div class="border rounded px-2 py-2 mt-3 text-center bg-light" style="font-size: 0.85rem;">
+        <div class="fw-semibold text-muted mb-1">Promedio General</div>
+        <div style="font-size: 1.6rem; font-weight: 600; color: #0d6efd;">${promedio}%</div>
+      </div>
+    </div>
+
+     <!-- Columna: Gráficos en contenedor -->
+    <div class="border rounded px-3 py-2" style="flex: 2; min-width: 300px;">
+      <div class="fw-semibold text-muted mb-2 h5">Resumen Aciertos y Desaciertos por Categoría</div>
+      <div id="zonaResumenGraficos" class="d-flex flex-wrap gap-3 justify-content-start align-items-start">
+        <!-- Aquí se insertan los gráficos -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Fila inferior: Resumen textual -->
+  <div id="zonaResumen" class="border rounded px-3 py-2 mt-3" style="font-size: 0.75rem;">
+    <div class="fw-semibold text-muted mb-2">Resumen por Categoría</div>
+    <!-- Contenido dinámico -->
+  </div>
+`;
+
+
+
+
+              resumenCategorias(juegos);
+              generarResumenPorCategoria(juegos);
+
+          const graficosDiv = document.getElementById('graficosContainer');
+          graficosDiv.innerHTML = generaZonaGraficos(juegos);
+        })
+        .catch(err => {
+          console.error(err);
+          Swal.fire('Error', err.message, 'error');
+        });
+    }
+
+    function generarBotonesFiltro() {
+      const categorias = ["Semántica", "Pragmática", "Morfosintaxis", "Fonética", "Fonología"];
+      const niveles = [1, 2, 3];
+      return `
+        <h5 class="mb-2">Filtrar por categoría y nivel</h5>
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+          <div class="btn-group">${ categorias.map(c => `<button type="button" class="btn btn-outline-primary filtro-categoria" data-categoria="${c}">${c}</button>`).join('') }</div>
+          <div class="btn-group">${ niveles.map(n => `<button type="button" class="btn btn-outline-secondary filtro-nivel" data-nivel="${n}">Nivel ${n}</button>`).join('') }</div>
+        </div>
+        <div id="zonaGraficos"></div>
+      `;
+    }
+
+function generaZonaGraficos(juegos) {
+  let zona = generarBotonesFiltro();
+
+  setTimeout(() => {
+    const categoriasBtns = document.querySelectorAll('.filtro-categoria');
+    const nivelesBtns = document.querySelectorAll('.filtro-nivel');
+
+    let cat = null, niv = null;
+
+    const actualizar = () => {
+      const zonaGrafs = document.getElementById('zonaGraficos');
+      zonaGrafs.innerHTML = '';
+
+      // Asegurar clase para disposición horizontal con scroll
+      zonaGrafs.className = 'd-flex flex-row flex-nowrap overflow-auto py-2';
+
+      if (!cat || !niv) {
+        zonaGrafs.innerHTML = `<div class="alert alert-info w-100">Seleccione una categoría y un nivel para ver los gráficos.</div>`;
+        return;
+      }
+
+      const filtro = text => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase().replace(/[\s\-]+/g, " ").trim();
+
+      const mix = `${cat} - Nivel ${niv}`;
+      const filtrados = juegos.filter(j => j.paciente_juego && filtro(j.paciente_juego).includes(filtro(mix)));
+
+      if (!filtrados.length) {
+        zonaGrafs.innerHTML = `<div class="alert alert-warning w-100">No hay juegos para esta categoría y nivel.</div>`;
+        return;
+      }
+
+      filtrados.forEach((j, i) => {
+        if (j.paciente_acierto != null && j.paciente_desacierto != null) {
+          const cid = `grafico${i}`;
+          zonaGrafs.innerHTML += `
+            <div class="me-3">
+              <div class="card shadow-sm text-center" style="width: 180px;">
+                <div class="card-body p-2">
+                  <h6 class="card-title mb-2" style="font-size: 14px;">${j.paciente_juego}</h6>
+                  <canvas id="${cid}" width="150" height="150"></canvas>
+                  <div class="mt-2 text-muted small">
+                    Aciertos: <span class="text-success fw-semibold">${j.paciente_acierto}</span> |
+                    Desaciertos: <span class="text-danger fw-semibold">${j.paciente_desacierto}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          setTimeout(() => {
+            const ctx = document.getElementById(cid).getContext('2d');
+            new Chart(ctx, {
+              type: 'pie',
+              data: {
+                labels: ['Aciertos', 'Desaciertos'],
+                datasets: [{
+                  data: [j.paciente_acierto, j.paciente_desacierto],
+                  backgroundColor: ['#198754', '#dc3545']
+                }]
+              },
+              options: {
+                responsive: false,
+                plugins: {
+                  legend: {
+                    display: false
+                  }
+                }
+              }
+            });
+          }, 100);
+        }
+      });
+    };
+
+    categoriasBtns.forEach(b => b.addEventListener('click', () => {
+      cat = b.getAttribute('data-categoria');
+      categoriasBtns.forEach(x => x.classList.toggle('active', x === b));
+      actualizar();
+    }));
+
+    nivelesBtns.forEach(b => b.addEventListener('click', () => {
+      niv = b.getAttribute('data-nivel');
+      nivelesBtns.forEach(x => x.classList.toggle('active', x === b));
+      actualizar();
+    }));
+  }, 0);
+
+  return zona;
 }
 
-function cerrarJuegosPaciente() {
-  document.getElementById('juegosPacienteContainer').style.display = 'none';
-  document.getElementById('pacientesContainer').style.display = 'block';
-}
 
-window.onload = cargarPacientes;
+    function cerrarJuegosPaciente() {
+      document.getElementById('juegosPacienteContainer').style.display = 'none';
+      document.getElementById('listaPacientesSeccion').style.display = 'block';
+    }
 
-// script botones 
-document.getElementById('btnBuscarPaciente').addEventListener('click', () => {
-  document.getElementById('formularioBusqueda').style.display = 'block';
-  document.getElementById('formularioRegistro').style.display = 'none';
-  document.getElementById('buscarPacienteInput').focus();
+    window.onload = cargarPacientes;
+    document.getElementById('btnBuscarPaciente').addEventListener('click', () => {
+  const modal = new bootstrap.Modal(document.getElementById('modalBuscarPaciente'));
+  modal.show();
 });
 
 document.getElementById('btnRegistrarPaciente').addEventListener('click', () => {
-  document.getElementById('formularioRegistro').style.display = 'block';
-  document.getElementById('formularioBusqueda').style.display = 'none';
-  document.getElementById('nombre_paciente').focus();
+  const modal = new bootstrap.Modal(document.getElementById('modalRegistrarPaciente'));
+  modal.show();
 });
 
-</script>
+// Registrar paciente
+document.getElementById('pacienteForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre_paciente').value;
+  const dni = document.getElementById('dni_paciente').value;
+  const edad = document.getElementById('edad_paciente').value;
+  const id_fono = localStorage.getItem('id_fono');
+
+  try {
+    const response = await fetch('http://localhost:3000/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre, dni, edad , id_fono  })
+    });
+
+    if (!response.ok) throw new Error('No se pudo registrar el paciente');
+    const data = await response.json();
+    localStorage.setItem('id_paciente', data.id_paciente);
+    // Oculta el modal
+    bootstrap.Modal.getInstance(document.getElementById('modalRegistrarPaciente')).hide();
+    e.target.reset();
+    cargarPacientes();
+
+    // SweetAlert personalizado
+    Swal.fire({
+      icon: 'success',
+      title: `¡Paciente ${nombre} registrado con éxito!`,
+      text: '¿Deseas iniciar sesión ahora?',
+      confirmButtonText: 'Empezar sesión',
+      showCancelButton: true,
+      cancelButtonText: 'Permanecer aquí'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '../../index.html'; // Aquí redirige
+      }
+    });
+
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo registrar el paciente.'
+    });
+  }
+});
+
+
+// Buscar paciente
+document.getElementById('buscarPacienteForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+   console.log("Formulario enviado");
+  const query = document.getElementById('buscarPacienteInput').value.trim();
+  const resultadosDiv = document.getElementById('resultadosBusqueda');
+  resultadosDiv.innerHTML = '';
+
+  try {
+    const response = await fetch(`http://localhost:3000/buscar-paciente?query=${encodeURIComponent(query)}`);
+    const data = await response.json();
+
+    if (data.length === 0) {
+      resultadosDiv.innerHTML = '<p class="text-danger">No se encontró ningún paciente.</p>';
+      return;
+    }
+
+  data.forEach(paciente => {
+  resultadosDiv.innerHTML += `
+    <div class="alert alert-light border d-flex justify-content-between align-items-center mb-2 p-3">
+      <div>
+        <strong>${paciente.paciente_nombre}</strong><br>
+        DNI: ${paciente.paciente_dni}<br>
+        Edad: ${paciente.paciente_edad}
+      </div>
+      <div>
+        <button class="btn btn-outline-primary btn-sm me-2" title="Ver más" onclick="verJuegosPaciente('${paciente.paciente_dni}')">
+          <i class="bi bi-eye"></i>
+        </button>
+        <button class="btn btn-outline-success btn-sm" title="Jugar" onclick="iniciarJuegoConPaciente('${paciente.id_paciente}', '/public/avatar.html')">
+          <i class="bi bi-controller"></i>
+        </button>
+      </div>
+    </div>`;
+});
+
+
+
+  } catch (err) {
+    console.error(err);
+    resultadosDiv.innerHTML = '<p class="text-danger">Error al buscar paciente.</p>';
+  }
+});
+function iniciarSesionPaciente(id_paciente) {
+  localStorage.setItem('id_paciente', id_paciente);
+  window.location.href = '/public/avatar.html';
+}
+function iniciarJuegoConPaciente(id_paciente) {
+  window.location.href = '/public/avatar.html';
+}
+
+function resumenCategorias(juegos) {
+  const categorias = ["Fonética", "Fonología", "Semántica", "Pragmática", "Morfosintaxis"];
+  const niveles = [1, 2, 3];
+  const zona = document.getElementById('zonaResumen');
+
+  zona.innerHTML = `
+    <div class="fw-semibold text-muted mb-3 h5">Niveles completados por Categoría</div>
+    <div class="table-responsive" style="max-height: 220px; overflow-y:auto;">
+      <table class="table table-bordered table-striped table-sm align-middle" style="font-size: 0.85rem; white-space: nowrap;">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" style="min-width: 140px;">Categoría</th>
+            ${niveles.map(n => `<th scope="col" class="text-center" style="min-width: 90px;">Nivel ${n}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${categorias.map(cat => {
+            const filtro = text => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+              .toLowerCase().replace(/[\s\-]+/g, " ").trim();
+
+            return `<tr>
+              <td><strong>${cat}</strong></td>
+              ${niveles.map(niv => {
+                const label = `${cat} - Nivel ${niv}`;
+                const existe = juegos.some(j => j.paciente_juego && filtro(j.paciente_juego).includes(filtro(label)));
+                const icono = existe
+                  ? `<i class="fas fa-check-circle text-success"></i>`
+                  : `<i class="fas fa-times-circle text-danger"></i>`;
+                return `<td class="text-center">${icono}</td>`;
+              }).join('')}
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function calcularPromedio(juegos) {
+  const jugados = juegos.filter(j => j.paciente_acierto != null && j.paciente_desacierto != null);
+  const totalAciertos = jugados.reduce((sum, j) => sum + j.paciente_acierto, 0);
+  const totalIntentos = jugados.reduce((sum, j) => sum + j.paciente_acierto + j.paciente_desacierto, 0);
+
+  if (totalIntentos === 0) return 0;
+
+  return ((totalAciertos / totalIntentos) * 100).toFixed(1); // Retorna porcentaje
+}
+
+function generarResumenPorCategoria(juegos) {
+  const contenedor = document.getElementById('zonaResumenGraficos');
+  contenedor.innerHTML = '';
+
+  const resumen = {};
+
+  juegos.forEach(j => {
+    const nombre = j.paciente_juego || '';
+    const categoria = nombre.split('-')[0]?.trim();
+
+    if (!resumen[categoria]) {
+      resumen[categoria] = { aciertos: 0, desaciertos: 0 };
+    }
+
+    if (j.paciente_acierto != null && j.paciente_desacierto != null) {
+      resumen[categoria].aciertos += j.paciente_acierto;
+      resumen[categoria].desaciertos += j.paciente_desacierto;
+    }
+  });
+
+  Object.entries(resumen).forEach(([cat, valores], i) => {
+    const idCanvas = `grafResumenCat${i}`;
+    contenedor.innerHTML += `
+      <div class="card shadow-sm text-center p-2" style="width: 140px; font-size: 0.75rem;">
+        <div class="fw-semibold mb-1">${cat}</div>
+        <canvas id="${idCanvas}" width="120" height="120" class="mx-auto"></canvas>
+        <div class="mt-2 text-muted" style="font-size: 0.75rem;">
+          Aciertos: ${valores.aciertos} | Desaciertos: ${valores.desaciertos}
+        </div>
+      </div>`;
+
+    setTimeout(() => {
+      const ctx = document.getElementById(idCanvas).getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['✔ Aciertos', '✖ Desaciertos'],
+          datasets: [{
+            data: [valores.aciertos, valores.desaciertos],
+            backgroundColor: ['#198754', '#dc3545']
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }, 100);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const nombreFono = localStorage.getItem('nombre_fono'); // Obtén el nombre guardado
+  if (nombreFono) {
+    document.getElementById('nombreFono').textContent = nombreFono;
+  } else {
+    document.getElementById('nombreFono').textContent = 'Usuario'; // Valor por defecto
+  }
+});
+
+  document.getElementById("cerrarSesionBtn").addEventListener("click", function() {
+    // Aquí puedes limpiar el localStorage o cualquier sesión si es necesario
+    localStorage.clear(); // Opcional: borra los datos guardados
+
+    // Redireccionar a fono.html
+    window.location.href = "fono.html";
+  });
+    // código de eventos de búsqueda, registro, modo oscuro y sesión igual que el original
+  </script>
 </body>
 </html>

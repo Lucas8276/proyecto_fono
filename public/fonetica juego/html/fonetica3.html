@@ -69,182 +69,252 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const letterTiles = document.querySelectorAll(".letter-tile");
-      const imageBoxes = document.querySelectorAll(".image-box");
-      const alertBox = document.getElementById("alertBox");
-      const alertMessage = document.getElementById("alertMessage");
-      let correctMatches = 0;
-      let currentLevel = 3;
-      let id_paciente = localStorage.getItem('id_paciente');
+  const letterTiles = document.querySelectorAll(".letter-tile");
+  const imageBoxes = document.querySelectorAll(".image-box");
+  const alertBox = document.getElementById("alertBox");
+  const alertMessage = document.getElementById("alertMessage");
+  let correctMatches = 0;
+  let wrongMatches = 0;
+  const currentLevel = 3;
+  let id_paciente = localStorage.getItem('id_paciente');
+  const juego_nombre = "Fonetica-Nivel 3"; // Cambia esto si el nombre del juego es otro
 
-      // Función para mostrar alerta
-      function showAlert(message, isSuccess) {
-        Swal.fire({
-          title: message,
-          icon: 'none',
-          timer: 1500,
-          showConfirmButton: false,
-          customClass: {
-            title: 'emoji-title',
-            popup: 'emoji-popup'
-          }
-        });
+  // Función para mostrar alerta con emoji
+  function showAlert(message, isSuccess) {
+    Swal.fire({
+      title: message,
+      icon: 'none',
+      timer: 1500,
+      showConfirmButton: false,
+      customClass: {
+        title: 'emoji-title',
+        popup: 'emoji-popup'
       }
-
-      // Eventos de arrastre para las letras
-      letterTiles.forEach((tile) => {
-        tile.setAttribute("draggable", "true");
-        
-        tile.addEventListener("dragstart", (e) => {
-          e.dataTransfer.setData("text/plain", tile.dataset.letter);
-          tile.classList.add("dragging");
-        });
-
-        tile.addEventListener("dragend", () => {
-          tile.classList.remove("dragging");
-        });
-      });
-
-      // Eventos para las cajas de imágenes
-      imageBoxes.forEach((box) => {
-        box.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          box.classList.add("drag-over");
-        });
-
-        box.addEventListener("dragleave", () => {
-          box.classList.remove("drag-over");
-        });
-
-        box.addEventListener("drop", (e) => {
-          e.preventDefault();
-          box.classList.remove("drag-over");
-          const letter = e.dataTransfer.getData("text/plain");
-          const correctLetter = box.getAttribute("data-answer");
-
-          console.log("Letra arrastrada:", letter);
-          console.log("Letra correcta:", correctLetter);
-
-          if (letter === correctLetter) {
-            // Eliminar la letra
-            const tile = document.querySelector(
-              `.letter-tile[data-letter="${letter}"]`
-            );
-            if (tile) {
-              tile.remove();
-            }
-
-            // Eliminar la imagen
-            box.remove();
-
-            correctMatches++;
-            showAlert("🎉", true);
-          } else {
-            showAlert("😢", false);
-          }
-        });
-      });
-
-      // Agregar estilos para el emoji y el mensaje de nivel completado
-      const style = document.createElement('style');
-      style.textContent = `
-        .emoji-title {
-          font-size: 100px !important;
-          line-height: 1 !important;
-        }
-        .swal2-title {
-          padding: 0 !important;
-        }
-        .emoji-popup {
-          background: transparent !important;
-          box-shadow: none !important;
-        }
-        .level-complete-title {
-          color: #ff6632 !important;
-          font-size: 40px !important;
-          text-align: center !important;
-        }
-        .level-complete-popup {
-          background: transparent !important;
-          box-shadow: none !important;
-        }
-      `;
-      document.head.appendChild(style);
-
-      const avatar = sessionStorage.getItem('selectedAvatar');
-      const avatarImg = document.getElementById('selected-avatar');
-      if (avatar) {
-        avatarImg.src = avatar;
-        avatarImg.style.display = 'block';
-      } else {
-        window.location.href = '../../avatar.html';
-      }
-      const volverBtn = document.getElementById('volver-btn');
-      volverBtn.onclick = () => window.location.href = '../../index.html';
-
-      // Panel lateral
-      const avatarPanel = document.getElementById('avatar-panel');
-      const avatarPanelImg = document.getElementById('avatar-panel-img');
-      const panelNombre = document.getElementById('panel-nombre');
-      const panelEdad = document.getElementById('panel-edad');
-      const soundBtn = document.getElementById('sound-btn');
-      const soundIcon = document.getElementById('sound-icon');
-      const soundText = document.getElementById('sound-text');
-      const closePanel = document.getElementById('close-panel');
-      avatarImg.onclick = function() {
-        avatarPanel.style.display = 'block';
-        setTimeout(()=>{avatarPanel.style.transform = 'translateX(0)';},10);
-        avatarPanelImg.src = avatarImg.src;
-        // SIEMPRE EN MAYÚSCULAS
-        let nombre = (localStorage.getItem('nombre_nino') || 'Sin nombre').toUpperCase();
-        let edad = (localStorage.getItem('edad_nino') || 'Sin edad').toUpperCase();
-        panelNombre.textContent = nombre;
-        panelEdad.textContent = edad;
-        // Estado de sonido
-        let sonido = sessionStorage.getItem('sonido_activado');
-        if(sonido === null) sonido = 'true';
-        if(sonido === 'true') {
-          soundIcon.textContent = '🔊';
-          soundText.textContent = 'Sonido Activado';
-          soundBtn.style.background = '#ffd817';
-          soundBtn.style.color = '#333';
-        } else {
-          soundIcon.textContent = '🔇';
-          soundText.textContent = 'Sonido Desactivado';
-          soundBtn.style.background = '#eee';
-          soundBtn.style.color = '#888';
-        }
-      };
-      closePanel.onclick = function() {
-        avatarPanel.style.transform = 'translateX(-100%)';
-        setTimeout(()=>{avatarPanel.style.display = 'none';},300);
-      };
-      soundBtn.onclick = function() {
-        let sonido = sessionStorage.getItem('sonido_activado');
-        if(sonido === null) sonido = 'true';
-        if(sonido === 'true') {
-          sessionStorage.setItem('sonido_activado','false');
-          if(window.globalAudio){window.globalAudio.pause();}
-          soundIcon.textContent = '🔇';
-          soundText.textContent = 'Sonido Desactivado';
-          soundBtn.style.background = '#eee';
-          soundBtn.style.color = '#888';
-        } else {
-          sessionStorage.setItem('sonido_activado','true');
-          if(window.globalAudio){window.globalAudio.play();}
-          soundIcon.textContent = '🔊';
-          soundText.textContent = 'Sonido Activado';
-          soundBtn.style.background = '#ffd817';
-          soundBtn.style.color = '#333';
-        }
-      };
-      window.addEventListener('click', function(e) {
-        if(avatarPanel.style.display==='block' && !avatarPanel.contains(e.target) && e.target!==avatarImg) {
-          avatarPanel.style.transform = 'translateX(-100%)';
-          setTimeout(()=>{avatarPanel.style.display = 'none';},300);
-        }
-      });
     });
+  }
+
+  // Función para enviar resultados al backend
+  function enviarResultadosFonetica() {
+    if (!id_paciente) {
+      console.warn("No se encontró id_paciente en localStorage");
+      return;
+    }
+
+    const data = {
+      id_paciente: id_paciente,
+      paciente_acierto: correctMatches,
+      paciente_desacierto: wrongMatches,
+      paciente_resultado: currentLevel,
+      paciente_juego: juego_nombre
+    };
+
+    fetch('http://localhost:3000/juegos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Error en la respuesta del servidor');
+      return response.json();
+    })
+    .then(result => {
+      console.log("Resultados guardados:", result);
+    })
+    .catch(error => {
+      console.error("Error al enviar resultados:", error);
+    });
+  }
+
+  // Función para verificar si terminó el nivel
+  function checkLevelCompletion() {
+    const totalBoxes = imageBoxes.length;
+    if (correctMatches === totalBoxes) {
+      Swal.fire({
+        title: '¡NIVEL COMPLETADO!',
+        icon: 'none',
+        timer: 1500,
+        showConfirmButton: false,
+        customClass: {
+          title: 'level-complete-title',
+          popup: 'level-complete-popup'
+        }
+      }).then(() => {
+        enviarResultadosFonetica();
+        goToNextLevel();
+      });
+    }
+  }
+
+  // Función para ir al index tras completar nivel
+  function goToNextLevel() {
+    window.location.href = '../../index.html';
+  }
+
+  // Configuración de drag & drop para letras
+  letterTiles.forEach((tile) => {
+    tile.setAttribute("draggable", "true");
+
+    tile.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", tile.dataset.letter);
+      tile.classList.add("dragging");
+    });
+
+    tile.addEventListener("dragend", () => {
+      tile.classList.remove("dragging");
+    });
+  });
+
+  // Eventos para las cajas de imagen (drop)
+  imageBoxes.forEach((box) => {
+    box.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      box.classList.add("drag-over");
+    });
+
+    box.addEventListener("dragleave", () => {
+      box.classList.remove("drag-over");
+    });
+
+    box.addEventListener("drop", (e) => {
+      e.preventDefault();
+      box.classList.remove("drag-over");
+      const letter = e.dataTransfer.getData("text/plain");
+      const correctLetter = box.getAttribute("data-answer");
+
+      if (letter === correctLetter) {
+        const tile = document.querySelector(`.letter-tile[data-letter="${letter}"]`);
+        if (tile) {
+          tile.remove();
+        }
+        box.remove();
+
+        correctMatches++;
+        showAlert("🎉", true);
+        checkLevelCompletion();
+      } else {
+        wrongMatches++;
+        showAlert("😢", false);
+      }
+    });
+  });
+
+  // Insertar estilos para alertas y nivel completado
+  const style = document.createElement('style');
+  style.textContent = `
+    .emoji-title {
+      font-size: 100px !important;
+      line-height: 1 !important;
+    }
+    .swal2-title {
+      padding: 0 !important;
+    }
+    .emoji-popup {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    .level-complete-title {
+      color: #ff6632 !important;
+      font-size: 40px !important;
+      text-align: center !important;
+    }
+    .level-complete-popup {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Código del panel lateral, avatar y sonido (sin cambios)
+  const avatar = sessionStorage.getItem('selectedAvatar');
+  const avatarImg = document.getElementById('selected-avatar');
+  if (avatar) {
+    avatarImg.src = avatar;
+    avatarImg.style.display = 'block';
+  } else {
+    window.location.href = '../../avatar.html';
+  }
+  const volverBtn = document.getElementById('volver-btn');
+  volverBtn.onclick = () => window.location.href = '../../index.html';
+
+  const avatarPanel = document.getElementById('avatar-panel');
+  const avatarPanelImg = document.getElementById('avatar-panel-img');
+  const panelNombre = document.getElementById('panel-nombre');
+  const panelEdad = document.getElementById('panel-edad');
+  const soundBtn = document.getElementById('sound-btn');
+  const soundIcon = document.getElementById('sound-icon');
+  const soundText = document.getElementById('sound-text');
+  const closePanel = document.getElementById('close-panel');
+  avatarImg.onclick = function() {
+    avatarPanel.style.display = 'block';
+    setTimeout(()=>{avatarPanel.style.transform = 'translateX(0)';},10);
+    avatarPanelImg.src = avatarImg.src;
+    const idPaciente = localStorage.getItem('id_paciente');
+    if (idPaciente) {
+  fetch(`http://localhost:3000/paciente?id_paciente=${idPaciente}`)
+    .then(response => response.json())
+    .then(data => {
+      const nombre = (data.paciente_nombre || 'Sin nombre').toUpperCase();
+      const edad = (data.paciente_edad || 'Sin edad').toString().toUpperCase();
+      panelNombre.textContent = nombre;
+      panelEdad.textContent = edad;
+    })
+    .catch(err => {
+      console.error('Error al obtener datos del paciente:', err);
+      panelNombre.textContent = 'Sin nombre';
+      panelEdad.textContent = 'Sin edad';
+    });
+} else {
+  panelNombre.textContent = 'SIN NOMBRE';
+  panelEdad.textContent = 'SIN EDAD';
+}
+
+    let sonido = sessionStorage.getItem('sonido_activado');
+    if(sonido === null) sonido = 'true';
+    if(sonido === 'true') {
+      soundIcon.textContent = '🔊';
+      soundText.textContent = 'Sonido Activado';
+      soundBtn.style.background = '#ffd817';
+      soundBtn.style.color = '#333';
+    } else {
+      soundIcon.textContent = '🔇';
+      soundText.textContent = 'Sonido Desactivado';
+      soundBtn.style.background = '#eee';
+      soundBtn.style.color = '#888';
+    }
+  };
+  closePanel.onclick = function() {
+    avatarPanel.style.transform = 'translateX(-100%)';
+    setTimeout(()=>{avatarPanel.style.display = 'none';},300);
+  };
+  soundBtn.onclick = function() {
+    let sonido = sessionStorage.getItem('sonido_activado');
+    if(sonido === null) sonido = 'true';
+    if(sonido === 'true') {
+      sessionStorage.setItem('sonido_activado','false');
+      if(window.globalAudio){window.globalAudio.pause();}
+      soundIcon.textContent = '🔇';
+      soundText.textContent = 'Sonido Desactivado';
+      soundBtn.style.background = '#eee';
+      soundBtn.style.color = '#888';
+    } else {
+      sessionStorage.setItem('sonido_activado','true');
+      if(window.globalAudio){window.globalAudio.play();}
+      soundIcon.textContent = '🔊';
+      soundText.textContent = 'Sonido Activado';
+      soundBtn.style.background = '#ffd817';
+      soundBtn.style.color = '#333';
+    }
+  };
+  window.addEventListener('click', function(e) {
+    if(avatarPanel.style.display==='block' && !avatarPanel.contains(e.target) && e.target!==avatarImg) {
+      avatarPanel.style.transform = 'translateX(-100%)';
+      setTimeout(()=>{avatarPanel.style.display = 'none';},300);
+    }
+  });
+});
+
   </script>
 </body>
 </html>
