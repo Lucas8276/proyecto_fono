@@ -10,7 +10,7 @@ require('dotenv').config();
 
 const { getClient } = require('./dbConnection');
 
-const express = require('express');
+
 const app = express();
 const path = require('path');
 
