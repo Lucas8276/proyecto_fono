@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="../css/semantica1.css" rel="stylesheet">
   <script src="../../js/sound.js"></script>
+  <script src="../../js/loro.js"></script>
   <style>
     #avatar-panel * {
       text-transform: uppercase !important;
@@ -68,7 +69,6 @@
   <button id="volver-btn">VOLVER</button>
 
   <script>
-
     const items = [
       // Animales
       { image: 'imagenes/perro.jpg', name: 'Perro', category: 'ANIMALES' },
@@ -259,6 +259,7 @@
       const allCategories = getUniqueCategories();
       
       if (remainingImages.length === 0 || (remainingImages.length === items.filter(item => item.category === 'NINGUNA').length)) {
+        lanzarConfeti();
         if (currentCategories.includes('ANIMALES')) {
           // Pasar a las siguientes categorías (ropa, frutas, colores)
           currentCategories = ['VESTIMENTA', 'FRUTAS', 'COLORES'];
@@ -422,6 +423,20 @@ if (idPaciente) {
         setTimeout(()=>{avatarPanel.style.display = 'none';},300);
       }
     });
+
+    // Mensajes motivacionales del loro
+    renderLoro({ mensajes: [
+      "¡Tú puedes lograrlo!",
+      "¡Sigue adelante, lo estás haciendo genial!",
+      "¡Cada intento te acerca más a la meta!",
+      "¡Eres muy inteligente!",
+      "¡No te rindas, campeón!",
+      "¡Estoy orgulloso de ti!",
+      "¡Aprender es divertido contigo!",
+      "¡Sigue así, vas muy bien!",
+      "¡Eres un gran explorador!",
+      "¡Tus esfuerzos valen oro!"
+    ], imagen: '../../images/loro.png' });
   </script>
 </body>
 </html>
