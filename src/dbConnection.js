@@ -1,25 +1,28 @@
+// dbConnection.js
+require('dotenv').config();
 const { Client } = require('pg');
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-client.connect()
-  .then(() => {
-    console.log('✅ Conectado a PostgreSQL en Render');
-
-    // Ejemplo de consulta
-    return client.query('SELECT * FROM fono');
-  })
-  .then(res => {
-    console.log(res.rows);
-  })
-  .catch(err => {
-    console.error('❌ Error en la conexión o consulta:', err.stack);
-  })
-  .finally(() => {
-    client.end(); // Siempre cerrar la conexión
+function getClient() {
+  return new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
+}
+
+async function testConnection() {
+  const client = getClient();
+  try {
+    await client.connect();
+    console.log('✅ Conectado a PostgreSQL correctamente');
+    const res = await client.query('SELECT NOW()'); // Consulta simple para testear
+    console.log('Hora del servidor:', res.rows[0].now);
+  } catch (err) {
+    console.error('❌ Error en la conexión:', err.stack);
+  } finally {
+    await client.end();
+  }
+}
+
+module.exports = { getClient, testConnection };
