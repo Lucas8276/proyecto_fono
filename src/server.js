@@ -17,14 +17,10 @@ const app = express();
 app.use(express.static(path.join(__dirname, '../public')));
 const bodyParser = require('body-parser');
 
-const session = require('express-session');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const bcrypt = require('bcrypt');
-const path = require('path');
-require('dotenv').config();
 
-const { getClient } = require('./dbConnection');
+
+
+
 
 
 const saltRounds = 10;
