@@ -234,9 +234,12 @@ app.get('/juegos-por-paciente', (req, res) => {
     });
 });
 // Inicia el servidor
-app.listen(3000, () => {
-    console.log('Servidor escuchando en el puerto 3000');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
+
 app.get('/buscar-paciente', async (req, res) => {
   const query = req.query.query;
 
