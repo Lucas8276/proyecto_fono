@@ -34,16 +34,21 @@
     </div>
   </div>
 
-  <div id="main-content">
-    <h1>¿QUÉ ESTÁ PASANDO EN ESTA SITUACIÓN?</h1>
+  <div class="container">
+    <div class="instructions-box">
+      <h1> OBSERVÁ LA IMAGEN Y RESPONDE LAS PREGUNTAS </h1>
+    </div>
+
+    <h2 id="preguntaTexto"></h2>
+    
     <div class="image-box">
       <img id="situationImage" src="" alt="Situación">
     </div>
-    <h2 id="preguntaTexto"></h2>
+    
     <div class="options" id="optionsContainer"></div>
   </div>
 
-  <button id="back-button" onclick="window.location.href='../../index.html'" style="position:fixed;bottom:40px;right:40px;padding:16px 32px;font-size:1.2rem;font-family:'Fredoka',sans-serif;background:#ff6b6b;color:white;border:none;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;z-index:1000;">VOLVER</button>
+  <button id="back-button" onclick="window.location.href='../../index.html'">VOLVER</button>
 
   <script>
     const imagenes = [
@@ -118,7 +123,7 @@
     function mostrarPregunta() {
       const pregunta = imagenSeleccionada.preguntas[preguntaIndex];
       document.getElementById("situationImage").src = imagenSeleccionada.src;
-      document.getElementById("preguntaTexto").textContent = pregunta.texto;
+      document.getElementById("preguntaTexto").textContent = pregunta.texto.toUpperCase();
 
       const container = document.getElementById("optionsContainer");
       container.innerHTML = "";
@@ -126,14 +131,13 @@
       pregunta.opciones.forEach(opcion => {
         const btn = document.createElement("button");
         btn.className = "option-btn";
-        btn.textContent = opcion;
+        btn.textContent = opcion.toUpperCase();
 
         btn.onclick = () => {
           if (btn.disabled) return;
 
           if (opcion === pregunta.correcta) {
             aciertos++;
-            btn.classList.add("correcta");
             Swal.fire({
               title: '🎉',
               icon: 'none',
@@ -143,13 +147,10 @@
                 title: 'emoji-title',
                 popup: 'emoji-popup'
               }
-            }).then(() => {
-              siguientePregunta();
             });
+            siguientePregunta();
           } else {
             desaciertos++;
-            btn.disabled = true;
-            btn.style.opacity = "0.6";
             Swal.fire({
               title: '😢',
               icon: 'none',
@@ -198,22 +199,11 @@
       })
       .then(msg => {
         console.log(msg);
-        Swal.fire({
-          title: '¡NIVEL COMPLETADO!',
-          icon: 'none',
-          timer: 1500,
-          showConfirmButton: false,
-          customClass: {
-            title: 'level-complete-title',
-            popup: 'level-complete-popup'
-          }
-        }).then(() => {
-          window.location.href = `../../index.html?id_paciente=${id_paciente}`;
-        });
+        window.location.href = '../../index.html';
       })
       .catch(err => {
         console.error(err);
-        window.location.href = `../../index.html?id_paciente=${id_paciente}`;
+        window.location.href = '../../index.html';
       });
     }
 

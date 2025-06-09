@@ -43,7 +43,7 @@
       <div style="margin-top:24px;font-size:1.2rem;color:#4a94ff;text-align:center;">¡Listo para jugar y aprender!</div>
     </div>
   </div>
-  <button id="volver-btn" style="position:fixed;top:40px;right:40px;z-index:1000;padding:16px 36px;font-size:1.2rem;font-weight:bold;border:none;border-radius:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.10);background:#ffd817;color:#333;font-family:'Fredoka',sans-serif;">VOLVER</button>
+  <button id="volver-btn">VOLVER</button>
 
   <script>
     const sets = [
@@ -53,7 +53,9 @@
           { word1: 'BALÓN', word2: 'PELOTA' },
           { word1: 'RÁPIDO', word2: 'VELOZ' },
           { word1: 'COLEGIO', word2: 'ESCUELA' },
-          { word1: 'FRÍO', word2: 'HELADO' }
+          { word1: 'FRÍO', word2: 'HELADO' },
+          { word1: 'CASA', word2: 'HOGAR' },
+
         ]
       },
       {
@@ -62,7 +64,8 @@
           { word1: 'ALTO', word2: 'BAJO' },
           { word1: 'DESPIERTO', word2: 'DORMIDO' },
           { word1: 'CONTENTO', word2: 'TRISTE' },
-          { word1: 'RAPIDO', word2: 'LENTO' }
+          { word1: 'GRANDE', word2: 'PEQUEÑO' },
+          { word1: 'CLARO', word2: 'OSCURO' }
         ]
       }
     ];
@@ -75,8 +78,14 @@
     const id_paciente = localStorage.getItem('id_paciente');
 
     function shuffleArray(array) {
+      // Mezcla más aleatoria usando el algoritmo Fisher-Yates
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      // Segunda mezcla para mayor aleatoriedad
+      for (let i = 0; i < array.length; i++) {
+        const j = Math.floor(Math.random() * array.length);
         [array[i], array[j]] = [array[j], array[i]];
       }
       return array;
@@ -95,7 +104,7 @@
       const leftWords = sets[currentSet].pares.map(pair => pair.word1);
       const rightWords = sets[currentSet].pares.map(pair => pair.word2);
 
-      // Mezclar cada columna por separado
+      // Mezclar cada columna por separado con mayor aleatoriedad
       const shuffledLeftWords = shuffleArray([...leftWords]);
       const shuffledRightWords = shuffleArray([...rightWords]);
 
@@ -120,23 +129,36 @@
     }
 
     function createConnection(left, right) {
-      // Eliminar cualquier flecha existente entre estas palabras
-      document.querySelectorAll('.connection-line, .connection-arrow').forEach(el => el.remove());
-      
-      const line = document.createElement('div');
-      line.className = 'connection-line';
-      
-      const arrow = document.createElement('div');
-      arrow.className = 'connection-arrow';
+      // Eliminar cualquier flecha existente
+      document.querySelectorAll('.connection-svg').forEach(el => el.remove());
       
       const container = document.querySelector('.words-container');
-      container.appendChild(line);
-      container.appendChild(arrow);
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.className = 'connection-svg';
+      svg.style.position = 'absolute';
+      svg.style.top = '0';
+      svg.style.left = '0';
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      svg.style.pointerEvents = 'none';
+      svg.style.zIndex = '2';
       
-      updateConnection(left, right, line, arrow);
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      const arrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      
+      svg.appendChild(line);
+      svg.appendChild(arrow);
+      container.appendChild(svg);
+      
+      updateConnection(left, right, line, arrow, svg);
+      
+      // Actualizar la posición cuando la ventana cambie de tamaño
+      window.addEventListener('resize', () => {
+        updateConnection(left, right, line, arrow, svg);
+      });
     }
 
-    function updateConnection(left, right, line, arrow) {
+    function updateConnection(left, right, line, arrow, svg) {
       const leftRect = left.getBoundingClientRect();
       const rightRect = right.getBoundingClientRect();
       const containerRect = document.querySelector('.words-container').getBoundingClientRect();
@@ -146,17 +168,32 @@
       const endX = rightRect.left - containerRect.left;
       const endY = rightRect.top + rightRect.height/2 - containerRect.top;
       
-      const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+      // Configurar la línea
+      line.setAttribute('x1', startX);
+      line.setAttribute('y1', startY);
+      line.setAttribute('x2', endX);
+      line.setAttribute('y2', endY);
+      line.setAttribute('stroke', '#ffd817');
+      line.setAttribute('stroke-width', '3');
+      line.setAttribute('stroke-linecap', 'round');
+      
+      // Calcular el ángulo para la flecha
       const angle = Math.atan2(endY - startY, endX - startX);
+      const arrowLength = 12;
+      const arrowWidth = 8;
       
-      line.style.width = `${length}px`;
-      line.style.left = `${startX}px`;
-      line.style.top = `${startY}px`;
-      line.style.transform = `rotate(${angle}rad)`;
+      // Puntos para la flecha
+      const arrowX = endX - arrowLength * Math.cos(angle);
+      const arrowY = endY - arrowLength * Math.sin(angle);
       
-      arrow.style.left = `${endX - 10}px`;
-      arrow.style.top = `${endY - 8}px`;
-      arrow.style.transform = `rotate(${angle}rad)`;
+      const arrowPoints = [
+        [endX, endY],
+        [arrowX - arrowWidth * Math.sin(angle), arrowY + arrowWidth * Math.cos(angle)],
+        [arrowX + arrowWidth * Math.sin(angle), arrowY - arrowWidth * Math.cos(angle)]
+      ].map(point => point.join(',')).join(' ');
+      
+      arrow.setAttribute('points', arrowPoints);
+      arrow.setAttribute('fill', '#ffd817');
     }
 
     function setupWordBoxes() {
@@ -217,7 +254,7 @@
                     correctPairs = 0;
                     desaciertos = 0;
                     document.querySelectorAll('.word-box').forEach(box => box.classList.remove('connected'));
-                    document.querySelectorAll('.connection-line, .connection-arrow').forEach(el => el.remove());
+                    document.querySelectorAll('.connection-svg').forEach(el => el.remove());
                     loadGame();
                   }, 1500);
                 } else {

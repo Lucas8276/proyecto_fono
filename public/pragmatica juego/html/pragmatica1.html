@@ -34,16 +34,21 @@
     </div>
   </div>
 
-  <div id="main-content">
-    <h1>¿QUÉ ESTÁ PASANDO EN ESTA SITUACIÓN?</h1>
+  <div class="container">
+    <div class="instructions-box">
+      <h1> OBSERVÁ LA IMAGEN Y RESPONDE LAS PREGUNTAS </h1>
+    </div>
+
+    <h2 id="preguntaTexto"></h2>
+    
     <div class="image-box">
       <img id="situationImage" src="" alt="Situación">
     </div>
-    <h2 id="preguntaTexto"></h2>
+    
     <div class="options" id="optionsContainer"></div>
   </div>
 
-  <button id="back-button" onclick="window.location.href='../../index.html'" style="position:fixed;bottom:40px;right:40px;padding:16px 32px;font-size:1.2rem;font-family:'Fredoka',sans-serif;background:#ff6b6b;color:white;border:none;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;z-index:1000;">VOLVER</button>
+  <button id="back-button" onclick="window.location.href='../../index.html'">VOLVER</button>
 
   <script>
     const imagenes = [
@@ -77,12 +82,12 @@
           },
           {
             texto: "¿Quiénes están ahí?",
-            opciones: ["Dos niños", "Una familia", "Una madre con su hijo"],
+            opciones: ["Una familia", "Dos niños", "Una madre con su hijo"],
             correcta: "Dos niños"
           },
           {
             texto: "¿Qué están haciendo?",
-            opciones: ["Se están peleando", "Están bailando", "Están durmiendo"],
+            opciones: ["Están bailando", "Se están peleando", "Están durmiendo"],
             correcta: "Se están peleando"
           }
         ]
@@ -97,12 +102,12 @@
           },
           {
             texto: "¿Quiénes están ahí?",
-            opciones: ["Dos nenas con un oso de peluche", "Un papá y su hija", "Dos maestras en el recreo"],
+            opciones: ["Un papá y su hija", "Dos nenas con un oso de peluche", "Dos maestras en el recreo"],
             correcta: "Dos nenas con un oso de peluche"
           },
           {
             texto: "¿Qué están haciendo?",
-            opciones: ["Se pelean por el oso de peluche", "Cantan una canción", "Juegan a la pelota"],
+            opciones: ["Cantan una canción", "Se pelean por el oso de peluche", "Juegan a la pelota"],
             correcta: "Se pelean por el oso de peluche"
           }
         ]
@@ -141,9 +146,8 @@
                 title: 'emoji-title',
                 popup: 'emoji-popup'
               }
-            }).then(() => {
-              siguientePregunta();
             });
+            siguientePregunta();
           } else {
             desaciertos++;
             Swal.fire({

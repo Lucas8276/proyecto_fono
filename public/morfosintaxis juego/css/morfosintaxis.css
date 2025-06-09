@@ -14,39 +14,39 @@ body {
   min-height: 100vh;
 }
 
-.instructions {
-  background: #ffffffcc;
-  border: 3px solid #00b453;
-  border-radius: 20px;
-  padding: 12px;
-  margin: 0 auto 15px;
-  width: 90%;
-  max-width: 1000px;
-  text-align: center;
-  font-size: clamp(1.2rem, 4vw, 1.5rem);
-  font-weight: bold;
-  color: #1d663b;
-  box-shadow: 0 8px 24px rgba(0, 180, 83, 0.1);
-}
-
 .contenedor-principal {
   display: flex;
   flex-direction: column;
   align-items: center;
   background: #f0fff8;
-  border-radius: 22px;
+  border-radius: 18px;
   box-shadow: 0 6px 24px rgba(0, 180, 83, 0.15);
   padding: 15px;
   width: 90%;
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
   gap: 15px;
 }
 
+.instructions {
+  background: #e3fcec;
+  border: 2px solid #6be7a1;
+  border-radius: 14px;
+  padding: 14px 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #1d663b;
+  box-shadow: 0 2px 8px rgba(107, 231, 161, 0.08);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
 .imagen-box {
-  width: min(85vw, 550px);
-  height: min(85vw, 550px);
-  border-radius: 20px;
+  width: min(85vw, 450px);
+  height: min(85vw, 450px);
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,37 +62,37 @@ body {
 }
 
 .oracion-container {
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.4rem, 3.5vw, 1.8rem);
   color: #1d663b;
-  min-height: 70px;
+  min-height: 60px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   justify-content: center;
-  padding: 8px 0;
+  padding: 0;
   text-align: center;
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 0;
 }
 
 .espacio-palabra {
   display: inline-block;
-  width: clamp(120px, 20vw, 180px);
-  height: clamp(40px, 8vw, 50px);
+  width: clamp(110px, 18vw, 160px);
+  height: clamp(35px, 7vw, 45px);
   border: 2px dashed #00b453;
   border-radius: 8px;
   margin: 0 4px;
-  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-size: clamp(1.1rem, 2.8vw, 1.4rem);
   color: #00b453;
   text-align: center;
-  line-height: clamp(40px, 8vw, 50px);
+  line-height: clamp(35px, 7vw, 45px);
 }
 
 .palabras-container {
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 10px;
   padding: 15px;
   background: white;
   border-radius: 15px;
@@ -103,55 +103,55 @@ body {
   width: fit-content;
   max-width: 600px;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 /* Estilos específicos para el nivel 2 */
 .nivel2 .palabras-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  max-width: 650px;
-  padding: 18px;
-  margin-top: 25px;
+  gap: 12px;
+  max-width: 600px;
+  padding: 15px;
+  margin-top: 20px;
 }
 
 .nivel2 .palabra {
-  min-width: clamp(130px, 22vw, 200px);
-  padding: 12px 20px;
-  font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+  min-width: clamp(120px, 20vw, 180px);
+  padding: 10px 15px;
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
 }
 
 /* Estilos específicos para el nivel 3 */
 .nivel3 .palabras-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  max-width: 750px;
-  padding: 18px;
-  margin-top: 25px;
+  gap: 10px;
+  max-width: 650px;
+  padding: 15px;
+  margin-top: 20px;
 }
 
 .nivel3 .palabra {
-  min-width: clamp(100px, 15vw, 150px);
-  padding: 10px 15px;
-  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  min-width: clamp(90px, 15vw, 130px);
+  padding: 8px 12px;
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
 }
 
 .palabra {
   background: #e8f8f0;
   border: 2px solid #00b453;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 8px 15px;
   cursor: move;
   user-select: none;
-  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
   color: #1d663b;
   transition: all 0.3s ease;
   white-space: nowrap;
-  min-width: clamp(100px, 15vw, 140px);
+  min-width: clamp(90px, 15vw, 130px);
   text-align: center;
-  margin: 4px;
+  margin: 3px;
   box-shadow: 0 2px 6px rgba(0, 180, 83, 0.1);
 }
 
@@ -190,26 +190,55 @@ body {
   
   .palabras-container {
     margin-top: 15px;
+    padding: 12px;
   }
   
   .nivel2 .palabras-container,
   .nivel3 .palabras-container {
-    margin-top: 20px;
+    margin-top: 15px;
+    padding: 12px;
   }
   
   .palabra {
-    padding: 8px 15px;
-    margin: 3px;
+    padding: 8px 12px;
+    margin: 2px;
   }
-  
-  .nivel2 .palabras-container {
-    padding: 15px;
-    gap: 12px;
-  }
-  
-  .nivel3 .palabras-container {
-    padding: 15px;
-    gap: 10px;
-  }
+}
+
+.img-juego {
+  display: block;
+  width: 400px;
+  height: 300px;
+  max-width: 95%;
+  object-fit: cover;
+  margin: 0 auto 18px auto;
+  border-radius: 12px;
+  border: 3px solid #6be7a1;
+  box-shadow: 0 3px 10px rgba(0,180,83,0.10);
+}
+
+#back-button {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  padding: 16px 32px;
+  font-size: 1.2rem;
+  font-family: 'Fredoka', sans-serif;
+  background: #00b453;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,180,83,0.15);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  z-index: 1000;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+#back-button:hover {
+  background: #018a3a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,180,83,0.18);
 }
 

@@ -19,27 +19,29 @@
 </head>
 
 <body>
-  <div class="instructions">
+  <div class="main-container">
+    <div class="instructions">
       COLOCÁ CADA VOCAL CON SU POSICIÓN ARTICULATORIA
-  </div>
-
-  <div class="game-area">
-    <div class="letters-col">
-      <div class="letter-tile" draggable="true" data-letter="I">I</div>
-      <div class="letter-tile" draggable="true" data-letter="A">A</div>
-      <div class="letter-tile" draggable="true" data-letter="U">U</div>
-      <div class="letter-tile" draggable="true" data-letter="O">O</div>
-      <div class="letter-tile" draggable="true" data-letter="E">E</div>
-      <div class="letter-tile" draggable="true" data-letter="F">F</div>
-      <div class="letter-tile" draggable="true" data-letter="N">N</div>
     </div>
 
-    <div class="images-col">
-      <div class="image-box" data-answer="A"><img src="imagenes/letraA.png" alt="LETRA A" /></div>
-      <div class="image-box" data-answer="E"><img src="imagenes/letraE.png" alt="LETRA E" /></div>
-      <div class="image-box" data-answer="I"><img src="imagenes/letraI.png" alt="LETRA I" /></div>
-      <div class="image-box" data-answer="O"><img src="imagenes/letraO.png" alt="LETRA O" /></div>
-      <div class="image-box" data-answer="U"><img src="imagenes/letraU.png" alt="LETRA U" /></div>
+    <div class="game-area">
+      <div class="letters-col">
+        <div class="letter-tile" draggable="true" data-letter="I">I</div>
+        <div class="letter-tile" draggable="true" data-letter="A">A</div>
+        <div class="letter-tile" draggable="true" data-letter="U">U</div>
+        <div class="letter-tile" draggable="true" data-letter="O">O</div>
+        <div class="letter-tile" draggable="true" data-letter="E">E</div>
+        <div class="letter-tile" draggable="true" data-letter="F">F</div>
+        <div class="letter-tile" draggable="true" data-letter="N">N</div>
+      </div>
+
+      <div class="images-col">
+        <div class="image-box" data-answer="A"><img src="imagenes/letraA.png" alt="LETRA A" /></div>
+        <div class="image-box" data-answer="E"><img src="imagenes/letraE.png" alt="LETRA E" /></div>
+        <div class="image-box" data-answer="I"><img src="imagenes/letraI.png" alt="LETRA I" /></div>
+        <div class="image-box" data-answer="O"><img src="imagenes/letraO.png" alt="LETRA O" /></div>
+        <div class="image-box" data-answer="U"><img src="imagenes/letraU.png" alt="LETRA U" /></div>
+      </div>
     </div>
   </div>
 
@@ -65,7 +67,7 @@
       <div style="margin-top:24px;font-size:1.2rem;color:#4a94ff;text-align:center;">¡Listo para jugar y aprender!</div>
     </div>
   </div>
-  <button id="volver-btn" style="position:fixed;top:40px;right:40px;z-index:1000;padding:16px 36px;font-size:1.2rem;font-weight:bold;border:none;border-radius:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.10);background:#ff6632;color:#fff;font-family:'Fredoka',sans-serif;">VOLVER</button>
+  <button id="volver-btn">VOLVER</button>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {

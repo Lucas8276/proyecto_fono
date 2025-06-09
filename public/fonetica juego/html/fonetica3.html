@@ -19,34 +19,36 @@
 </head>
 
 <body>
-  <div class="instructions">
-    COLOCÁ CADA CONSONANTE CON SU POSICIÓN ARTICULATORIA
-  </div>
-
-  <div class="game-area">
-    <div class="letters-col">
-      <div class="letter-tile" draggable="true" data-letter="RR">RR</div>
-      <div class="letter-tile" draggable="true" data-letter="Ñ">Ñ</div>
-      <div class="letter-tile" draggable="true" data-letter="LL">LL</div>
-      <div class="letter-tile" draggable="true" data-letter="CH">CH</div>
-      <div class="letter-tile" draggable="true" data-letter="D">D</div>
-      <div class="letter-tile" draggable="true" data-letter="F">F</div>
-      <div class="letter-tile" draggable="true" data-letter="S">S</div>
+  <div class="main-container">
+    <div class="instructions">
+      COLOCÁ CADA CONSONANTE CON SU POSICIÓN ARTICULATORIA
     </div>
 
-    <div class="images-col">
-      <div class="image-box" data-answer="Ñ"><img src="imagenes/letraÑ.png" alt="LETRA Ñ" /></div>
-      <div class="image-box" data-answer="CH"><img src="imagenes/letraCH.png" alt="LETRA CH" /></div>
-      <div class="image-box" data-answer="LL"><img src="imagenes/letraLL.png" alt="LETRA LL" /></div>
-      <div class="image-box" data-answer="RR"><img src="imagenes/letraRR.png" alt="LETRA RR" /></div>
+    <div class="game-area">
+      <div class="letters-col">
+        <div class="letter-tile" draggable="true" data-letter="CH">CH</div>
+        <div class="letter-tile" draggable="true" data-letter="D">D</div>
+        <div class="letter-tile" draggable="true" data-letter="Ñ">Ñ</div>
+        <div class="letter-tile" draggable="true" data-letter="F">F</div>
+        <div class="letter-tile" draggable="true" data-letter="LL">LL</div>
+        <div class="letter-tile" draggable="true" data-letter="S">S</div>
+        <div class="letter-tile" draggable="true" data-letter="RR">RR</div>
+      </div>
+
+      <div class="images-col">
+        <div class="image-box" data-answer="Ñ"><img src="imagenes/letraÑ.png" alt="LETRA Ñ" /></div>
+        <div class="image-box" data-answer="CH"><img src="imagenes/letraCH.png" alt="LETRA CH" /></div>
+        <div class="image-box" data-answer="LL"><img src="imagenes/letraLL.png" alt="LETRA LL" /></div>
+        <div class="image-box" data-answer="RR"><img src="imagenes/letraRR.png" alt="LETRA RR" /></div>
+      </div>
     </div>
   </div>
+
+  <button id="volver-btn">VOLVER</button>
 
   <div id="alertBox" class="alert" style="display: none;">
     <span id="alertMessage"></span>
   </div>
-
-  <button id="nextButton" style="display: none;">SIGUIENTE</button>
 
   <img id="selected-avatar" src="" alt="Avatar Seleccionado" style="position:absolute;top:40px;left:40px;width:90px;height:90px;border-radius:50%;border:4px solid #00b453;box-shadow:0 2px 10px rgba(0,0,0,0.10);object-fit:cover;background:#fffbe6;z-index:900;display:none;cursor:pointer;">
   <!-- Panel lateral del avatar -->
@@ -64,12 +66,13 @@
       <div style="margin-top:24px;font-size:1.2rem;color:#4a94ff;text-align:center;">¡Listo para jugar y aprender!</div>
     </div>
   </div>
-  <button id="volver-btn" style="position:fixed;top:40px;right:40px;z-index:1000;padding:16px 36px;font-size:1.2rem;font-weight:bold;border:none;border-radius:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.10);background:#ff6632;color:#fff;font-family:'Fredoka',sans-serif;">VOLVER</button>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const letterTiles = document.querySelectorAll(".letter-tile");
       const imageBoxes = document.querySelectorAll(".image-box");
+      const alertBox = document.getElementById("alertBox");
+      const alertMessage = document.getElementById("alertMessage");
       let correctMatches = 0;
       let currentLevel = 3;
       let id_paciente = localStorage.getItem('id_paciente');
@@ -86,31 +89,6 @@
             popup: 'emoji-popup'
           }
         });
-      }
-
-      // Función para verificar si se completó el nivel
-      function checkLevelCompletion() {
-        if (correctMatches === imageBoxes.length) {
-          Swal.fire({
-            title: '¡NIVEL COMPLETADO!',
-            icon: 'none',
-            timer: 1500,
-            showConfirmButton: false,
-            customClass: {
-              title: 'level-complete-title',
-              popup: 'level-complete-popup'
-            }
-          });
-          goToNextLevel();
-        }
-      }
-
-      // Función para navegar al siguiente nivel
-      function goToNextLevel() {
-        // Si estamos en el nivel 3, volvemos al index
-        setTimeout(() => {
-          window.location.href = `../../index.html?id_paciente=${id_paciente}`;
-        }, 1500);
       }
 
       // Eventos de arrastre para las letras
@@ -161,7 +139,6 @@
 
             correctMatches++;
             showAlert("🎉", true);
-            checkLevelCompletion();
           } else {
             showAlert("😢", false);
           }

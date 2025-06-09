@@ -36,31 +36,25 @@
     </div>
   </div>
 
-  <div id="main-content">
-    <h1>MORFOSINTAXIS NIVEL 2</h1>
-    <div class="instructions">OBSERVA LA IMAGEN Y ORDENÁ LA ORACION CORRECTAMENTE</div>
+  <div class="contenedor-principal container nivel2">
+    <div class="instructions">OBSERVÁ LA IMAGEN Y ORDENÁ LA ORACIÓN CORRECTAMENTE</div>
+    <img id="imagenSeleccionada" class="img-juego" src="imagenes/niñosjugando.jpg" alt="Niños jugando">
     
-    <div class="contenedor-principal container nivel2">
-      <div class="imagen-box">
-        <img id="imagenSeleccionada" src="imagenes/niñosjugando.jpg" alt="Niños jugando">
-      </div>
-
-      <div class="oracion-container" id="oracionContainer">
-        Los <div class="espacio-palabra" data-palabra="niños"></div>
-        están <div class="espacio-palabra" data-palabra="jugando"></div>
-        a la pelota.
-      </div>
-
-      <div class="palabras-container" id="palabrasContainer">
-        <div class="palabra" draggable="true" data-palabra="comiendo">comiendo</div>
-        <div class="palabra" draggable="true" data-palabra="niños">niños</div>
-        <div class="palabra" draggable="true" data-palabra="perros">perros</div>
-        <div class="palabra" draggable="true" data-palabra="jugando">jugando</div>
-      </div>
+    <div class="oracion-container" id="oracionContainer">
+      Los <div class="espacio-palabra" data-palabra="niños"></div>
+      están <div class="espacio-palabra" data-palabra="jugando"></div>
+      a la pelota.
     </div>
 
-    <button id="back-button" onclick="window.location.href='../../index.html'" style="position:fixed;bottom:40px;right:40px;padding:16px 32px;font-size:1.2rem;font-family:'Fredoka',sans-serif;background:#ff6b6b;color:white;border:none;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;z-index:1000;">VOLVER</button>
+    <div class="palabras-container" id="palabrasContainer">
+      <div class="palabra" draggable="true" data-palabra="comiendo">comiendo</div>
+      <div class="palabra" draggable="true" data-palabra="perros">perros</div>
+      <div class="palabra" draggable="true" data-palabra="jugando">jugando</div>
+      <div class="palabra" draggable="true" data-palabra="niños">niños</div>
+    </div>
   </div>
+
+  <button id="back-button" onclick="window.location.href='../../index.html'">VOLVER</button>
 
   <script>
     // Mostrar el avatar elegido o redirigir a avatar.html si no hay avatar

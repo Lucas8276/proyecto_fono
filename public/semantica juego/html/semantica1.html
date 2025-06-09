@@ -19,7 +19,7 @@
 <body>
   <div class="container">
     <div class="instructions animate__animated animate__fadeIn">
-      <h2>ARRASTRÁ CADA IMAGEN A SU GRUPO CORRESPONDIENTE</h2>
+      <h2>ARRASTRÁ CADA IMAGEN AL GRUPO QUE CORRESPONDE</h2>
       </h2>
       
     </div>
@@ -65,7 +65,7 @@
       <div style="margin-top:24px;font-size:1.2rem;color:#4a94ff;text-align:center;">¡Listo para jugar y aprender!</div>
     </div>
   </div>
-  <button id="volver-btn" style="position:fixed;top:40px;right:40px;z-index:1000;padding:16px 36px;font-size:1.2rem;font-weight:bold;border:none;border-radius:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.10);background:#ffd817;color:#333;font-family:'Fredoka',sans-serif;">VOLVER</button>
+  <button id="volver-btn">VOLVER</button>
 
   <script>
     const items = [
@@ -144,14 +144,38 @@
       const currentItems = items.filter(item => 
         currentCategories.includes(item.category) || item.category === 'NINGUNA'
       );
+      
+      // Mezclar las imágenes de forma aleatoria
       const shuffledItems = shuffleArray([...currentItems]);
-
-      imagesContainer.innerHTML = shuffledItems.map(item => `
-        <div class="draggable-image" draggable="true" data-category="${item.category}">
-          <img src="${item.image}" alt="${item.name}">
-          <p>${item.name}</p>
-        </div>
-      `).join('');
+      
+      // Limpiar el contenedor
+      imagesContainer.innerHTML = '';
+      
+      // Crear y añadir las imágenes en orden aleatorio
+      shuffledItems.forEach(item => {
+        const imageDiv = document.createElement('div');
+        imageDiv.className = 'draggable-image';
+        imageDiv.draggable = true;
+        imageDiv.dataset.category = item.category;
+        
+        const img = document.createElement('img');
+        img.src = item.image;
+        img.alt = item.name;
+        
+        const p = document.createElement('p');
+        p.textContent = item.name;
+        
+        imageDiv.appendChild(img);
+        imageDiv.appendChild(p);
+        
+        // Añadir la imagen en una posición aleatoria dentro del contenedor
+        const randomIndex = Math.floor(Math.random() * (imagesContainer.children.length + 1));
+        if (randomIndex === imagesContainer.children.length) {
+          imagesContainer.appendChild(imageDiv);
+        } else {
+          imagesContainer.insertBefore(imageDiv, imagesContainer.children[randomIndex]);
+        }
+      });
 
       setupDragAndDrop();
     }

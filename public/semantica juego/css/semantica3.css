@@ -8,17 +8,17 @@ body {
   align-items: center;
   min-height: 100vh;
   margin: 0;
-  padding: 20px;
+  padding: 15px;
 }
 
 .container {
-  width: 85%;
-  max-width: 900px;
+  width: 80%;
+  max-width: 800px;
   padding: 15px;
-  background-color: rgba(255, 255, 255, 0.95);
-  border: 5px solid #ffd817;
-  border-radius: 25px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  background-color: rgba(255, 255, 255, 0.98);
+  border: 3px solid #ffd817;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,9 +27,9 @@ body {
 .instructions {
   background: #fff8c5;
   border: 2px solid #ffd817;
-  border-radius: 15px;
-  padding: 12px 25px;
-  font-size: 1.1rem;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 1rem;
   color: #b8860b;
   margin-bottom: 15px;
   text-align: center;
@@ -37,15 +37,14 @@ body {
   width: 100%;
   max-width: 600px;
   text-transform: uppercase;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
 
 .instructions h2 {
-  color: #b48a00;
-  font-size: 1.5rem;
-  margin: 0;
-  font-weight: bold;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  color: #b8860b;
 }
 
 .game-layout {
@@ -54,6 +53,7 @@ body {
   gap: 20px;
   align-items: center;
   width: 100%;
+  padding: 0 10px;
 }
 
 .sentences-list {
@@ -63,97 +63,147 @@ body {
   width: 100%;
   max-width: 800px;
   padding: 12px;
-  background: rgba(255, 248, 197, 0.3);
-  border-radius: 20px;
+  background: rgba(255, 248, 197, 0.4);
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
 }
 
 .sentence-row {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sentence-box {
+  flex: 1;
   background: white;
   border: 2px solid #ffd817;
-  border-radius: 15px;
-  padding: 12px 20px;
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  min-height: 60px;
+  max-width: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   transition: all 0.3s ease;
 }
 
 .sentence-text {
-  flex: 1;
-  font-size: 1.1rem;
-  color: #333;
+  font-size: 1.2rem;
+  color: #b8860b;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.sentence-actions {
+  display: flex;
+  gap: 20px;
+  margin-left: 30px;
 }
 
 .like-btn, .dislike-btn {
-  width: 40px;
-  height: 40px;
+  width: 70px;
+  height: 70px;
   border: none;
   border-radius: 50%;
+  background: white;
+  border: 3px solid #ffd817;
+  font-size: 2.2rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.like-btn {
-  background: #4CAF50;
-  color: white;
-}
-
-.dislike-btn {
-  background: #f44336;
-  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .like-btn:hover, .dislike-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  background: #fff3cd;
+}
+
+.like-btn:disabled, .dislike-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 #volver-btn {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-  padding: 12px 25px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border: 2px solid #b8860b;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  background: #fff8c5;
-  color: #b8860b;
+  bottom: 40px;
+  right: 40px;
+  padding: 16px 36px;
+  font-size: 1.2rem;
   font-family: 'Fredoka', sans-serif;
+  background: #ffd817;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  font-weight: bold;
+  cursor: pointer;
   transition: all 0.3s ease;
-  text-transform: uppercase;
+  z-index: 1000;
 }
 
 #volver-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  background: #fff3cd;
-  border-color: #ffd817;
 }
 
-.emoji-title {
-  font-size: 80px !important;
-  line-height: 1 !important;
+@media (max-width: 768px) {
+  .sentence-box {
+    padding: 12px 15px;
+    min-height: 50px;
+  }
+
+  .sentence-text {
+    font-size: 1.1rem;
+  }
+
+  .sentence-actions {
+    margin-left: 0;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .sentence-box {
+    width: 100%;
+  }
+
+  .like-btn, .dislike-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+
+  #volver-btn {
+    bottom: 30px;
+    right: 30px;
+    padding: 14px 28px;
+    font-size: 1.1rem;
+  }
 }
 
-/* Responsive Design */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 480px) {
   .container {
     width: 95%;
-    padding: 12px;
+    padding: 10px;
   }
 
   .sentence-row {
-    padding: 10px 15px;
-    gap: 12px;
+    padding: 10px 12px;
+    gap: 10px;
   }
 
   .sentence-text {
@@ -167,43 +217,168 @@ body {
   }
 
   #volver-btn {
-    padding: 10px 20px;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
     font-size: 1rem;
   }
 }
 
-@media screen and (max-width: 480px) {
-  .container {
-    width: 98%;
-    padding: 10px;
-  }
-
-  .sentence-row {
-    padding: 8px 12px;
-    gap: 10px;
-  }
-
-  .sentence-text {
-    font-size: 0.9rem;
-  }
-
-  .like-btn, .dislike-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 1rem;
-  }
-
-  #volver-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-}
-
-.swal2-title {
-  padding: 0 !important;
+.emoji-title {
+  font-size: 80px !important;
+  line-height: 1 !important;
 }
 
 .emoji-popup {
   background: transparent !important;
   box-shadow: none !important;
+}
+
+#selected-avatar {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 4px solid #00b453;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  object-fit: cover;
+  background: #fffbe6;
+  z-index: 900;
+  display: none;
+  cursor: pointer;
+}
+
+#avatar-panel {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 340px;
+  max-width: 90vw;
+  background: #fffbe6;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.13);
+  z-index: 2000;
+  padding: 36px 24px 24px 24px;
+  transition: transform 0.3s cubic-bezier(.4,1.3,.5,1);
+  transform: translateX(-100%);
+  font-family: 'Fredoka', sans-serif;
+}
+
+#close-panel {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #00b453;
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+#avatar-panel-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #00b453;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  background: #fff;
+  object-fit: cover;
+}
+
+.panel-label {
+  font-size: 1.3rem;
+  color: #00b453;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+#panel-nombre, #panel-edad {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+#sound-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-family: 'Fredoka', sans-serif;
+  background: #ffd817;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#sound-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.panel-message {
+  margin-top: 24px;
+  font-size: 1.2rem;
+  color: #4a94ff;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.correct-answer {
+  border-color: #ffd817 !important;
+  background-color: white !important;
+  animation: correctPulse 0.5s ease-in-out;
+}
+
+.wrong-answer {
+  border-color: #ffd817 !important;
+  background-color: white !important;
+  animation: wrongShake 0.5s ease-in-out;
+}
+
+.show-correct {
+  border-color: #ffd817 !important;
+  background-color: white !important;
+  animation: correctPulse 0.5s ease-in-out;
+  transform: scale(1.1);
+}
+
+.like-btn.correct, .dislike-btn.correct {
+  border-color: #ffd817 !important;
+  background-color: white !important;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.like-btn.wrong, .dislike-btn.wrong {
+  opacity: 0.5;
+  transform: scale(0.9);
+}
+
+@keyframes correctPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
