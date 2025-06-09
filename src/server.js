@@ -16,7 +16,7 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, '../public')));
 const bodyParser = require('body-parser');
-const cors = require('cors');
+
 const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
